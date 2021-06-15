@@ -1,0 +1,12 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+		<!-- Frameworks https://docs.microsoft.com/en-us/dotnet/standard/frameworks#supported-target-frameworks -->
+    <TargetFramework>net472</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="UmbracoForms.Core" Version="8.7.4" />
+  </ItemGroup>
+
+</Project>
