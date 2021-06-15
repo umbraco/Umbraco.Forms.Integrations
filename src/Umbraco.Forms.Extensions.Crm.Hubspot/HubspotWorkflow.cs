@@ -17,6 +17,18 @@ namespace Umbraco.Forms.Extensions.Crm.Hubspot
             Group = "CRM";
         }
 
+        [Setting("Hubspot API Key", Description = "Enter the API Key from your HubSpot account", View = "TextField")]
+        public string HubspotApiKey { get; set; }
+
+        private Uri HubspotApiUrl
+        {
+            get
+            {
+                return new Uri($"https://api.hubapi.com/crm/v3/objects/contacts?hapikey={HubspotApiKey}");
+            }
+        }
+
+        static readonly HttpClient client = new HttpClient();
         public override WorkflowExecutionStatus Execute(Record record, RecordEventArgs e)
         {
             return WorkflowExecutionStatus.Completed;
@@ -24,7 +36,36 @@ namespace Umbraco.Forms.Extensions.Crm.Hubspot
 
         public override List<Exception> ValidateSettings()
         {
-            return new List<Exception>();
+            var errors = new List<Exception>();
+
+            // Verify API key is not empty
+            if (string.IsNullOrWhiteSpace(HubspotApiKey))
+            {
+                errors.Add(new Exception("Hubspot API key is missing"));
+                return errors;
+            }
+
+            // Make a super simple GET request to fetch contacts in HubSpot
+            // This way with we can verify that the API key is valid
+            // https://developers.hubspot.com/docs/api/crm/contacts
+            var testResponse = client.GetAsync(HubspotApiUrl).Result;
+
+            if (testResponse.IsSuccessStatusCode == false)
+            {
+                // Invalid key will return a 401
+                // Message property of response contains useful message
+                // The API key provided is invalid. View or manage your API key here: https://app.hubspot.com/l/api-key/
+                var errorResponse = testResponse.Content.ReadAsStringAsync().Result;
+                var errorObj = JsonConvert.DeserializeObject<ErrorResponse>(errorResponse);
+                errors.Add(new Exception(errorObj.message));
+            }
+
+            return errors;
         }
+    }
+
+    public class ErrorResponse
+    {
+        public string message { get; set; }
     }
 }
