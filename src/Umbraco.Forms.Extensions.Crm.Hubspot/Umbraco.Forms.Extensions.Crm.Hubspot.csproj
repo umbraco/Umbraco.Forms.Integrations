@@ -18,6 +18,7 @@
 	</PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="System.Net.Http.Json" Version="5.0.0" />
     <PackageReference Include="UmbracoForms.Core" Version="8.7.4" />
   </ItemGroup>
 

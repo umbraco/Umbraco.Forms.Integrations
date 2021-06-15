@@ -1,6 +1,12 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
+using System.Net.Http;
+using System.Net.Http.Json;
+using Umbraco.Core.Composing;
+using Umbraco.Core.Logging;
 using Umbraco.Forms.Core;
+using Umbraco.Forms.Core.Attributes;
 using Umbraco.Forms.Core.Enums;
 using Umbraco.Forms.Core.Persistence.Dtos;
 
@@ -57,7 +63,12 @@ namespace Umbraco.Forms.Extensions.Crm.Hubspot
                 // The API key provided is invalid. View or manage your API key here: https://app.hubspot.com/l/api-key/
                 var errorResponse = testResponse.Content.ReadAsStringAsync().Result;
                 var errorObj = JsonConvert.DeserializeObject<ErrorResponse>(errorResponse);
-                errors.Add(new Exception(errorObj.message));
+                var ex = new Exception(errorObj.message);
+                errors.Add(ex);
+
+                // Log the error
+                // TODO: Unable to get Form Name & Form ID for logging context properties
+                Current.Logger.Error<HubspotWorkflow>(ex, "Workflow {WorkflowName}: Error checking HubSpot Connection for {FormName} ({FormId})", Workflow.Name);
             }
 
             return errors;
