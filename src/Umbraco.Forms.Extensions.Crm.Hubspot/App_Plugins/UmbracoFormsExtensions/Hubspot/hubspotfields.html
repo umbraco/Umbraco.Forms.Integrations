@@ -1,0 +1,45 @@
+﻿<div ng-controller="UmbracoFormsExtensions.Hubspot.Fields">
+
+    <pre>{{ setting | json }}</pre>
+    <pre>{{ mappings | json }}</pre>
+    <!--<pre>{{ fields | json }}</pre>-->
+    <!--<pre>{{ hubspotFields | json }}</pre>-->
+
+    <div class="umb-forms-mappings" ng-if="mappings.length > 0">
+
+        <div class="umb-forms-mapping-header">
+            <div class="umb-forms-mapping-field -no-margin-left">Form Field</div>
+            <div class="umb-forms-mapping-field">Hubspot Field</div>
+            <div class="umb-forms-mapping-remove -no-margin-right"></div>
+        </div>
+
+        <div class="umb-forms-mapping" ng-repeat="mapping in mappings">
+
+            <div class="umb-forms-mapping-field">
+                <select class="-full-width"
+                        ng-options="field.id as field.value for field in fields"
+                        ng-model="mapping.formField"
+                        ng-change="stringifyValue()">
+                    <option value="">Map form field</option>
+                </select>
+            </div>
+
+            <div class="umb-forms-mapping-field">
+                <select class="-full-width"
+                        ng-options="field.name as field.label for field in hubspotFields"
+                        ng-model="mapping.hubspotField"
+                        ng-change="stringifyValue()">
+                    <option value="">Map hubspot field</option>
+                </select>
+            </div>
+
+            <div class="umb-forms-mapping-remove -no-margin-right">
+                <a href="" ng-click="deleteMapping($index)"><i class="icon-trash"></i></a>
+            </div>
+
+        </div>
+    </div>
+
+    <umb-button type="button" action="addMapping()" label="Add mapping"></umb-button>
+
+</div>

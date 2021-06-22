@@ -1,7 +1,10 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
+using System.Net.Http.Json;
 using Umbraco.Core.Composing;
 using Umbraco.Core.Logging;
 using Umbraco.Web.Editors;
@@ -35,17 +38,27 @@ namespace Umbraco.Forms.Extensions.Crm.Hubspot
 
             // Map Properties back to our simplier object
             // Don't need all the fields in the response
-
-
+            var rawResult = propertiesResponse.Content.ReadAsStringAsync().Result;
+            var json = JsonConvert.DeserializeObject<PropertyResult>(rawResult);
+            properties.AddRange(json.Results);
             return properties;
+        }
+
+        public class PropertyResult
+        {
+            [JsonProperty(PropertyName = "results")]
+            public List<Property> Results { get; set; }
         }
 
         public class Property
         {
+            [JsonProperty(PropertyName = "name")]
             public string Name { get; set; }
 
+            [JsonProperty(PropertyName = "label")]
             public string Label { get; set; }
 
+            [JsonProperty(PropertyName = "description")]
             public string Description { get; set; }
         }
     }

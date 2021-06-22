@@ -26,7 +26,10 @@ namespace Umbraco.Forms.Extensions.Crm.Hubspot
         [Setting("Hubspot API Key", Description = "Enter the API Key from your HubSpot account", View = "TextField")]
         public string HubspotApiKey { get; set; }
 
-        private Uri HubspotApiUrl
+        [Setting("Field Mappings", Description = "Map Umbraco Form fields to HubSpot contact fields", View = "~/App_Plugins/UmbracoFormsExtensions/Hubspot/hubspotfields.html")]
+        public string FieldMappings { get; set; }
+
+        private Uri HubspotContactApiUrl
         {
             get
             {
