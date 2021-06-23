@@ -13,30 +13,36 @@
             <div class="umb-forms-mapping-remove -no-margin-right"></div>
         </div>
 
-        <div class="umb-forms-mapping" ng-repeat="mapping in mappings">
+        <div ng-repeat="mapping in mappings">
 
-            <div class="umb-forms-mapping-field">
-                <select class="-full-width"
-                        ng-options="field.id as field.value for field in fields"
-                        ng-model="mapping.formField"
-                        ng-change="stringifyValue()">
-                    <option value="">Map form field</option>
-                </select>
+            <div class="umb-forms-mapping">
+                <div class="umb-forms-mapping-field">
+                    <select class="-full-width"
+                            ng-options="field.id as field.value for field in fields"
+                            ng-model="mapping.formField"
+                            ng-change="stringifyValue()">
+                        <option value="">Map form field</option>
+                    </select>
+                </div>
+
+                <div class="umb-forms-mapping-field">
+                    <select class="-full-width"
+                            ng-options="field.value as field.name for field in hubspotFields track by field.value"
+                            ng-model="mapping.hubspotField"
+                            ng-change="stringifyValue()">
+                        <option value="">Map hubspot field</option>
+                    </select>
+                </div>
+
+                <div class="umb-forms-mapping-remove -no-margin-right">
+                    <a href="" ng-click="deleteMapping($index)"><i class="icon-trash"></i></a>
+                </div>
             </div>
 
-            <div class="umb-forms-mapping-field">
-                <select class="-full-width"
-                        ng-options="field.name as field.label for field in hubspotFields"
-                        ng-model="mapping.hubspotField"
-                        ng-change="stringifyValue()">
-                    <option value="">Map hubspot field</option>
-                </select>
+            <div ng-if="mapping.hubspotField" style="margin-bottom:15px;">
+                <strong>Description:</strong><br/>
+                {{ getHubspotFieldDescription(mapping.hubspotField) }}
             </div>
-
-            <div class="umb-forms-mapping-remove -no-margin-right">
-                <a href="" ng-click="deleteMapping($index)"><i class="icon-trash"></i></a>
-            </div>
-
         </div>
     </div>
 

@@ -22,9 +22,27 @@
             // Need to get API key from other field
             // May need to do parent.parent scope traversal - YUK :S
             hubspotResource.getAllProperties('6a488b25-b7e7-489d-ad45-2da52a878ff9').then(function (response) {
-                $scope.hubspotFields = response;
+                $scope.hubspotFields = response.map(x =>{
+                    return {
+                        value: x.name,
+                        name: x.label,
+                        description: x.description
+                    }
+                });
             });
         }
+    }
+
+    $scope.getHubspotFieldDescription = function(value) {
+        var item = $scope.hubspotFields.find(x => {
+            return x.value === value;
+        });
+
+        if(item){
+            return item.description;
+        }
+        
+        return '';
     }
 
     $scope.addMapping = function () {
