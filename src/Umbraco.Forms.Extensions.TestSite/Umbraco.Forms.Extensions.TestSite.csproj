@@ -567,6 +567,12 @@
       <DependentUpon>Web.config</DependentUpon>
     </None>
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Umbraco.Forms.Extensions.Crm.Hubspot\Umbraco.Forms.Extensions.Crm.Hubspot.csproj">
+      <Project>{e7f3f2cc-dcb6-4158-aaba-d2ea9e1b9fa8}</Project>
+      <Name>Umbraco.Forms.Extensions.Crm.Hubspot</Name>
+    </ProjectReference>
+  </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>

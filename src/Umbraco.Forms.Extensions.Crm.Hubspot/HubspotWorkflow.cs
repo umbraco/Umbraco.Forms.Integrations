@@ -15,39 +15,33 @@ namespace Umbraco.Forms.Extensions.Crm.Hubspot
 {
     public class HubspotWorkflow : WorkflowType
     {
-        public HubspotWorkflow()
+        static readonly HttpClient client = new HttpClient();
+
+        private readonly IFacadeConfiguration _configuration;
+
+        public HubspotWorkflow(IFacadeConfiguration configuration)
         {
+            _configuration = configuration;
+
             Id = new Guid("c47ef1ef-22b1-4b9d-acf6-f57cb8961550");
-            Name = "Hubspot";
-            Description = "Form submissions are sent to CRM Hubspot";
+            Name = "Save Contact to Hubspot";
+            Description = "Form submissions are sent to Hubspot CRM";
             Icon = "icon-handshake";
             Group = "CRM";
         }
 
-        [Setting("Hubspot API Key", Description = "Enter the API Key from your HubSpot account", View = "TextField")]
-        public string HubspotApiKey { get; set; }
-
         [Setting("Field Mappings", Description = "Map Umbraco Form fields to HubSpot contact fields", View = "~/App_Plugins/UmbracoFormsExtensions/Hubspot/hubspotfields.html")]
         public string FieldMappings { get; set; }
-
-        private Uri HubspotContactApiUrl
-        {
-            get
-            {
-                return new Uri($"https://api.hubapi.com/crm/v3/objects/contacts?hapikey={HubspotApiKey}");
-            }
-        }
-
-        static readonly HttpClient client = new HttpClient();
 
         public override WorkflowExecutionStatus Execute(Record record, RecordEventArgs e)
         {
             // Check Hubspot key is not empty
-            if (string.IsNullOrWhiteSpace(HubspotApiKey))
+            var apiKey = _configuration.GetSetting("HubSpotApiKey");
+            if (string.IsNullOrWhiteSpace(apiKey))
             {
                 // Missing an API Key
                 // TODO: Can I bubble up a specific message as to why
-                Current.Logger.Warn<HubspotWorkflow>("Workflow {WorkflowName}: No API key has been set for the Hubspot workflow for the form {FormName} ({FormId})", Workflow.Name, e.Form.Name, e.Form.Id);
+                Current.Logger.Warn<HubspotWorkflow>("Workflow {WorkflowName}: No API key has been configurated for the 'Save Contact to HubSpot' the form {FormName} ({FormId})", Workflow.Name, e.Form.Name, e.Form.Id);
                 return WorkflowExecutionStatus.NotConfigured;
             }
 
@@ -87,10 +81,11 @@ namespace Umbraco.Forms.Extensions.Crm.Hubspot
 
             // POST data to hubspot
             // https://api.hubapi.com/crm/v3/objects/contacts?hapikey=YOUR_HUBSPOT_API_KEY
-            var postResponse = client.PostAsync(HubspotContactApiUrl, content).Result;
+            var url = $"https://api.hubapi.com/crm/v3/objects/contacts?hapikey={apiKey}";
+            var postResponse = client.PostAsync(url, content).GetAwaiter().GetResult();
 
             // Depending on POST status fail or mark workflow as completed
-            if(postResponse.IsSuccessStatusCode == false)
+            if (postResponse.IsSuccessStatusCode == false)
             {
                 // LOG THE ERROR
                 Current.Logger.Warn<HubspotWorkflow>("Workflow {WorkflowName}: Error submitting data to Hubspot for the form {FormName} ({FormId})", Workflow.Name, e.Form.Name, e.Form.Id);
@@ -99,8 +94,7 @@ namespace Umbraco.Forms.Extensions.Crm.Hubspot
 
             // TODO:
             // Is it worth logging the success that it got created in HubSpot with its ID etc in response
-            var rawResult = postResponse.Content.ReadAsStringAsync().Result;
-
+            // Can get full response with: postResponse.Content.ReadAsStringAsync().GetAwaiter().GetResult();
 
             return WorkflowExecutionStatus.Completed;
         }
@@ -108,39 +102,11 @@ namespace Umbraco.Forms.Extensions.Crm.Hubspot
         public override List<Exception> ValidateSettings()
         {
             var errors = new List<Exception>();
-
-            // Verify API key is not empty
-            if (string.IsNullOrWhiteSpace(HubspotApiKey))
-            {
-                errors.Add(new Exception("Hubspot API key is missing"));
-                return errors;
-            }
-
-            // Make a super simple GET request to fetch contacts in HubSpot
-            // This way with we can verify that the API key is valid
-            // https://developers.hubspot.com/docs/api/crm/contacts
-            var testResponse = client.GetAsync(HubspotContactApiUrl).Result;
-
-            if (testResponse.IsSuccessStatusCode == false)
-            {
-                // Invalid key will return a 401
-                // Message property of response contains useful message
-                // The API key provided is invalid. View or manage your API key here: https://app.hubspot.com/l/api-key/
-                var errorResponse = testResponse.Content.ReadAsStringAsync().Result;
-                var errorObj = JsonConvert.DeserializeObject<ErrorResponse>(errorResponse);
-                var ex = new Exception(errorObj.message);
-                errors.Add(ex);
-
-                // Log the error
-                // TODO: Unable to get Form Name & Form ID for logging context properties
-                Current.Logger.Error<HubspotWorkflow>(ex, "Workflow {WorkflowName}: Error checking HubSpot Connection for {FormName} ({FormId})", Workflow.Name);
-            }
-
             return errors;
         }
     }
 
-    public class PropertiesPost
+    internal class PropertiesPost
     {
         public PropertiesPost()
         {
@@ -152,7 +118,7 @@ namespace Umbraco.Forms.Extensions.Crm.Hubspot
         public JObject Properties { get; set; }
     }
 
-    public class MappedProperty
+    internal class MappedProperty
     {
         [JsonProperty(PropertyName = "formField")]
         public string FormField { get; set; }
@@ -161,7 +127,7 @@ namespace Umbraco.Forms.Extensions.Crm.Hubspot
         public string HubspotField { get; set; }
     }
 
-    public class ErrorResponse
+    internal class ErrorResponse
     {
         public string message { get; set; }
     }

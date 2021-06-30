@@ -38,15 +38,8 @@ function HubSpotFieldsController($scope, $compile, $element, $routeParams, hubsp
                 vm.fields = response.data;
             });
 
-            // TODO: Remove hard coded API key & remember to revoke it later on
-            // Need to get API key from other field
-            // May need to do parent.parent scope traversal - YUK :S
-
-            // Niels recommendation that this is a component & be able to get the data from a parent item
-            // Using require (but finding which one it is I have no idea)
-
-            hubspotResource.getAllProperties('6a488b25-b7e7-489d-ad45-2da52a878ff9').then(function (response) {
-                vm.hubspotFields = response.map(x =>{
+            hubspotResource.getAllProperties().then(function (response) {
+                vm.hubspotFields = response.map(x => {
                     return {
                         value: x.name,
                         name: x.label,
@@ -62,7 +55,7 @@ function HubSpotFieldsController($scope, $compile, $element, $routeParams, hubsp
             return x.value === value;
         });
 
-        if(item){
+        if (item) {
             return item.description;
         }
         

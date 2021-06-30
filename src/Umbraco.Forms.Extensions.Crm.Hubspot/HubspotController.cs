@@ -1,9 +1,12 @@
 ﻿using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net.Http;
+using System.Threading.Tasks;
 using Umbraco.Core.Composing;
 using Umbraco.Core.Logging;
+using Umbraco.Forms.Core;
 using Umbraco.Web.Editors;
 using Umbraco.Web.Mvc;
 
@@ -13,17 +16,25 @@ namespace Umbraco.Forms.Extensions.Crm.Hubspot
     public class HubspotController : UmbracoAuthorizedJsonController
     {
         static readonly HttpClient client = new HttpClient();
+        
+        private readonly IFacadeConfiguration _configuration;
+        
+        public HubspotController(IFacadeConfiguration configuration)
+        {
+            _configuration = configuration;
+        }
 
         /// <summary>
         /// ~/Umbraco/[YourAreaName]/[YourControllerName]
-        /// ~/Umbraco/FormsExtensions/Hubspot/GetAllProperties?apiKey=123
+        /// ~/Umbraco/FormsExtensions/Hubspot/GetAllProperties
         /// </summary>
-        /// <param name="apiKey"></param>
         /// <returns></returns>
-        public List<Property> GetAllProperties(string apiKey)
+        public async Task<IEnumerable<Property>> GetAllProperties()
         {
             var properties = new List<Property>();
-            var propertiesApiUrl = new Uri($"https://api.hubapi.com/crm/v3/properties/contacts?hapikey={apiKey}");
+            var apiKey = _configuration.GetSetting("HubSpotApiKey");
+            var url = $"https://api.hubapi.com/crm/v3/properties/contacts?hapikey={apiKey}";
+            var propertiesApiUrl = new Uri(url);
 
             // Map fields we have in settings to these fields/properties in Hubspot
             var propertiesResponse = client.GetAsync(propertiesApiUrl).Result;
@@ -33,12 +44,12 @@ namespace Umbraco.Forms.Extensions.Crm.Hubspot
                 Current.Logger.Error<HubspotWorkflow>("Failed to fetch contact properties from HubSpot API for mapping. {StatusCode} {ReasonPhrase}", propertiesResponse.StatusCode, propertiesResponse.ReasonPhrase);
             }
 
-            // Map Properties back to our simplier object
+            // Map Properties back to our simpler object
             // Don't need all the fields in the response
-            var rawResult = propertiesResponse.Content.ReadAsStringAsync().Result;
+            var rawResult = await propertiesResponse.Content.ReadAsStringAsync();
             var json = JsonConvert.DeserializeObject<PropertyResult>(rawResult);
             properties.AddRange(json.Results);
-            return properties;
+            return properties.OrderBy(x => x.Label);
         }
 
         public class PropertyResult

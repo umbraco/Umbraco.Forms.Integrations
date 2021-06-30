@@ -33,7 +33,7 @@ namespace Umbraco.Forms.Extensions.Crm.Hubspot
             if (HttpContext.Current == null) throw new InvalidOperationException("HttpContext is null");
             var urlHelper = new UrlHelper(new RequestContext(new HttpContextWrapper(HttpContext.Current), new RouteData()));
 
-            umbracoUrls["umbracoFormsExtensionsHubspotBaseUrl"] = urlHelper.GetUmbracoApiServiceBaseUrl<HubspotController>(controller => controller.GetAllProperties(null));
+            umbracoUrls["umbracoFormsExtensionsHubspotBaseUrl"] = urlHelper.GetUmbracoApiServiceBaseUrl<HubspotController>(controller => controller.GetAllProperties());
         }
 
         public void Terminate()

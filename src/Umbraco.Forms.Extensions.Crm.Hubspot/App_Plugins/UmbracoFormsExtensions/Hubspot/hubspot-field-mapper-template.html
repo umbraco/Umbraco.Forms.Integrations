@@ -1,6 +1,8 @@
 <div>
+    <!--
     <pre>{{ vm.setting | json }}</pre>
     <pre>{{ vm.mappings | json }}</pre>    
+    -->
 
     <div class="umb-forms-mappings" ng-if="vm.mappings.length > 0 && vm.hubspotFields.length > 0">
 
@@ -18,7 +20,6 @@
                             ng-options="field.id as field.value for field in vm.fields"
                             ng-model="mapping.formField"
                             ng-change="vm.stringifyValue()">
-                        <option value="">Map form field</option>
                     </select>
                 </div>
 
@@ -27,7 +28,6 @@
                             ng-options="field.value as field.name for field in vm.hubspotFields track by field.value"
                             ng-model="mapping.hubspotField"
                             ng-change="vm.stringifyValue()">
-                        <option value="">Map hubspot field</option>
                     </select>
                 </div>
 

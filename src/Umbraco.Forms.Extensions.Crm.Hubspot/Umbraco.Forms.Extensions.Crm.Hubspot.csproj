@@ -22,4 +22,8 @@
     <PackageReference Include="UmbracoForms.Core" Version="8.7.4" />
   </ItemGroup>
 
+  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+    <Exec Command="xcopy /E /Y /I &quot;$(ProjectDir)App_Plugins\UmbracoFormsExtensions&quot; &quot;$(SolutionDir)\Umbraco.Forms.Extensions.TestSite\App_Plugins\UmbracoFormsExtensions&quot;&#xD;&#xA;EXIT 0" />
+  </Target>
+
 </Project>
