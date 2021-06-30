@@ -386,3 +386,13 @@ FodyWeavers.xsd
 # JetBrains Rider
 .idea/
 *.sln.iml
+
+# Solution specific
+src/Umbraco.Forms.Extensions.TestSite/App_Data
+src/Umbraco.Forms.Extensions.TestSite/App_Plugins
+src/Umbraco.Forms.Extensions.TestSite/config
+src/Umbraco.Forms.Extensions.TestSite/css
+src/Umbraco.Forms.Extensions.TestSite/Media
+src/Umbraco.Forms.Extensions.TestSite/scripts
+src/Umbraco.Forms.Extensions.TestSite/Umbraco
+src/Umbraco.Forms.Extensions.TestSite/Views
