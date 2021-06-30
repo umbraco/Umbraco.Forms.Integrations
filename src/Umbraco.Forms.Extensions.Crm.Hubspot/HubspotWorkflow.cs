@@ -1,27 +1,25 @@
 ﻿using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
-using System.Net.Http;
-using System.Text;
-using Umbraco.Core.Composing;
 using Umbraco.Core.Logging;
 using Umbraco.Forms.Core;
 using Umbraco.Forms.Core.Attributes;
 using Umbraco.Forms.Core.Enums;
 using Umbraco.Forms.Core.Persistence.Dtos;
+using Umbraco.Forms.Extensions.Crm.Hubspot.Models;
+using Umbraco.Forms.Extensions.Crm.Hubspot.Services;
 
 namespace Umbraco.Forms.Extensions.Crm.Hubspot
 {
     public class HubspotWorkflow : WorkflowType
     {
-        static readonly HttpClient client = new HttpClient();
+        private readonly ILogger _logger;
+        private readonly IContactService _contactService;
 
-        private readonly IFacadeConfiguration _configuration;
-
-        public HubspotWorkflow(IFacadeConfiguration configuration)
+        public HubspotWorkflow(ILogger logger, IContactService contactService)
         {
-            _configuration = configuration;
+            _logger = logger;
+            _contactService = contactService;
 
             Id = new Guid("c47ef1ef-22b1-4b9d-acf6-f57cb8961550");
             Name = "Save Contact to Hubspot";
@@ -35,68 +33,29 @@ namespace Umbraco.Forms.Extensions.Crm.Hubspot
 
         public override WorkflowExecutionStatus Execute(Record record, RecordEventArgs e)
         {
-            // Check Hubspot key is not empty
-            var apiKey = _configuration.GetSetting("HubSpotApiKey");
-            if (string.IsNullOrWhiteSpace(apiKey))
-            {
-                // Missing an API Key
-                // TODO: Can I bubble up a specific message as to why
-                Current.Logger.Warn<HubspotWorkflow>("Workflow {WorkflowName}: No API key has been configurated for the 'Save Contact to HubSpot' the form {FormName} ({FormId})", Workflow.Name, e.Form.Name, e.Form.Id);
-                return WorkflowExecutionStatus.NotConfigured;
-            }
-
             var fieldMappingsRawJson = FieldMappings;
             var fieldMappings = JsonConvert.DeserializeObject<List<MappedProperty>>(fieldMappingsRawJson);
-            if(fieldMappings.Count == 0)
+            if (fieldMappings.Count == 0)
             {
-                Current.Logger.Warn<HubspotWorkflow>("Workflow {WorkflowName}: Missing Hubspot field mappings for workflow for the form {FormName} ({FormId})", Workflow.Name, e.Form.Name, e.Form.Id);
+                _logger.Warn<HubspotWorkflow>("Workflow {WorkflowName}: Missing Hubspot field mappings for workflow for the form {FormName} ({FormId})", Workflow.Name, e.Form.Name, e.Form.Id);
                 return WorkflowExecutionStatus.NotConfigured;
-            }                
-
-            // Map data from the workflow setting Hubspot fields
-            // From the form field values submitted for this form submission
-            var postData = new PropertiesPost();
-
-            foreach (var mapping in fieldMappings)
-            {
-                var fieldId = mapping.FormField;
-                var recordField = record.GetRecordField(new Guid(fieldId));
-                if (recordField != null)
-                {
-                    // TODO:
-                    // What about different field types in forms & Hubspot that are not simple text ones ?
-                    postData.Properties.Add(mapping.HubspotField, recordField.ValuesAsString(false));
-                }
-                else
-                {
-                    // There field mapping value could not be found.
-                    // Write a warning in the log
-                    Current.Logger.Warn<HubspotWorkflow>("Workflow {WorkflowName}: The field mapping with Id, {FieldMappingId}, did not match any record fields. This is probably caused by the record field being marked as sensitive and the workflow has been set not to include sensitive data", Workflow.Name, mapping.FormField);
-                }
             }
 
-            // Serialise dynamic JObject to a string for StringContent to POST to URL
-            var objAsJson = JsonConvert.SerializeObject(postData);
-            var content = new StringContent(objAsJson, Encoding.UTF8, "application/json");
-
-            // POST data to hubspot
-            // https://api.hubapi.com/crm/v3/objects/contacts?hapikey=YOUR_HUBSPOT_API_KEY
-            var url = $"https://api.hubapi.com/crm/v3/objects/contacts?hapikey={apiKey}";
-            var postResponse = client.PostAsync(url, content).GetAwaiter().GetResult();
-
-            // Depending on POST status fail or mark workflow as completed
-            if (postResponse.IsSuccessStatusCode == false)
+            var commandResult = _contactService.PostContact(record, fieldMappings).GetAwaiter().GetResult();
+            switch (commandResult)
             {
-                // LOG THE ERROR
-                Current.Logger.Warn<HubspotWorkflow>("Workflow {WorkflowName}: Error submitting data to Hubspot for the form {FormName} ({FormId})", Workflow.Name, e.Form.Name, e.Form.Id);
-                return WorkflowExecutionStatus.Failed;
+                case CommandResult.NotConfigured:
+                    _logger.Warn<HubspotWorkflow>("Workflow {WorkflowName}: Could not complete contact request for {FormName} ({FormId}) as the workflow is not correctly configured.", Workflow.Name, e.Form.Name, e.Form.Id);
+                    return WorkflowExecutionStatus.NotConfigured;
+                case CommandResult.Failed:
+                    _logger.Warn<HubspotWorkflow>("Workflow {WorkflowName}: Failed for {FormName} ({FormId}).", Workflow.Name, e.Form.Name, e.Form.Id);
+                    return WorkflowExecutionStatus.Failed;
+                case CommandResult.Success:
+                    return WorkflowExecutionStatus.Completed;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(commandResult));
             }
 
-            // TODO:
-            // Is it worth logging the success that it got created in HubSpot with its ID etc in response
-            // Can get full response with: postResponse.Content.ReadAsStringAsync().GetAwaiter().GetResult();
-
-            return WorkflowExecutionStatus.Completed;
         }
 
         public override List<Exception> ValidateSettings()
@@ -104,31 +63,5 @@ namespace Umbraco.Forms.Extensions.Crm.Hubspot
             var errors = new List<Exception>();
             return errors;
         }
-    }
-
-    internal class PropertiesPost
-    {
-        public PropertiesPost()
-        {
-            // Ensure we an init an empty object to add straight away
-            Properties = new JObject();
-        }
-
-        [JsonProperty(PropertyName = "properties")]
-        public JObject Properties { get; set; }
-    }
-
-    internal class MappedProperty
-    {
-        [JsonProperty(PropertyName = "formField")]
-        public string FormField { get; set; }
-
-        [JsonProperty(PropertyName = "hubspotField")]
-        public string HubspotField { get; set; }
-    }
-
-    internal class ErrorResponse
-    {
-        public string message { get; set; }
     }
 }
