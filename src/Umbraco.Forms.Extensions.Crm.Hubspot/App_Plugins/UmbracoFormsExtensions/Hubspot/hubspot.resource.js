@@ -10,13 +10,12 @@
                         [{ packageGuid: id }])),
                 'Failed to download package with guid ' + id);
         },
-        getAllProperties: function (apiKey) {
+        getAllProperties: function () {
             return umbRequestHelper.resourcePromise(
                 $http.get(
                     umbRequestHelper.getApiUrl(
                         "umbracoFormsExtensionsHubspotBaseUrl",
-                        "GetAllProperties",
-                        [{ apiKey: apiKey }])),
+                        "GetAllProperties")),
                 'Failed to get Hubspot Properties');
         },
     };

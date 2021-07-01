@@ -4,13 +4,12 @@ using System.Web;
 using System.Web.Mvc;
 using System.Web.Routing;
 using Umbraco.Core.Composing;
+using Umbraco.Forms.Extensions.Crm.Hubspot.Controllers;
 using Umbraco.Web;
 using Umbraco.Web.JavaScript;
 
 namespace Umbraco.Forms.Extensions.Crm.Hubspot
 {
-    public class HubspotComposer : ComponentComposer<HubspotComponent>, IUserComposer { }
-
     public class HubspotComponent : IComponent
     {
         public void Initialize()
@@ -33,7 +32,7 @@ namespace Umbraco.Forms.Extensions.Crm.Hubspot
             if (HttpContext.Current == null) throw new InvalidOperationException("HttpContext is null");
             var urlHelper = new UrlHelper(new RequestContext(new HttpContextWrapper(HttpContext.Current), new RouteData()));
 
-            umbracoUrls["umbracoFormsExtensionsHubspotBaseUrl"] = urlHelper.GetUmbracoApiServiceBaseUrl<HubspotController>(controller => controller.GetAllProperties(null));
+            umbracoUrls["umbracoFormsExtensionsHubspotBaseUrl"] = urlHelper.GetUmbracoApiServiceBaseUrl<HubspotController>(controller => controller.GetAllProperties());
         }
 
         public void Terminate()
