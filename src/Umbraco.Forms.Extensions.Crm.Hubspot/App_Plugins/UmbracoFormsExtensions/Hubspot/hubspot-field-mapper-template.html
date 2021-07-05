@@ -25,7 +25,7 @@
 
                 <div class="umb-forms-mapping-field">
                     <select class="-full-width"
-                            ng-options="field.value as field.name for field in vm.hubspotFields track by field.value"
+                            ng-options="field.value as field.name for field in vm.hubspotFields"
                             ng-model="mapping.hubspotField"
                             ng-change="vm.stringifyValue()">
                     </select>
