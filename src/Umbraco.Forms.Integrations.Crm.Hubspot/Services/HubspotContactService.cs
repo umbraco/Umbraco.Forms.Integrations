@@ -15,7 +15,11 @@ namespace Umbraco.Forms.Integrations.Crm.Hubspot.Services
 {
     public class HubspotContactService : IContactService
     {
-        private static readonly HttpClient client = new HttpClient();
+        // Using a static HttpClient (see: https://www.aspnetmonsters.com/2016/08/2016-08-27-httpclientwrong/).
+        private readonly static HttpClient s_client = new HttpClient();
+
+        // Access to the client within the class is via ClientFactory(), allowing us to mock the responses in tests.
+        internal static Func<HttpClient> ClientFactory = () => s_client;
 
         private readonly IFacadeConfiguration _configuration;
         private readonly ILogger _logger;
@@ -35,19 +39,18 @@ namespace Umbraco.Forms.Integrations.Crm.Hubspot.Services
             }
 
             var url = ConstructUrl("properties/contacts", apiKey);
-            var response = await client.GetAsync(new Uri(url));
+            var response = await ClientFactory().GetAsync(new Uri(url));
             if (response.IsSuccessStatusCode == false)
             {
                 _logger.Error<HubspotContactService>("Failed to fetch contact properties from HubSpot API for mapping. {StatusCode} {ReasonPhrase}", response.StatusCode, response.ReasonPhrase);
                 return Enumerable.Empty<Property>();
             }
 
-            // Map Properties back to our simpler object
-            // Don't need all the fields in the response
+            // Map the properties to our simpler object, as we don't need all the fields in the response.
             var properties = new List<Property>();
-            var rawResult = await response.Content.ReadAsStringAsync();
-            var json = JsonConvert.DeserializeObject<PropertiesResponse>(rawResult);
-            properties.AddRange(json.Results);
+            var responseContent = await response.Content.ReadAsStringAsync();
+            var responseContentAsJson = JsonConvert.DeserializeObject<PropertiesResponse>(responseContent);
+            properties.AddRange(responseContentAsJson.Results);
             return properties.OrderBy(x => x.Label);
         }
 
@@ -55,7 +58,7 @@ namespace Umbraco.Forms.Integrations.Crm.Hubspot.Services
         {
             if (!TryGetApiKey(out string apiKey))
             {
-                _logger.Warn<HubspotContactService>("Failed to fetch contact properties from HubSpot API for mapping as no API Key has been configured.");
+                _logger.Warn<HubspotContactService>("Failed to post contact details via the HubSpot API as no API Key has been configured.");
                 return CommandResult.NotConfigured;
             }
 
@@ -65,16 +68,15 @@ namespace Umbraco.Forms.Integrations.Crm.Hubspot.Services
             foreach (var mapping in fieldMappings)
             {
                 var fieldId = mapping.FormField;
-                var recordField = record.GetRecordField(new Guid(fieldId));
+                var recordField = record.GetRecordField(Guid.Parse(fieldId));
                 if (recordField != null)
                 {
-                    // TODO: What about different field types in forms & Hubspot that are not simple text ones ?
+                    // TODO: What about different field types in forms & Hubspot that are not simple text ones?
                     postData.Properties.Add(mapping.HubspotField, recordField.ValuesAsString(false));
                 }
                 else
                 {
-                    // There field mapping value could not be found.
-                    // Write a warning in the log
+                    // The field mapping value could not be found so write a warning in the log.
                     _logger.Warn<HubspotContactService>("The field mapping with Id, {FieldMappingId}, did not match any record fields. This is probably caused by the record field being marked as sensitive and the workflow has been set not to include sensitive data", mapping.FormField);
                 }
             }
@@ -86,7 +88,7 @@ namespace Umbraco.Forms.Integrations.Crm.Hubspot.Services
             // POST data to hubspot
             // https://api.hubapi.com/crm/v3/objects/contacts?hapikey=YOUR_HUBSPOT_API_KEY
             var url = ConstructUrl("objects/contacts", apiKey);
-            var response = await client.PostAsync(url, content).ConfigureAwait(false);
+            var response = await ClientFactory().PostAsync(url, content).ConfigureAwait(false);
 
             // Depending on POST status fail or mark workflow as completed
             if (response.IsSuccessStatusCode == false)
@@ -101,13 +103,7 @@ namespace Umbraco.Forms.Integrations.Crm.Hubspot.Services
         private bool TryGetApiKey(out string apiKey)
         {
             apiKey = _configuration.GetSetting("HubSpotApiKey");
-            if (string.IsNullOrEmpty(apiKey))
-            {
-                _logger.Warn<HubspotContactService>("Failed to fetch contact properties from HubSpot API for mapping as no API Key has been configured.");
-                return false;
-            }
-
-            return true;
+            return !string.IsNullOrEmpty(apiKey);
         }
 
         private string ConstructUrl(string path, string apiKey)

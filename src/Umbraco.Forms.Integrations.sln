@@ -11,6 +11,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "CRM", "CRM", "{B068CD05-EA8
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Hubspot", "Hubspot", "{621A30D4-2251-43FF-BB4A-A4808C6A67D6}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Umbraco.Forms.Integrations.Crm.Hubspot.Tests", "Umbraco.Forms.Integrations.Crm.Hubspot.Tests\Umbraco.Forms.Integrations.Crm.Hubspot.Tests.csproj", "{53742941-B77B-4A95-B247-F3ADD944C2FD}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -25,6 +27,10 @@ Global
 		{B34FD8A8-EA3E-4FD0-9A95-ACFE5F54CED4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B34FD8A8-EA3E-4FD0-9A95-ACFE5F54CED4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B34FD8A8-EA3E-4FD0-9A95-ACFE5F54CED4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{53742941-B77B-4A95-B247-F3ADD944C2FD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{53742941-B77B-4A95-B247-F3ADD944C2FD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{53742941-B77B-4A95-B247-F3ADD944C2FD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{53742941-B77B-4A95-B247-F3ADD944C2FD}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -32,6 +38,7 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{E7F3F2CC-DCB6-4158-AABA-D2EA9E1B9FA8} = {621A30D4-2251-43FF-BB4A-A4808C6A67D6}
 		{621A30D4-2251-43FF-BB4A-A4808C6A67D6} = {B068CD05-EA88-4457-B8D9-6DB899E7EBE1}
+		{53742941-B77B-4A95-B247-F3ADD944C2FD} = {621A30D4-2251-43FF-BB4A-A4808C6A67D6}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {24944114-049F-4C44-95C5-E50600988018}
