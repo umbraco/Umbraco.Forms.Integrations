@@ -1,7 +1,7 @@
 ﻿using Newtonsoft.Json;
 using System.Collections.Generic;
 
-namespace Umbraco.Forms.Extensions.Crm.Hubspot.Models.Responses
+namespace Umbraco.Forms.Integrations.Crm.Hubspot.Models.Responses
 {
     public class PropertiesResponse
     {

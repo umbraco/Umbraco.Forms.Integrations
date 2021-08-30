@@ -6,10 +6,10 @@ using Umbraco.Forms.Core;
 using Umbraco.Forms.Core.Attributes;
 using Umbraco.Forms.Core.Enums;
 using Umbraco.Forms.Core.Persistence.Dtos;
-using Umbraco.Forms.Extensions.Crm.Hubspot.Models;
-using Umbraco.Forms.Extensions.Crm.Hubspot.Services;
+using Umbraco.Forms.Integrations.Crm.Hubspot.Models;
+using Umbraco.Forms.Integrations.Crm.Hubspot.Services;
 
-namespace Umbraco.Forms.Extensions.Crm.Hubspot
+namespace Umbraco.Forms.Integrations.Crm.Hubspot
 {
     public class HubspotWorkflow : WorkflowType
     {

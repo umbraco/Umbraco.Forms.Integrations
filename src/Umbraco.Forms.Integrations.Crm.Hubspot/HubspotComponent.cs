@@ -4,11 +4,11 @@ using System.Web;
 using System.Web.Mvc;
 using System.Web.Routing;
 using Umbraco.Core.Composing;
-using Umbraco.Forms.Extensions.Crm.Hubspot.Controllers;
+using Umbraco.Forms.Integrations.Crm.Hubspot.Controllers;
 using Umbraco.Web;
 using Umbraco.Web.JavaScript;
 
-namespace Umbraco.Forms.Extensions.Crm.Hubspot
+namespace Umbraco.Forms.Integrations.Crm.Hubspot
 {
     public class HubspotComponent : IComponent
     {

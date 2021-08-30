@@ -1,11 +1,11 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using Umbraco.Forms.Extensions.Crm.Hubspot.Models.Responses;
-using Umbraco.Forms.Extensions.Crm.Hubspot.Services;
+using Umbraco.Forms.Integrations.Crm.Hubspot.Models.Responses;
+using Umbraco.Forms.Integrations.Crm.Hubspot.Services;
 using Umbraco.Web.Editors;
 using Umbraco.Web.Mvc;
 
-namespace Umbraco.Forms.Extensions.Crm.Hubspot.Controllers
+namespace Umbraco.Forms.Integrations.Crm.Hubspot.Controllers
 {
     [PluginController("FormsExtensions")]
     public class HubspotController : UmbracoAuthorizedJsonController

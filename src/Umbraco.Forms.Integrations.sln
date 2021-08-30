@@ -3,9 +3,13 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.31402.337
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Umbraco.Forms.Extensions.Crm.Hubspot", "Umbraco.Forms.Extensions.Crm.Hubspot\Umbraco.Forms.Extensions.Crm.Hubspot.csproj", "{E7F3F2CC-DCB6-4158-AABA-D2EA9E1B9FA8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Umbraco.Forms.Integrations.Crm.Hubspot", "Umbraco.Forms.Integrations.Crm.Hubspot\Umbraco.Forms.Integrations.Crm.Hubspot.csproj", "{E7F3F2CC-DCB6-4158-AABA-D2EA9E1B9FA8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Umbraco.Forms.Extensions.TestSite", "Umbraco.Forms.Extensions.TestSite\Umbraco.Forms.Extensions.TestSite.csproj", "{B34FD8A8-EA3E-4FD0-9A95-ACFE5F54CED4}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Umbraco.Forms.Integrations.TestSite", "Umbraco.Forms.Integrations.TestSite\Umbraco.Forms.Integrations.TestSite.csproj", "{B34FD8A8-EA3E-4FD0-9A95-ACFE5F54CED4}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "CRM", "CRM", "{B068CD05-EA88-4457-B8D9-6DB899E7EBE1}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Hubspot", "Hubspot", "{621A30D4-2251-43FF-BB4A-A4808C6A67D6}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -24,6 +28,10 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{E7F3F2CC-DCB6-4158-AABA-D2EA9E1B9FA8} = {621A30D4-2251-43FF-BB4A-A4808C6A67D6}
+		{621A30D4-2251-43FF-BB4A-A4808C6A67D6} = {B068CD05-EA88-4457-B8D9-6DB899E7EBE1}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {24944114-049F-4C44-95C5-E50600988018}

@@ -388,11 +388,11 @@ FodyWeavers.xsd
 *.sln.iml
 
 # Solution specific
-src/Umbraco.Forms.Extensions.TestSite/App_Data
-src/Umbraco.Forms.Extensions.TestSite/App_Plugins
-src/Umbraco.Forms.Extensions.TestSite/config
-src/Umbraco.Forms.Extensions.TestSite/css
-src/Umbraco.Forms.Extensions.TestSite/Media
-src/Umbraco.Forms.Extensions.TestSite/scripts
-src/Umbraco.Forms.Extensions.TestSite/Umbraco
-src/Umbraco.Forms.Extensions.TestSite/Views
+src/Umbraco.Forms.Integrations.TestSite/App_Data
+src/Umbraco.Forms.Integrations.TestSite/App_Plugins
+src/Umbraco.Forms.Integrations.TestSite/config
+src/Umbraco.Forms.Integrations.TestSite/css
+src/Umbraco.Forms.Integrations.TestSite/Media
+src/Umbraco.Forms.Integrations.TestSite/scripts
+src/Umbraco.Forms.Integrations.TestSite/Umbraco
+src/Umbraco.Forms.Integrations.TestSite/Views

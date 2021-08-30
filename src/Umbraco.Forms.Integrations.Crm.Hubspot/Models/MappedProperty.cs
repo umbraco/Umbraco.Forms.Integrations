@@ -1,6 +1,6 @@
 ﻿using Newtonsoft.Json;
 
-namespace Umbraco.Forms.Extensions.Crm.Hubspot.Models
+namespace Umbraco.Forms.Integrations.Crm.Hubspot.Models
 {
     public class MappedProperty
     {

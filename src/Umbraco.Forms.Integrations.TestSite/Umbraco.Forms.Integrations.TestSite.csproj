@@ -12,8 +12,8 @@
     <ProjectTypeGuids>{349c5851-65df-11da-9384-00065b846f21};{fae04ec0-301f-11d3-bf4b-00c04f79efbc}</ProjectTypeGuids>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Umbraco.Forms.Extensions.TestSite</RootNamespace>
-    <AssemblyName>Umbraco.Forms.Extensions.TestSite</AssemblyName>
+    <RootNamespace>Umbraco.Forms.Integrations.TestSite</RootNamespace>
+    <AssemblyName>Umbraco.Forms.Integrations.TestSite</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <UseIISExpress>true</UseIISExpress>
     <Use64BitIISExpress />
@@ -568,9 +568,9 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Umbraco.Forms.Extensions.Crm.Hubspot\Umbraco.Forms.Extensions.Crm.Hubspot.csproj">
-      <Project>{e7f3f2cc-dcb6-4158-aaba-d2ea9e1b9fa8}</Project>
-      <Name>Umbraco.Forms.Extensions.Crm.Hubspot</Name>
+    <ProjectReference Include="..\Umbraco.Forms.Integrations.Crm.Hubspot\Umbraco.Forms.Integrations.Crm.Hubspot.csproj">
+      <Project>{25e118df-78f2-4117-a290-9a048d4f02b2}</Project>
+      <Name>Umbraco.Forms.Integrations.Crm.Hubspot</Name>
     </ProjectReference>
   </ItemGroup>
   <PropertyGroup>

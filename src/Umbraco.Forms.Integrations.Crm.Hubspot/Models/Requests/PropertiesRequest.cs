@@ -1,7 +1,7 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
-namespace Umbraco.Forms.Extensions.Crm.Hubspot
+namespace Umbraco.Forms.Integrations.Crm.Hubspot
 {
     internal class PropertiesRequest
     {

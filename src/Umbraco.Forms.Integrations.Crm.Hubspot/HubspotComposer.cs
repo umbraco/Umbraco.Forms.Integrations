@@ -1,8 +1,8 @@
 ﻿using Umbraco.Core;
 using Umbraco.Core.Composing;
-using Umbraco.Forms.Extensions.Crm.Hubspot.Services;
+using Umbraco.Forms.Integrations.Crm.Hubspot.Services;
 
-namespace Umbraco.Forms.Extensions.Crm.Hubspot
+namespace Umbraco.Forms.Integrations.Crm.Hubspot
 {
     public class HubspotComposer : IUserComposer
     {

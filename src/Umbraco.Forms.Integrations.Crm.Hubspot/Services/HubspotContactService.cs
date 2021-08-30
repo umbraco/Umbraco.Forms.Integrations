@@ -8,14 +8,14 @@ using System.Threading.Tasks;
 using Umbraco.Core.Logging;
 using Umbraco.Forms.Core;
 using Umbraco.Forms.Core.Persistence.Dtos;
-using Umbraco.Forms.Extensions.Crm.Hubspot.Models;
-using Umbraco.Forms.Extensions.Crm.Hubspot.Models.Responses;
+using Umbraco.Forms.Integrations.Crm.Hubspot.Models;
+using Umbraco.Forms.Integrations.Crm.Hubspot.Models.Responses;
 
-namespace Umbraco.Forms.Extensions.Crm.Hubspot.Services
+namespace Umbraco.Forms.Integrations.Crm.Hubspot.Services
 {
     public class HubspotContactService : IContactService
     {
-        static readonly HttpClient client = new HttpClient();
+        private static readonly HttpClient client = new HttpClient();
 
         private readonly IFacadeConfiguration _configuration;
         private readonly ILogger _logger;

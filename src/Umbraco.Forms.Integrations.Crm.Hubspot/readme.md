@@ -1,4 +1,4 @@
-# Umbraco.Forms.Extensions.Crm.Hubspot
+# Umbraco.Forms.Integrations.Crm.Hubspot
 This adds a Hubspot extension to your Umbraco Forms installation
 
 ## How To Use

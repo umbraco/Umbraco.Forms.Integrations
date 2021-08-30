@@ -1,15 +1,6 @@
 ﻿function hubspotResource($http, umbRequestHelper) {
 
     return {       
-        fetch: function (id) {
-            return umbRequestHelper.resourcePromise(
-                $http.get(
-                    umbRequestHelper.getApiUrl(
-                        "packageInstallApiBaseUrl",
-                        "Fetch",
-                        [{ packageGuid: id }])),
-                'Failed to download package with guid ' + id);
-        },
         getAllProperties: function () {
             return umbRequestHelper.resourcePromise(
                 $http.get(
