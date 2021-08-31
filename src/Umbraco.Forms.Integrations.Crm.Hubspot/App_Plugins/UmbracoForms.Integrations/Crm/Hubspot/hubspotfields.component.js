@@ -1,28 +1,19 @@
 angular
     .module("umbraco")
-    .component("umbFormsHubspotFields", {
+    .component("umbFormsIntegrationsCrmHubspotFields", {
         controller: HubSpotFieldsController,
         controllerAs: "vm",
-        templateUrl: "/App_Plugins/UmbracoFormsExtensions/hubspot/hubspot-field-mapper-template.html",
+        templateUrl: "/App_Plugins/UmbracoForms.Integrations/Crm/Hubspot/hubspot-field-mapper-template.html",
         bindings: {
             setting: "<"
-        },
-        
+        },        
     }
 );
 
-function HubSpotFieldsController($scope, $compile, $element, $routeParams, hubspotResource, pickerResource) {
+function HubSpotFieldsController($routeParams, umbracoFormsIntegrationsCrmHubspotResource, pickerResource) {
     var vm = this;
 
-    // its repating with umb-control-group for each workflow setting
-    // parent view/controller that has the model.workflow.settings...
-    // umbracoForms.Overlays.WorkflowSettingsOverlayController as vm
-
     vm.$onInit = function() {
-        console.log('$scope', $scope);
-        console.log('vm', vm);
-
-        //console.log('vm.parentDirective', vm.parentDirective);
 
         if (!vm.setting.value) {
             vm.mappings = [];
@@ -33,12 +24,13 @@ function HubSpotFieldsController($scope, $compile, $element, $routeParams, hubsp
         var formId = $routeParams.id;
         if (formId !== -1){
 
-            // Available Form Fields
+            // Get the fields for the form.
             pickerResource.getAllFields(formId).then(function (response) {
                 vm.fields = response.data;
             });
 
-            hubspotResource.getAllProperties().then(function (response) {
+            // Get the HubSpot contact fields.
+            umbracoFormsIntegrationsCrmHubspotResource.getAllProperties().then(function (response) {
                 vm.hubspotFields = response.map(x => {
                     return {
                         value: x.name,
@@ -63,7 +55,8 @@ function HubSpotFieldsController($scope, $compile, $element, $routeParams, hubsp
     }
 
     vm.addMapping = function () {
-        // Add new empty object into array
+
+        // Add new empty object into the mappings array.
         vm.mappings.push({
             formField: "",
             hubspotField: ""

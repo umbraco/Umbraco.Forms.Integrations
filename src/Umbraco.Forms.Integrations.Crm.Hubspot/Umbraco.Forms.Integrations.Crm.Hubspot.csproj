@@ -29,7 +29,7 @@
   </ItemGroup>
 
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-    <Exec Command="xcopy /E /Y /I &quot;$(ProjectDir)App_Plugins\UmbracoFormsIntegrationsCrmHubspot&quot; &quot;$(SolutionDir)\Umbraco.Forms.Integrations.TestSite\App_Plugins\UmbracoFormsIntegrationsCrmHubspot&quot;&#xD;&#xA;EXIT 0" />
+    <Exec Command="xcopy /E /Y /I &quot;$(ProjectDir)App_Plugins\UmbracoForms.Integrations\Crm\Hubspot&quot; &quot;$(SolutionDir)\Umbraco.Forms.Integrations.TestSite\App_Plugins\UmbracoForms.Integrations\Crm\Hubspot&quot;&#xD;&#xA;EXIT 0" />
   </Target>
 
 </Project>

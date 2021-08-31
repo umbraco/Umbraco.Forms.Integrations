@@ -5,11 +5,11 @@
             return umbRequestHelper.resourcePromise(
                 $http.get(
                     umbRequestHelper.getApiUrl(
-                        "umbracoFormsExtensionsHubspotBaseUrl",
+                        "umbracoFormsIntegrationsCrmHubspotBaseUrl",
                         "GetAllProperties")),
                 'Failed to get Hubspot Properties');
         },
     };
 }
 
-angular.module('umbraco.resources').factory('hubspotResource', hubspotResource);
+angular.module('umbraco.resources').factory('umbracoFormsIntegrationsCrmHubspotResource', hubspotResource);

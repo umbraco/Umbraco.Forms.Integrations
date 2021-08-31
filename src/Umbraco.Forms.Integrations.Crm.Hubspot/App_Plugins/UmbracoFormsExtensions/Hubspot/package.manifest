@@ -1,7 +1,0 @@
-{
-  "css": [ "" ],
-  "javascript": [
-    "~/App_Plugins/UmbracoFormsExtensions/Hubspot/hubspotfields.component.js",
-    "~/App_Plugins/UmbracoFormsExtensions/Hubspot/hubspot.resource.js"
-  ]
-}

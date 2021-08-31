@@ -11,7 +11,12 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "CRM", "CRM", "{B068CD05-EA8
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Hubspot", "Hubspot", "{621A30D4-2251-43FF-BB4A-A4808C6A67D6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Umbraco.Forms.Integrations.Crm.Hubspot.Tests", "Umbraco.Forms.Integrations.Crm.Hubspot.Tests\Umbraco.Forms.Integrations.Crm.Hubspot.Tests.csproj", "{53742941-B77B-4A95-B247-F3ADD944C2FD}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Umbraco.Forms.Integrations.Crm.Hubspot.Tests", "Umbraco.Forms.Integrations.Crm.Hubspot.Tests\Umbraco.Forms.Integrations.Crm.Hubspot.Tests.csproj", "{53742941-B77B-4A95-B247-F3ADD944C2FD}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{D8563F12-E8CF-4900-BEF4-531B8C1FE8A3}"
+	ProjectSection(SolutionItems) = preProject
+		..\README.md = ..\README.md
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

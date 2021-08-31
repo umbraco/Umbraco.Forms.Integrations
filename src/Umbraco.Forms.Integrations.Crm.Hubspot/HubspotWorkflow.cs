@@ -28,7 +28,7 @@ namespace Umbraco.Forms.Integrations.Crm.Hubspot
             Group = "CRM";
         }
 
-        [Setting("Field Mappings", Description = "Map Umbraco Form fields to HubSpot contact fields", View = "~/App_Plugins/UmbracoFormsExtensions/Hubspot/hubspotfields.html")]
+        [Setting("Field Mappings", Description = "Map Umbraco Form fields to HubSpot contact fields", View = "~/App_Plugins/UmbracoForms.Integrations/Crm/Hubspot/hubspotfields.html")]
         public string FieldMappings { get; set; }
 
         public override WorkflowExecutionStatus Execute(Record record, RecordEventArgs e)
@@ -58,10 +58,6 @@ namespace Umbraco.Forms.Integrations.Crm.Hubspot
 
         }
 
-        public override List<Exception> ValidateSettings()
-        {
-            var errors = new List<Exception>();
-            return errors;
-        }
+        public override List<Exception> ValidateSettings() => new List<Exception>();
     }
 }

@@ -1,5 +1,13 @@
 # Umbraco.Forms.Integrations.Crm.Hubspot
-This adds a Hubspot extension to your Umbraco Forms installation
+
+This integration provides a custom workflow, allowing form entries to be mapped to a HubSpot contact record, and stored within the CRM platform.
+
+## Prerequisites
+
+Requires minimum versions of Umbraco:
+
+- CMS: 8.14.0
+- Forms: 8.7.4
 
 ## How To Use
 
@@ -13,9 +21,7 @@ Add this to a setting in `UmbracoForms.config`:
 
 Add the "Save Contact to Hubspot" workflow to a form and configure the mappings between the form and Hubspot fields.
 
-## Research
-Hubspot allows you to add additional fields to a Contact but they seem you can only choose from a pre-determined list
-This UI can also set required fields, so what should the workflow do if it does not provide the data required
+## For Further Consideration
 
-![Hubspot UI](https://user-images.githubusercontent.com/1389894/122041936-7170aa00-cdd1-11eb-80ac-f9106c439599.png)
-
+- Currently the full set of contact properties are surfaced in the UI.  Further research needed to see if we can restrict this to only those used within the account, or to add custom properties.
+- Validation in the Umbraco Forms form and the HubSpot contact record may not match (e.g. a field required by HubSpot may not be in the form).

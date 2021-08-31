@@ -7,7 +7,7 @@ using Umbraco.Web.Mvc;
 
 namespace Umbraco.Forms.Integrations.Crm.Hubspot.Controllers
 {
-    [PluginController("FormsExtensions")]
+    [PluginController("UmbracoFormsIntegrationsCrmHubspot")]
     public class HubspotController : UmbracoAuthorizedJsonController
     {
         private readonly IContactService _contactService;
