@@ -6,7 +6,7 @@ This integration provides a custom workflow, allowing form entries to be mapped 
 
 Requires minimum versions of Umbraco:
 
-- CMS: 8.14.0
+- CMS: 8.1.0
 - Forms: 8.7.4
 
 ## How To Use
@@ -16,10 +16,18 @@ Log into your HubSpot account, go to _Settings > Integrations > API Key_ and cre
 Add this to a setting in `UmbracoForms.config`:
 
 ```
-    <setting key="HubSpotApiKey" value="[your API key]" />
+<setting key="HubSpotApiKey" value="[your API key]" />
 ```
 
 Add the "Save Contact to Hubspot" workflow to a form and configure the mappings between the form and Hubspot fields.
+
+![Select the HubSpot workflow](./img/select-workflow.png)
+
+![Defining mappings](./img/mapping.png)
+
+When a form is submitted on the website, the workflow will execute and create a new contact record in your Hubspot account, using the information mapped from the fields in the form submission.
+
+![Hubspot contacts](./img/hubspot-contacts.png)
 
 ## For Further Consideration
 
