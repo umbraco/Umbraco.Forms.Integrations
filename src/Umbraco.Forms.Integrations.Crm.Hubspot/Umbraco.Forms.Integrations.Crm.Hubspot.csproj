@@ -17,7 +17,9 @@
 	</PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="MSBuild.Umbraco.Packaging" Version="1.0.2" />
+    <PackageReference Include="MSBuild.Umbraco.Packaging" Version="1.0.2">
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
     <PackageReference Include="UmbracoCms.Web" Version="8.1.0" />
     <PackageReference Include="UmbracoForms.Core" Version="8.7.4" />
   </ItemGroup>
