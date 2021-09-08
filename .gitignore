@@ -396,3 +396,4 @@ src/Umbraco.Forms.Integrations.TestSite/Media
 src/Umbraco.Forms.Integrations.TestSite/scripts
 src/Umbraco.Forms.Integrations.TestSite/Umbraco
 src/Umbraco.Forms.Integrations.TestSite/Views
+*.zip
