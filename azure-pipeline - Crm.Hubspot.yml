@@ -56,7 +56,9 @@ steps:
   inputs:
     script: |
       dotnet tool install --global Umbraco.Tools.Packages
-      umbpack pack src/$(projectName)/package.xml -o $(Build.ArtifactStagingDirectory)
+      cd src/$(projectName)/
+      umbpack pack .\package.xml -o $(Build.ArtifactStagingDirectory)
+      cd ../../
 
 - task: PublishBuildArtifacts@1
   displayName: 'Publish Build Artifacts'
