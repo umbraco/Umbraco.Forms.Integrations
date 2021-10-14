@@ -1,0 +1,24 @@
+﻿@page
+@model IndexModel
+@{
+    ViewData["Title"] = "Authorization";
+}
+
+<div class="text-center">
+    <h1 class="display-4">Umbraco Forms / Hubspot</h1>
+    @if (string.IsNullOrEmpty(Model.AuthorizationCode))
+    {
+        <p>Authentication failed - no authorization code received.</p>
+    }
+    else
+    {
+        <p>To complete the integration, please add the following code to your <i>UmbracoForms.config</i> file as a setting using the key <i>HubSpotOAuthAuthorizationCode</i>.</p>
+
+        <p><input type="text" value="@Model.AuthorizationCode" readonly style="width: 700px; font-size: 36px; text-align: center" /></p>
+
+        <p>When complete, the configuration file should look as follows:</p>
+        <pre style="text-align: left; padding: 10px; border: solid 1px gray">
+&lt;setting key="HubSpotAuthenticationMode" value="OAuth" /&gt;
+&lt;setting key="HubSpotOAuthAuthorizationCode" value="@Model.AuthorizationCode" /&gt;</pre>
+    }
+</div>
