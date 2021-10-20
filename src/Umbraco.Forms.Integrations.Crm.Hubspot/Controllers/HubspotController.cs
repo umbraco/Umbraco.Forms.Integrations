@@ -1,5 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
+using System.Web.Http;
+using Umbraco.Forms.Integrations.Crm.Hubspot.Models.Dtos;
 using Umbraco.Forms.Integrations.Crm.Hubspot.Models.Responses;
 using Umbraco.Forms.Integrations.Crm.Hubspot.Services;
 using Umbraco.Web.Editors;
@@ -17,11 +19,16 @@ namespace Umbraco.Forms.Integrations.Crm.Hubspot.Controllers
             _contactService = contactService;
         }
 
-        /// <summary>
-        /// ~/Umbraco/[YourAreaName]/[YourControllerName]
-        /// ~/Umbraco/FormsExtensions/Hubspot/GetAllProperties
-        /// </summary>
-        /// <returns></returns>
+        [HttpGet]
+        public bool IsAuthorizationConfigured() => _contactService.IsAuthorizationConfigured();
+
+        [HttpGet]
+        public string GetAuthenticationUrl() => _contactService.GetAuthenticationUrl();
+
+        [HttpPost]
+        public async Task<AuthorizationResult> Authorize([FromBody] AuthorizationRequest request) => await _contactService.Authorize(request.Code);
+
+        [HttpGet]
         public async Task<IEnumerable<Property>> GetAllProperties() => await _contactService.GetContactProperties();
     }
 }

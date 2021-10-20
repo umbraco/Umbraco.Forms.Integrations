@@ -10,8 +10,35 @@ angular
     }
 );
 
-function HubSpotFieldsController($routeParams, umbracoFormsIntegrationsCrmHubspotResource, pickerResource) {
+function HubSpotFieldsController($routeParams, umbracoFormsIntegrationsCrmHubspotResource, pickerResource, notificationsService) {
     var vm = this;
+
+    vm.authorizationCode = "";
+    vm.authenticationUrl = "";
+    vm.loading = false;
+    vm.isAuthorizationConfigured = false;
+
+    function getFieldsForMapping() {
+
+        // Get the fields for the form.
+        var formId = $routeParams.id;
+        if (formId !== -1) {
+            pickerResource.getAllFields(formId).then(function (response) {
+                vm.fields = response.data;
+            });
+        }
+
+        // Get the HubSpot contact fields.
+        umbracoFormsIntegrationsCrmHubspotResource.getAllProperties().then(function (response) {
+            vm.hubspotFields = response.map(x => {
+                return {
+                    value: x.name,
+                    name: x.label,
+                    description: x.description
+                }
+            });
+        });
+    }
 
     vm.$onInit = function() {
 
@@ -21,28 +48,41 @@ function HubSpotFieldsController($routeParams, umbracoFormsIntegrationsCrmHubspo
             vm.mappings = JSON.parse(vm.setting.value);
         }
 
-        var formId = $routeParams.id;
-        if (formId !== -1){
-
-            // Get the fields for the form.
-            pickerResource.getAllFields(formId).then(function (response) {
-                vm.fields = response.data;
-            });
-
-            // Get the HubSpot contact fields.
-            umbracoFormsIntegrationsCrmHubspotResource.getAllProperties().then(function (response) {
-                vm.hubspotFields = response.map(x => {
-                    return {
-                        value: x.name,
-                        name: x.label,
-                        description: x.description
-                    }
+        umbracoFormsIntegrationsCrmHubspotResource.isAuthorizationConfigured().then(function (response) {
+            vm.loading = false;
+            if (response) {
+                console.log('ok');
+                vm.isAuthorizationConfigured = true;
+                getFieldsForMapping();
+            }
+            else {
+                vm.isAuthorizationConfigured = false;
+                umbracoFormsIntegrationsCrmHubspotResource.getAuthenticationUrl().then(function (response) {
+                    vm.authenticationUrl = response;
                 });
-            });
-        }
+            }
+        });
     }
 
-    vm.getHubspotFieldDescription = function(value) {
+    vm.authorize = function () {
+        umbracoFormsIntegrationsCrmHubspotResource.authorize(vm.authorizationCode).then(function (response) {
+            if (response.success) {
+                vm.isAuthorizationConfigured = true;
+                getFieldsForMapping();
+            } else {
+                notificationsService.showNotification({
+                    type: 2,
+                    header: "Authorization failed",
+                    message: response.errorMessage
+                });
+            }
+        });
+    }
+
+    vm.getHubspotFieldDescription = function (value) {
+        if (!vm.hubspotFields) {
+            return "";
+        }
         var item = vm.hubspotFields.find(x => {
             return x.value === value;
         });
@@ -51,7 +91,7 @@ function HubSpotFieldsController($routeParams, umbracoFormsIntegrationsCrmHubspo
             return item.description;
         }
         
-        return '';
+        return "";
     }
 
     vm.addMapping = function () {

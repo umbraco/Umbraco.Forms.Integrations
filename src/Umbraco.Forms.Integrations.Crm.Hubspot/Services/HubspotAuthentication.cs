@@ -2,22 +2,22 @@
 {
     public enum HubspotAuthenticationMode
     {
-        Undefined,
+        Unauthenticated,
         ApiKey,
         OAuth
     }
 
     public class HubspotAuthentication
     {
-        public HubspotAuthentication(HubspotAuthenticationMode mode)
-        {
-            Mode = mode;
-        }
-
-        public HubspotAuthenticationMode Mode { get; }
-
         public string ApiKey { get; set; }
 
-        public string OAuthAuthenticationCode { get; set; }
+        public string RefreshToken { get; set; }
+
+        public HubspotAuthenticationMode Mode =>
+            !string.IsNullOrEmpty(ApiKey)
+                ? HubspotAuthenticationMode.ApiKey
+                : !string.IsNullOrEmpty(RefreshToken)
+                    ? HubspotAuthenticationMode.OAuth
+                    : HubspotAuthenticationMode.Unauthenticated;
     }
 }

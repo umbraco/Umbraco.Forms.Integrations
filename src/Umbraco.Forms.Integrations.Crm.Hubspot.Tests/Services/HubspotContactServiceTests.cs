@@ -10,6 +10,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Umbraco.Core.Cache;
 using Umbraco.Core.Logging;
+using Umbraco.Core.Services;
 using Umbraco.Forms.Core;
 using Umbraco.Forms.Core.Persistence.Dtos;
 using Umbraco.Forms.Core.Providers.Models;
@@ -104,12 +105,13 @@ namespace Umbraco.Forms.Integrations.Crm.Hubspot.Tests
             Mock<IFacadeConfiguration> mockedConfig = CreateMockedConfiguration(withApiKey: false);
             var mockedLogger = new Mock<ILogger>();
             var mockedAppCaches = new Mock<AppCaches>();
-            var sut = new HubspotContactService(mockedConfig.Object, mockedLogger.Object, mockedAppCaches.Object);
+            var mockedKeyValueService = new Mock<IKeyValueService>();
+            var sut = new HubspotContactService(mockedConfig.Object, mockedLogger.Object, mockedAppCaches.Object, mockedKeyValueService.Object);
 
             var result = await sut.GetContactProperties();
 
             mockedLogger
-                .Verify(x => x.Warn(It.Is<Type>(y => y == typeof(HubspotContactService)), It.IsAny<string>()), Times.Once);
+                .Verify(x => x.Info(It.Is<Type>(y => y == typeof(HubspotContactService)), It.IsAny<string>()), Times.Once);
             Assert.IsEmpty(result);
         }
 
@@ -119,7 +121,8 @@ namespace Umbraco.Forms.Integrations.Crm.Hubspot.Tests
             Mock<IFacadeConfiguration> mockedConfig = CreateMockedConfiguration();
             var mockedLogger = new Mock<ILogger>();
             var mockedAppCaches = new Mock<AppCaches>();
-            var sut = new HubspotContactService(mockedConfig.Object, mockedLogger.Object, mockedAppCaches.Object);
+            var mockedKeyValueService = new Mock<IKeyValueService>();
+            var sut = new HubspotContactService(mockedConfig.Object, mockedLogger.Object, mockedAppCaches.Object, mockedKeyValueService.Object);
 
             var httpClient = CreateMockedHttpClient(HttpStatusCode.InternalServerError);
             HubspotContactService.ClientFactory = () => httpClient;
@@ -137,7 +140,8 @@ namespace Umbraco.Forms.Integrations.Crm.Hubspot.Tests
             Mock<IFacadeConfiguration> mockedConfig = CreateMockedConfiguration();
             var mockedLogger = new Mock<ILogger>();
             var mockedAppCaches = new Mock<AppCaches>();
-            var sut = new HubspotContactService(mockedConfig.Object, mockedLogger.Object, mockedAppCaches.Object);
+            var mockedKeyValueService = new Mock<IKeyValueService>();
+            var sut = new HubspotContactService(mockedConfig.Object, mockedLogger.Object, mockedAppCaches.Object, mockedKeyValueService.Object);
 
             var httpClient = CreateMockedHttpClient(HttpStatusCode.OK, s_contactPropertiesResponse);
             HubspotContactService.ClientFactory = () => httpClient;
@@ -155,7 +159,8 @@ namespace Umbraco.Forms.Integrations.Crm.Hubspot.Tests
             Mock<IFacadeConfiguration> mockedConfig = CreateMockedConfiguration(withApiKey: false);
             var mockedLogger = new Mock<ILogger>();
             var mockedAppCaches = new Mock<AppCaches>();
-            var sut = new HubspotContactService(mockedConfig.Object, mockedLogger.Object, mockedAppCaches.Object);
+            var mockedKeyValueService = new Mock<IKeyValueService>();
+            var sut = new HubspotContactService(mockedConfig.Object, mockedLogger.Object, mockedAppCaches.Object, mockedKeyValueService.Object);
 
             var record = new Record();
             var fieldMappings = new List<MappedProperty>();
@@ -172,7 +177,8 @@ namespace Umbraco.Forms.Integrations.Crm.Hubspot.Tests
             Mock<IFacadeConfiguration> mockedConfig = CreateMockedConfiguration();
             var mockedLogger = new Mock<ILogger>();
             var mockedAppCaches = new Mock<AppCaches>();
-            var sut = new HubspotContactService(mockedConfig.Object, mockedLogger.Object, mockedAppCaches.Object);
+            var mockedKeyValueService = new Mock<IKeyValueService>();
+            var sut = new HubspotContactService(mockedConfig.Object, mockedLogger.Object, mockedAppCaches.Object, mockedKeyValueService.Object);
 
             var httpClient = CreateMockedHttpClient(HttpStatusCode.InternalServerError);
             HubspotContactService.ClientFactory = () => httpClient;
@@ -193,7 +199,8 @@ namespace Umbraco.Forms.Integrations.Crm.Hubspot.Tests
             Mock<IFacadeConfiguration> mockedConfig = CreateMockedConfiguration();
             var mockedLogger = new Mock<ILogger>();
             var mockedAppCaches = new Mock<AppCaches>();
-            var sut = new HubspotContactService(mockedConfig.Object, mockedLogger.Object, mockedAppCaches.Object);
+            var mockedKeyValueService = new Mock<IKeyValueService>();
+            var sut = new HubspotContactService(mockedConfig.Object, mockedLogger.Object, mockedAppCaches.Object, mockedKeyValueService.Object);
 
             var httpClient = CreateMockedHttpClient(HttpStatusCode.OK);
             HubspotContactService.ClientFactory = () => httpClient;
@@ -227,7 +234,8 @@ namespace Umbraco.Forms.Integrations.Crm.Hubspot.Tests
             Mock<IFacadeConfiguration> mockedConfig = CreateMockedConfiguration();
             var mockedLogger = new Mock<ILogger>();
             var mockedAppCaches = new Mock<AppCaches>();
-            var sut = new HubspotContactService(mockedConfig.Object, mockedLogger.Object, mockedAppCaches.Object);
+            var mockedKeyValueService = new Mock<IKeyValueService>();
+            var sut = new HubspotContactService(mockedConfig.Object, mockedLogger.Object, mockedAppCaches.Object, mockedKeyValueService.Object);
 
             var httpClient = CreateMockedHttpClient(HttpStatusCode.OK);
             HubspotContactService.ClientFactory = () => httpClient;
@@ -253,9 +261,6 @@ namespace Umbraco.Forms.Integrations.Crm.Hubspot.Tests
         private static Mock<IFacadeConfiguration> CreateMockedConfiguration(bool withApiKey = true)
         {
             var mockedConfiguration = new Mock<IFacadeConfiguration>();
-            mockedConfiguration
-                .Setup(x => x.GetSetting(It.Is<string>(y => y == "HubSpotAuthenticationMode")))
-                .Returns("ApiKey");
             if (withApiKey)
             {
                 mockedConfiguration

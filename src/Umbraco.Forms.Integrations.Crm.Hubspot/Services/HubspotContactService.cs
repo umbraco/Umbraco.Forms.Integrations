@@ -9,10 +9,12 @@ using System.Text;
 using System.Threading.Tasks;
 using Umbraco.Core.Cache;
 using Umbraco.Core.Logging;
+using Umbraco.Core.Services;
 using Umbraco.Forms.Core;
 using Umbraco.Forms.Core.Persistence.Dtos;
 using Umbraco.Forms.Integrations.Crm.Hubspot.Extensions;
 using Umbraco.Forms.Integrations.Crm.Hubspot.Models;
+using Umbraco.Forms.Integrations.Crm.Hubspot.Models.Dtos;
 using Umbraco.Forms.Integrations.Crm.Hubspot.Models.Responses;
 
 namespace Umbraco.Forms.Integrations.Crm.Hubspot.Services
@@ -28,46 +30,94 @@ namespace Umbraco.Forms.Integrations.Crm.Hubspot.Services
         private readonly IFacadeConfiguration _configuration;
         private readonly ILogger _logger;
         private readonly AppCaches _appCaches;
+        private readonly IKeyValueService _keyValueService;
 
         private const string CrmApiBaseUrl = "https://api.hubapi.com/crm/v3/";
         private const string AuthApiTokenUrl = "https://api.hubapi.com/oauth/v1/token";
+        private const string InstallUrlFormat = "https://app-eu1.hubspot.com/oauth/authorize?client_id={0}&redirect_uri={1}&scope={2}";
+        private const string OAuthScopes = "crm.objects.contacts.read%20crm.objects.contacts.write";
         private const string OAauthClientId = "";
         private const string OAauthSecret = "";
         private const string OAuthRedirectUrl = "https://localhost:44364/";
 
         private const string AccessTokenCacheKey = "HubSpotOAuthAccessToken";
 
-        public HubspotContactService(IFacadeConfiguration configuration, ILogger logger, AppCaches appCaches)
+        private const string RefreshTokenDatabaseKey = "Umbraco.Forms.Integrations.Crm.Hubspot+RefreshToken";
+
+        public HubspotContactService(IFacadeConfiguration configuration, ILogger logger, AppCaches appCaches, IKeyValueService keyValueService)
         {
             _configuration = configuration;
             _logger = logger;
             _appCaches = appCaches;
+            _keyValueService = keyValueService;
+        }
+
+        public bool IsAuthorizationConfigured() => TryGetConfiguredAuthenticationDetails(out HubspotAuthentication _);
+
+        public string GetAuthenticationUrl() => string.Format(InstallUrlFormat, OAauthClientId, OAuthRedirectUrl, OAuthScopes);
+
+        public async Task<AuthorizationResult> Authorize(string code)
+        {
+            var tokenRequest = new GetTokenRequest
+            {
+                ClientId = OAauthClientId,
+                ClientSecret = OAauthSecret,
+                RedirectUrl = OAuthRedirectUrl,
+                AuthorizationCode = code,
+            };
+            var response = await GetResponse(AuthApiTokenUrl, HttpMethod.Post, content: tokenRequest, contentType: "application/x-www-form-urlencoded").ConfigureAwait(false);
+            if (response.IsSuccessStatusCode)
+            {
+                var tokenResponse = await response.Content.ReadAsAsync<TokenResponse>();
+
+                // Add the access token details to the cache.
+                _appCaches.RuntimeCache.InsertCacheItem(AccessTokenCacheKey, () => tokenResponse.AccessToken);
+
+                // Save the refresh token into the database.
+                _keyValueService.SetValue(RefreshTokenDatabaseKey, tokenResponse.RefreshToken);
+
+                return AuthorizationResult.AsSuccess();
+            }
+            else
+            {
+                var responseContent = await response.Content.ReadAsStringAsync();
+                _logger.Error<HubspotContactService>($"Could not retrieve authenticate with HubSpot API. Status code: {response.StatusCode}, reason: {response.ReasonPhrase}, content: {responseContent}");
+                return AuthorizationResult.AsError("Could not retrieve OAuth token from HubSpot API, see log for details.");
+            }
         }
 
         public async Task<IEnumerable<Property>> GetContactProperties()
         {
             if (!TryGetConfiguredAuthenticationDetails(out HubspotAuthentication authenticationDetails))
             {
+                _logger.Info<HubspotContactService>("Cannot access HubSpot API via API key or OAuth, as neither a key has been configured nor a refresh token stored.");
                 return Enumerable.Empty<Property>();
             }
 
-            var url = ConstructUrl("properties/contacts", authenticationDetails.ApiKey);
-            var response = await GetResponse(url, HttpMethod.Get, authenticationDetails).ConfigureAwait(false);
+            var requestUrl = $"{CrmApiBaseUrl}properties/contacts";
+            var response = await GetResponse(requestUrl, HttpMethod.Get, authenticationDetails).ConfigureAwait(false);
             if (response.IsSuccessStatusCode == false)
             {
-                if (response.StatusCode == HttpStatusCode.Unauthorized && authenticationDetails.Mode == HubspotAuthenticationMode.OAuth)
+                if (authenticationDetails.Mode == HubspotAuthenticationMode.OAuth)
                 {
-                    // If we've got a 403 response and are using OAuth, likely our access token has expired.
-                    // First we should try to refresh it using the refresh token.  If successful this will save the new
-                    // value into the cache.
-                    await RefreshOAuthAccessToken();
-
-                    // Repeat the operation using either the refreshed token or a newly requested one.
-                    response = await GetResponse(url, HttpMethod.Get, authenticationDetails).ConfigureAwait(false);
-                    if (response.IsSuccessStatusCode == false)
+                    if (response.StatusCode == HttpStatusCode.Unauthorized)
                     {
-                        _logger.Error<HubspotContactService>("Failed to fetch contact properties from HubSpot API for mapping. {StatusCode} {ReasonPhrase}", response.StatusCode, response.ReasonPhrase);
-                        return Enumerable.Empty<Property>();
+                        // If we've got a 401 response and are using OAuth, likely our access token has expired.
+                        // First we should try to refresh it using the refresh token.  If successful this will save the new
+                        // value into the cache.
+                        await RefreshOAuthAccessToken(authenticationDetails.RefreshToken);
+
+                        // Repeat the operation using the refreshed token.
+                        response = await GetResponse(requestUrl, HttpMethod.Get, authenticationDetails).ConfigureAwait(false);
+                        if (response.IsSuccessStatusCode == false)
+                        {
+                            _logger.Error<HubspotContactService>("Failed to fetch contact properties from HubSpot API for mapping. {StatusCode} {ReasonPhrase}", response.StatusCode, response.ReasonPhrase);
+                            return Enumerable.Empty<Property>();
+                        }
+                    }
+                    else if (response.StatusCode == HttpStatusCode.Forbidden)
+                    {
+                        HandleForbiddenResponse();
                     }
                 }
 
@@ -87,6 +137,7 @@ namespace Umbraco.Forms.Integrations.Crm.Hubspot.Services
         {
             if (!TryGetConfiguredAuthenticationDetails(out HubspotAuthentication authenticationDetails))
             {
+                _logger.Warn<HubspotContactService>("Cannot access HubSpot API via API key or OAuth, as neither a key has been configured nor a refresh token stored.");
                 return CommandResult.NotConfigured;
             }
 
@@ -111,26 +162,30 @@ namespace Umbraco.Forms.Integrations.Crm.Hubspot.Services
 
             // POST data to hubspot
             // https://api.hubapi.com/crm/v3/objects/contacts?hapikey=YOUR_HUBSPOT_API_KEY
-            var url = ConstructUrl("objects/contacts", authenticationDetails.ApiKey);
-            var response = await GetResponse(url, HttpMethod.Post, authenticationDetails, postData, "application/json").ConfigureAwait(false);
+            var requestUrl = $"{CrmApiBaseUrl}objects/contacts";
+            var response = await GetResponse(requestUrl, HttpMethod.Post, authenticationDetails, postData, "application/json").ConfigureAwait(false);
 
             // Depending on POST status fail or mark workflow as completed
             if (response.IsSuccessStatusCode == false)
             {
                 if (response.StatusCode == HttpStatusCode.Unauthorized && authenticationDetails.Mode == HubspotAuthenticationMode.OAuth)
                 {
-                    // If we've got a 403 response and are using OAuth, likely our access token has expired.
+                    // If we've got a 401 response and are using OAuth, likely our access token has expired.
                     // First we should try to refresh it using the refresh token.  If successful this will save the new
                     // value into the cache.
-                    await RefreshOAuthAccessToken();
+                    await RefreshOAuthAccessToken(authenticationDetails.RefreshToken);
 
-                    // Repeat the operation using either the refreshed token or a newly requested one.
-                    response = await GetResponse(url, HttpMethod.Post, authenticationDetails, postData, "application/json").ConfigureAwait(false);
+                    // Repeat the operation using the refreshed token.
+                    response = await GetResponse(requestUrl, HttpMethod.Post, authenticationDetails, postData, "application/json").ConfigureAwait(false);
                     if (response.IsSuccessStatusCode == false)
                     {
                         _logger.Error<HubspotContactService>("Error submitting a HubSpot contact request ");
                         return CommandResult.Failed;
                     }
+                }
+                else if (response.StatusCode == HttpStatusCode.Forbidden)
+                {
+                    HandleForbiddenResponse();
                 }
 
                 _logger.Error<HubspotContactService>("Error submitting a HubSpot contact request ");
@@ -142,50 +197,20 @@ namespace Umbraco.Forms.Integrations.Crm.Hubspot.Services
 
         private bool TryGetConfiguredAuthenticationDetails(out HubspotAuthentication authentication)
         {
-            authentication = new HubspotAuthentication(GetAuthenticationMode());
-
-            switch(authentication.Mode)
+            authentication = new HubspotAuthentication();
+            if (TryGetApiKey(out string apiKey))
             {
-                case HubspotAuthenticationMode.ApiKey:
-                    if (!TryGetApiKey(out string apiKey))
-                    {
-                        _logger.Warn<HubspotContactService>("Cannot access HubSpot API as although the authentication mode is configured to use an API Key, no key has been configured.");
-                        return false;
-                    }
-
-                    authentication.ApiKey = apiKey;
-                    break;
-                case HubspotAuthenticationMode.OAuth:
-                    if (!TryGetOAuthAuthorizationCode(out string oauthAuthorizationCode))
-                    {
-                        _logger.Warn<HubspotContactService>("Cannot access HubSpot API as although the authentication mode is configured to use OAuth, no authorization code has been configured.");
-                        return false;
-                    }
-
-                    authentication.OAuthAuthenticationCode = oauthAuthorizationCode;
-                    break;
-                default:
-                    _logger.Warn<HubspotContactService>("Cannot access HubSpot API as no or an unrecognized authentication mode has been configured.");
-                    return false;
+                authentication.ApiKey = apiKey;
+                return true;
             }
 
-            return true;
-        }
-
-        private HubspotAuthenticationMode GetAuthenticationMode()
-        {
-            var configValue = _configuration.GetSetting("HubSpotAuthenticationMode");
-            if (string.IsNullOrEmpty(configValue))
+            if (TryGetSavedRefreshToken(out string refreshToken))
             {
-                return HubspotAuthenticationMode.Undefined;
+                authentication.RefreshToken= refreshToken;
+                return true;
             }
 
-            if (Enum.TryParse(configValue, out HubspotAuthenticationMode authenticationMode))
-            {
-                return authenticationMode;
-            }
-
-            return HubspotAuthenticationMode.Undefined;
+            return false;
         }
 
         private bool TryGetApiKey(out string apiKey)
@@ -194,83 +219,59 @@ namespace Umbraco.Forms.Integrations.Crm.Hubspot.Services
             return !string.IsNullOrEmpty(apiKey);
         }
 
-        private bool TryGetOAuthAuthorizationCode(out string authorizationCode)
+        private bool TryGetSavedRefreshToken(out string refreshToken)
         {
-            authorizationCode = _configuration.GetSetting("HubSpotOAuthAuthorizationCode");
-            return !string.IsNullOrEmpty(authorizationCode);
+            refreshToken = _keyValueService.GetValue(RefreshTokenDatabaseKey);
+            return !string.IsNullOrEmpty(refreshToken);
         }
 
-        private async Task<string> GetOAuthAccessToken(string authorizationCode)
+        private async Task<string> GetOAuthAccessTokenFromCacheOrRefreshToken(string refreshToken)
         {
-            var tokenResponse = _appCaches.RuntimeCache.GetCacheItem<TokenResponse>(AccessTokenCacheKey);
-            if (tokenResponse == null)
-            { 
-                var tokenRequest = new GetTokenRequest
-                {
-                    ClientId = OAauthClientId,
-                    ClientSecret = OAauthSecret,
-                    RedirectUrl = OAuthRedirectUrl,
-                    AuthorizationCode = authorizationCode,
-                };
-                var response = await GetResponse(AuthApiTokenUrl, HttpMethod.Post, content: tokenRequest, contentType: "application/x-www-form-urlencoded").ConfigureAwait(false);
-                if (response.IsSuccessStatusCode)
-                {
-                    tokenResponse = await response.Content.ReadAsAsync<TokenResponse>();
-
-                    // Add the token details to the cache.
-                    _appCaches.RuntimeCache.InsertCacheItem(AccessTokenCacheKey, () => tokenResponse);
-                }
-                else
-                {
-                    var responseContent = await response.Content.ReadAsStringAsync();
-                    throw new InvalidOperationException(
-                        $"Could not retrieve OAuth token from HubSpot API. Status code: {response.StatusCode}, reason: {response.ReasonPhrase}, content: {responseContent}");
-                }
-            }
-
-            return tokenResponse.AccessToken;
-        }
-
-        private async Task RefreshOAuthAccessToken()
-        {
-            var tokenResponse = _appCaches.RuntimeCache.GetCacheItem<TokenResponse>(AccessTokenCacheKey);
-            if (tokenResponse == null)
+            var accessToken = _appCaches.RuntimeCache.GetCacheItem<string>(AccessTokenCacheKey);
+            if (string.IsNullOrEmpty(accessToken))
             {
-                return;
+                // No access token in the cache, so get a new one from the refresh token.
+                await RefreshOAuthAccessToken(refreshToken);
+                accessToken = _appCaches.RuntimeCache.GetCacheItem<string>(AccessTokenCacheKey);
             }
 
+            return accessToken;
+        }
+
+        private async Task RefreshOAuthAccessToken(string refreshToken)
+        {
             var tokenRequest = new RefreshTokenRequest
             {
                 ClientId = OAauthClientId,
                 ClientSecret = OAauthSecret,
                 RedirectUrl = OAuthRedirectUrl,
-                RefreshToken = tokenResponse.RefreshToken,
+                RefreshToken = refreshToken,
             };
             var response = await GetResponse(AuthApiTokenUrl, HttpMethod.Post, content: tokenRequest, contentType: "application/x-www-form-urlencoded").ConfigureAwait(false);
             if (response.IsSuccessStatusCode)
             {
-                tokenResponse = await response.Content.ReadAsAsync<TokenResponse>();
+                var tokenResponse = await response.Content.ReadAsAsync<TokenResponse>();
 
                 // Update the token details in the cache.
-                _appCaches.RuntimeCache.InsertCacheItem(AccessTokenCacheKey, () => tokenResponse);
+                _appCaches.RuntimeCache.InsertCacheItem(AccessTokenCacheKey, () => tokenResponse.AccessToken);
+
+                // Update the saved refresh token if we've got a different one.
+                if (tokenResponse.RefreshToken != refreshToken)
+                {
+                    _keyValueService.SetValue(RefreshTokenDatabaseKey, tokenResponse.RefreshToken);
+                }
             }
             else
             {
                 var responseContent = await response.Content.ReadAsStringAsync();
+
+                // Failed to refresh an access token from a refresh token, so remove what we have stored.
+                // Re-authentication via the authorization code will be required.
+                _keyValueService.SetValue(RefreshTokenDatabaseKey, string.Empty);
+
                 throw new InvalidOperationException(
                     $"Could not refresh OAuth token from HubSpot API. Status code: {response.StatusCode}, reason: {response.ReasonPhrase}, content: {responseContent}");
             }
-        }
-
-        private string ConstructUrl(string path, string apiKey)
-        {
-            var url = $"{CrmApiBaseUrl}{path}";
-            if (!string.IsNullOrEmpty(apiKey))
-            {
-                url += "?hapikey={apiKey}";
-            }
-
-            return url;            
         }
 
         private async Task<HttpResponseMessage> GetResponse(
@@ -287,10 +288,19 @@ namespace Umbraco.Forms.Integrations.Crm.Hubspot.Services
                 Content = CreateRequestContent(content, contentType),
             };
 
-            if (authenticationDetails != null && authenticationDetails.Mode == HubspotAuthenticationMode.OAuth)
+            if (authenticationDetails != null)
             {
-                requestMessage.Headers.Authorization =
-                    new AuthenticationHeaderValue("Bearer", await GetOAuthAccessToken(authenticationDetails.OAuthAuthenticationCode));
+                // Apply appropriate authentication details to the request.  Either the API key as a querystring or the access token as a header.
+                switch (authenticationDetails.Mode)
+                {
+                    case HubspotAuthenticationMode.ApiKey:
+                        requestMessage.RequestUri = new Uri($"{CrmApiBaseUrl}{url}?hapikey={authenticationDetails.ApiKey}");
+                        break;
+                    case HubspotAuthenticationMode.OAuth:
+                        requestMessage.Headers.Authorization =
+                            new AuthenticationHeaderValue("Bearer", await GetOAuthAccessTokenFromCacheOrRefreshToken(authenticationDetails.RefreshToken));
+                        break;
+                }
             }
 
             return await ClientFactory().SendAsync(requestMessage).ConfigureAwait(false);
@@ -313,7 +323,12 @@ namespace Umbraco.Forms.Integrations.Crm.Hubspot.Services
                 default:
                     throw new InvalidOperationException($"Unexpected content type: {contentType}");
             }
+        }
 
+        private void HandleForbiddenResponse()
+        {
+            // Token is no longer valid (perhaps due to additional scopes requested).  Need to clear and re-authenticate.
+            _keyValueService.SetValue(RefreshTokenDatabaseKey, string.Empty);
         }
     }
 }

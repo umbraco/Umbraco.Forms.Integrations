@@ -4,45 +4,63 @@
     <pre>{{ vm.mappings | json }}</pre>    
     -->
 
-    <div class="umb-forms-mappings" ng-if="vm.mappings.length > 0 && vm.hubspotFields.length > 0">
-
-        <div class="umb-forms-mapping-header">
-            <div class="umb-forms-mapping-field -no-margin-left">Form Field</div>
-            <div class="umb-forms-mapping-field">Hubspot Field</div>
-            <div class="umb-forms-mapping-remove -no-margin-right"></div>
-        </div>
-
-        <div ng-repeat="mapping in vm.mappings">
-
-            <div class="umb-forms-mapping">
-                <div class="umb-forms-mapping-field">
-                    <select class="-full-width"
-                            ng-options="field.id as field.value for field in vm.fields"
-                            ng-model="mapping.formField"
-                            ng-change="vm.stringifyValue()">
-                    </select>
-                </div>
-
-                <div class="umb-forms-mapping-field">
-                    <select class="-full-width"
-                            ng-options="field.value as field.name for field in vm.hubspotFields"
-                            ng-model="mapping.hubspotField"
-                            ng-change="vm.stringifyValue()">
-                    </select>
-                </div>
-
-                <div class="umb-forms-mapping-remove -no-margin-right">
-                    <a href="" ng-click="vm.deleteMapping($index)"><i class="icon-trash"></i></a>
-                </div>
-            </div>
-
-            <div ng-if="mapping.hubspotField" style="margin-bottom:15px;">
-                <strong>Description:</strong><br/>
-                {{ vm.getHubspotFieldDescription(mapping.hubspotField) }}
-            </div>
-        </div>
+    <div ng-show="!vm.loading && !vm.isAuthorizationConfigured">
+        <p>Umbraco Forms is not configured with a HubSpot CRM account.</p>
+        <p>To do this you can either create and save an API key into the <i>UmbracoForms.config</i> file.</p>
+        <p>Or you can follow the steps below to complete an OAuth connection.</p>
+        <dl>
+            <dt>Step 1.</dt>
+            <dd>Click <a href="{{vm.authenticationUrl}}" target="_blank" style="text-decoration: underline">here</a> to authenticate with HubSpot.</dd>
+            <dt>Step 2.</dt>
+            <dd>Paste the authorization code below and click to complete the authentication.</dd>
+        </dl>
+        <input type="text" placeholder="Enter authorization code" ng-model="vm.authorizationCode" />
+        <button ng-click="vm.authorize()" ng-disabled="vm.authorizationCode === ''">Authorize</button>
     </div>
 
-    <umb-button type="button" action="vm.addMapping()" label="Add mapping"></umb-button>
+    <div ng-show="!vm.loading && vm.isAuthorizationConfigured">
+
+        <div class="umb-forms-mappings" ng-show="vm.mappings.length > 0 && vm.hubspotFields.length > 0">
+
+            <div class="umb-forms-mapping-header">
+                <div class="umb-forms-mapping-field -no-margin-left">Form Field</div>
+                <div class="umb-forms-mapping-field">Hubspot Field</div>
+                <div class="umb-forms-mapping-remove -no-margin-right"></div>
+            </div>
+
+            <div ng-repeat="mapping in vm.mappings">
+
+                <div class="umb-forms-mapping">
+                    <div class="umb-forms-mapping-field">
+                        <select class="-full-width"
+                                ng-options="field.id as field.value for field in vm.fields"
+                                ng-model="mapping.formField"
+                                ng-change="vm.stringifyValue()">
+                        </select>
+                    </div>
+
+                    <div class="umb-forms-mapping-field">
+                        <select class="-full-width"
+                                ng-options="field.value as field.name for field in vm.hubspotFields"
+                                ng-model="mapping.hubspotField"
+                                ng-change="vm.stringifyValue()">
+                        </select>
+                    </div>
+
+                    <div class="umb-forms-mapping-remove -no-margin-right">
+                        <a href="" ng-click="vm.deleteMapping($index)"><i class="icon-trash"></i></a>
+                    </div>
+                </div>
+
+                <div ng-if="mapping.hubspotField" style="margin-bottom:15px;">
+                    <strong>Description:</strong><br />
+                    {{ vm.getHubspotFieldDescription(mapping.hubspotField) }}
+                </div>
+            </div>
+        </div>
+
+        <umb-button type="button" action="vm.addMapping()" label="Add mapping"></umb-button>
+
+    </div>
 
 </div>
