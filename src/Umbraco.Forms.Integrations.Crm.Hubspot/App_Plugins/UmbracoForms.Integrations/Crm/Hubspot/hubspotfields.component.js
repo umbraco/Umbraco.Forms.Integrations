@@ -68,6 +68,11 @@ function HubSpotFieldsController($routeParams, umbracoFormsIntegrationsCrmHubspo
         umbracoFormsIntegrationsCrmHubspotResource.authorize(vm.authorizationCode).then(function (response) {
             if (response.success) {
                 vm.isAuthorizationConfigured = true;
+                notificationsService.showNotification({
+                    type: 0,
+                    header: "Authorization succeeded",
+                    message: "Your Umbraco Forms installation is now connected to your HubSpot account",
+                });
                 getFieldsForMapping();
             } else {
                 notificationsService.showNotification({

@@ -95,34 +95,20 @@ namespace Umbraco.Forms.Integrations.Crm.Hubspot.Services
             }
 
             var requestUrl = $"{CrmApiBaseUrl}properties/contacts";
-            var response = await GetResponse(requestUrl, HttpMethod.Get, authenticationDetails).ConfigureAwait(false);
+            var httpMethod = HttpMethod.Get;
+            var response = await GetResponse(requestUrl, httpMethod, authenticationDetails).ConfigureAwait(false);
             if (response.IsSuccessStatusCode == false)
             {
-                if (authenticationDetails.Mode == HubspotAuthenticationMode.OAuth)
+                var retryResult = await HandleFailedRequest(response.StatusCode, requestUrl, httpMethod, authenticationDetails);
+                if (retryResult.Success)
                 {
-                    if (response.StatusCode == HttpStatusCode.Unauthorized)
-                    {
-                        // If we've got a 401 response and are using OAuth, likely our access token has expired.
-                        // First we should try to refresh it using the refresh token.  If successful this will save the new
-                        // value into the cache.
-                        await RefreshOAuthAccessToken(authenticationDetails.RefreshToken);
-
-                        // Repeat the operation using the refreshed token.
-                        response = await GetResponse(requestUrl, HttpMethod.Get, authenticationDetails).ConfigureAwait(false);
-                        if (response.IsSuccessStatusCode == false)
-                        {
-                            _logger.Error<HubspotContactService>("Failed to fetch contact properties from HubSpot API for mapping. {StatusCode} {ReasonPhrase}", response.StatusCode, response.ReasonPhrase);
-                            return Enumerable.Empty<Property>();
-                        }
-                    }
-                    else if (response.StatusCode == HttpStatusCode.Forbidden)
-                    {
-                        HandleForbiddenResponse();
-                    }
+                    response = retryResult.RetriedResponse;
                 }
-
-                _logger.Error<HubspotContactService>("Failed to fetch contact properties from HubSpot API for mapping. {StatusCode} {ReasonPhrase}", response.StatusCode, response.ReasonPhrase);
-                return Enumerable.Empty<Property>();
+                else
+                {
+                    _logger.Error<HubspotContactService>("Failed to fetch contact properties from HubSpot API for mapping. {StatusCode} {ReasonPhrase}", response.StatusCode, response.ReasonPhrase);
+                    return Enumerable.Empty<Property>();
+                }
             }
 
             // Map the properties to our simpler object, as we don't need all the fields in the response.
@@ -163,36 +149,21 @@ namespace Umbraco.Forms.Integrations.Crm.Hubspot.Services
             // POST data to hubspot
             // https://api.hubapi.com/crm/v3/objects/contacts?hapikey=YOUR_HUBSPOT_API_KEY
             var requestUrl = $"{CrmApiBaseUrl}objects/contacts";
-            var response = await GetResponse(requestUrl, HttpMethod.Post, authenticationDetails, postData, "application/json").ConfigureAwait(false);
+            var httpMethod = HttpMethod.Post;
+            var response = await GetResponse(requestUrl, httpMethod, authenticationDetails, postData, "application/json").ConfigureAwait(false);
 
             // Depending on POST status fail or mark workflow as completed
             if (response.IsSuccessStatusCode == false)
             {
-                if (response.StatusCode == HttpStatusCode.Unauthorized && authenticationDetails.Mode == HubspotAuthenticationMode.OAuth)
+                var retryResult = await HandleFailedRequest(response.StatusCode, requestUrl, httpMethod, authenticationDetails);
+                if (retryResult.Success)
                 {
-                    // If we've got a 401 response and are using OAuth, likely our access token has expired.
-                    // First we should try to refresh it using the refresh token.  If successful this will save the new
-                    // value into the cache.
-                    await RefreshOAuthAccessToken(authenticationDetails.RefreshToken);
-
-                    // Repeat the operation using the refreshed token.
-                    response = await GetResponse(requestUrl, HttpMethod.Post, authenticationDetails, postData, "application/json").ConfigureAwait(false);
-                    if (response.IsSuccessStatusCode == false)
-                    {
-                        _logger.Error<HubspotContactService>("Error submitting a HubSpot contact request ");
-                        return CommandResult.Failed;
-                    }
+                    return CommandResult.Success;
                 }
-                else if (response.StatusCode == HttpStatusCode.Forbidden)
-                {
-                    HandleForbiddenResponse();
-                }
-
-                _logger.Error<HubspotContactService>("Error submitting a HubSpot contact request ");
-                return CommandResult.Failed;
             }
 
-            return CommandResult.Success;
+            _logger.Error<HubspotContactService>("Error submitting a HubSpot contact request ");
+            return CommandResult.Failed;
         }
 
         private bool TryGetConfiguredAuthenticationDetails(out HubspotAuthentication authentication)
@@ -325,10 +296,46 @@ namespace Umbraco.Forms.Integrations.Crm.Hubspot.Services
             }
         }
 
+        private async Task<HandleFailedRequestResult> HandleFailedRequest(HttpStatusCode statusCode, string requestUrl, HttpMethod httpMethod, HubspotAuthentication authenticationDetails)
+        {
+            var result = new HandleFailedRequestResult();
+            if (authenticationDetails.Mode == HubspotAuthenticationMode.OAuth)
+            {
+                if (statusCode == HttpStatusCode.Unauthorized)
+                {
+                    // If we've got a 401 response and are using OAuth, likely our access token has expired.
+                    // First we should try to refresh it using the refresh token.  If successful this will save the new
+                    // value into the cache.
+                    await RefreshOAuthAccessToken(authenticationDetails.RefreshToken);
+
+                    // Repeat the operation using the refreshed token.
+                    var response = await GetResponse(requestUrl, httpMethod, authenticationDetails).ConfigureAwait(false);
+                    if (response.IsSuccessStatusCode)
+                    {
+                        result.Success = true;
+                        result.RetriedResponse = response;
+                    }
+                }
+                else if (statusCode == HttpStatusCode.Forbidden)
+                {
+                    HandleForbiddenResponse();
+                }
+            }
+
+            return result;
+        }
+
         private void HandleForbiddenResponse()
         {
             // Token is no longer valid (perhaps due to additional scopes requested).  Need to clear and re-authenticate.
             _keyValueService.SetValue(RefreshTokenDatabaseKey, string.Empty);
+        }
+
+        private class HandleFailedRequestResult
+        {
+            public bool Success { get; set; }
+
+            public HttpResponseMessage RetriedResponse { get; set; }
         }
     }
 }
