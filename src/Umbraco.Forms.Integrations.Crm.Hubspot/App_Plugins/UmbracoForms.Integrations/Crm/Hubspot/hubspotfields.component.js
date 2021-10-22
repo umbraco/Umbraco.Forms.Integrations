@@ -10,13 +10,13 @@ angular
     }
 );
 
-function HubSpotFieldsController($routeParams, umbracoFormsIntegrationsCrmHubspotResource, pickerResource, notificationsService) {
+function HubSpotFieldsController($routeParams, umbracoFormsIntegrationsCrmHubspotResource, pickerResource, overlayService, notificationsService) {
     var vm = this;
 
     vm.authorizationCode = "";
     vm.authenticationUrl = "";
     vm.loading = false;
-    vm.isAuthorizationConfigured = false;
+    vm.authorizationStatus = "Unauthenticated";
 
     function getFieldsForMapping() {
 
@@ -50,13 +50,12 @@ function HubSpotFieldsController($routeParams, umbracoFormsIntegrationsCrmHubspo
 
         umbracoFormsIntegrationsCrmHubspotResource.isAuthorizationConfigured().then(function (response) {
             vm.loading = false;
-            if (response) {
-                console.log('ok');
-                vm.isAuthorizationConfigured = true;
+            if (response !== "Unauthenticated") {
+                vm.authorizationStatus = response;
                 getFieldsForMapping();
             }
             else {
-                vm.isAuthorizationConfigured = false;
+                vm.authorizationStatus = "Unauthenticated";
                 umbracoFormsIntegrationsCrmHubspotResource.getAuthenticationUrl().then(function (response) {
                     vm.authenticationUrl = response;
                 });
@@ -67,7 +66,8 @@ function HubSpotFieldsController($routeParams, umbracoFormsIntegrationsCrmHubspo
     vm.authorize = function () {
         umbracoFormsIntegrationsCrmHubspotResource.authorize(vm.authorizationCode).then(function (response) {
             if (response.success) {
-                vm.isAuthorizationConfigured = true;
+                vm.authorizationStatus = "OAuth";
+                vm.authorizationCode = "";
                 notificationsService.showNotification({
                     type: 0,
                     header: "Authorization succeeded",
@@ -82,6 +82,42 @@ function HubSpotFieldsController($routeParams, umbracoFormsIntegrationsCrmHubspo
                 });
             }
         });
+    }
+
+    vm.deauthorize = function () {
+
+        var overlay = {
+            view: "confirm",
+            title: "Confirmation",
+            content: "Are you sure you wish to disconnect your HubSpot account?",
+            closeButtonLabel: "No",
+            submitButtonLabel: "Yes",
+            submitButtonStyle: "danger",
+            close: function () {
+                overlayService.close();
+            },
+            submit: function () {
+                umbracoFormsIntegrationsCrmHubspotResource.deauthorize().then(function (response) {
+                    if (response.success) {
+                        vm.authorizationStatus = "Unauthenticated";
+                        notificationsService.showNotification({
+                            type: 0,
+                            header: "De-authorization succeeded",
+                            message: "Your Umbraco Forms installation is no longer connected to your HubSpot account",
+                        });
+                        getFieldsForMapping();
+                    } else {
+                        notificationsService.showNotification({
+                            type: 2,
+                            header: "De-authorization failed",
+                            message: response.errorMessage
+                        });
+                    }
+                    overlayService.close();
+                });
+            }
+        };
+        overlayService.open(overlay);
     }
 
     vm.getHubspotFieldDescription = function (value) {

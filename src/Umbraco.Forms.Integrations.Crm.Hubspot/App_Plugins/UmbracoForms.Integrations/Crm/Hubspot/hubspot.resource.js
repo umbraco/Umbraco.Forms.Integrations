@@ -23,7 +23,15 @@
                     umbRequestHelper.getApiUrl(
                         "umbracoFormsIntegrationsCrmHubspotBaseUrl",
                         "Authorize"), { code: authorizationCode }),
-                'Failed to authentication with HubSpot');
+                'Failed to authorize with HubSpot');
+        },
+        deauthorize: function (authorizationCode) {
+            return umbRequestHelper.resourcePromise(
+                $http.post(
+                    umbRequestHelper.getApiUrl(
+                        "umbracoFormsIntegrationsCrmHubspotBaseUrl",
+                        "Deauthorize")),
+                'Failed to de-authorize with HubSpot');
         }, 
         getAllProperties: function () {
             return umbRequestHelper.resourcePromise(

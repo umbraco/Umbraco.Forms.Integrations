@@ -20,15 +20,18 @@ namespace Umbraco.Forms.Integrations.Crm.Hubspot.Controllers
         }
 
         [HttpGet]
-        public bool IsAuthorizationConfigured() => _contactService.IsAuthorizationConfigured();
+        public string IsAuthorizationConfigured() => _contactService.IsAuthorizationConfigured().ToString();
 
         [HttpGet]
         public string GetAuthenticationUrl() => _contactService.GetAuthenticationUrl();
 
         [HttpPost]
-        public async Task<AuthorizationResult> Authorize([FromBody] AuthorizationRequest request) => await _contactService.Authorize(request.Code);
+        public async Task<AuthorizationResult> Authorize([FromBody] AuthorizationRequest request) => await _contactService.AuthorizeAsync(request.Code);
+
+        [HttpPost]
+        public AuthorizationResult Deauthorize() => _contactService.Deauthorize();
 
         [HttpGet]
-        public async Task<IEnumerable<Property>> GetAllProperties() => await _contactService.GetContactProperties();
+        public async Task<IEnumerable<Property>> GetAllProperties() => await _contactService.GetContactPropertiesAsync();
     }
 }

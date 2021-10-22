@@ -4,7 +4,7 @@
     <pre>{{ vm.mappings | json }}</pre>    
     -->
 
-    <div ng-show="!vm.loading && !vm.isAuthorizationConfigured">
+    <div ng-show="!vm.loading && vm.authorizationStatus === 'Unauthenticated'">
         <p>Umbraco Forms is not configured with a HubSpot CRM account.</p>
         <p>To do this you can either create and save an API key into the <i>UmbracoForms.config</i> file.</p>
         <p>Or you can follow the steps below to complete an OAuth connection.</p>
@@ -18,7 +18,7 @@
         <button ng-click="vm.authorize()" ng-disabled="vm.authorizationCode === ''">Authorize</button>
     </div>
 
-    <div ng-show="!vm.loading && vm.isAuthorizationConfigured">
+    <div ng-show="!vm.loading && vm.authorizationStatus !== 'Unauthenticated'">
 
         <div class="umb-forms-mappings" ng-show="vm.mappings.length > 0 && vm.hubspotFields.length > 0">
 
@@ -60,6 +60,10 @@
         </div>
 
         <umb-button type="button" action="vm.addMapping()" label="Add mapping"></umb-button>
+
+        <div ng-show="vm.authorizationStatus === 'OAuth'" style="margin-top: 20px">
+            <umb-button type="button" action="vm.deauthorize()" label="De-authorize from Hubspot"></umb-button>
+        </div>
 
     </div>
 

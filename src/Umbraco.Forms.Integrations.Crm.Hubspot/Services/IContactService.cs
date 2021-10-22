@@ -16,14 +16,16 @@ namespace Umbraco.Forms.Integrations.Crm.Hubspot.Services
 
     public interface IContactService
     {
-        bool IsAuthorizationConfigured();
+        AuthenticationMode IsAuthorizationConfigured();
 
         string GetAuthenticationUrl();
 
-        Task<AuthorizationResult> Authorize(string code);
+        Task<AuthorizationResult> AuthorizeAsync(string code);
 
-        Task<IEnumerable<Property>> GetContactProperties();
+        AuthorizationResult Deauthorize();
 
-        Task<CommandResult> PostContact(Record record, List<MappedProperty> fieldMappings);
+        Task<IEnumerable<Property>> GetContactPropertiesAsync();
+
+        Task<CommandResult> PostContactAsync(Record record, List<MappedProperty> fieldMappings);
     }
 }

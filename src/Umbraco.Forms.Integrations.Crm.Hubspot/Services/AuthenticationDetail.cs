@@ -1,23 +1,23 @@
 ﻿namespace Umbraco.Forms.Integrations.Crm.Hubspot.Services
 {
-    public enum HubspotAuthenticationMode
+    public enum AuthenticationMode
     {
         Unauthenticated,
         ApiKey,
         OAuth
     }
 
-    public class HubspotAuthentication
+    public class AuthenticationDetail
     {
         public string ApiKey { get; set; }
 
         public string RefreshToken { get; set; }
 
-        public HubspotAuthenticationMode Mode =>
+        public AuthenticationMode Mode =>
             !string.IsNullOrEmpty(ApiKey)
-                ? HubspotAuthenticationMode.ApiKey
+                ? AuthenticationMode.ApiKey
                 : !string.IsNullOrEmpty(RefreshToken)
-                    ? HubspotAuthenticationMode.OAuth
-                    : HubspotAuthenticationMode.Unauthenticated;
+                    ? AuthenticationMode.OAuth
+                    : AuthenticationMode.Unauthenticated;
     }
 }

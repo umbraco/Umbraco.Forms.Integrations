@@ -52,11 +52,11 @@ namespace Umbraco.Forms.Integrations.Crm.Hubspot.Services
             _keyValueService = keyValueService;
         }
 
-        public bool IsAuthorizationConfigured() => TryGetConfiguredAuthenticationDetails(out HubspotAuthentication _);
+        public AuthenticationMode IsAuthorizationConfigured() => GetConfiguredAuthenticationDetails().Mode;
 
         public string GetAuthenticationUrl() => string.Format(InstallUrlFormat, OAauthClientId, OAuthRedirectUrl, OAuthScopes);
 
-        public async Task<AuthorizationResult> Authorize(string code)
+        public async Task<AuthorizationResult> AuthorizeAsync(string code)
         {
             var tokenRequest = new GetTokenRequest
             {
@@ -86,9 +86,17 @@ namespace Umbraco.Forms.Integrations.Crm.Hubspot.Services
             }
         }
 
-        public async Task<IEnumerable<Property>> GetContactProperties()
+        public AuthorizationResult Deauthorize()
         {
-            if (!TryGetConfiguredAuthenticationDetails(out HubspotAuthentication authenticationDetails))
+            // Delete any saved refresh token.
+            _keyValueService.SetValue(RefreshTokenDatabaseKey, string.Empty);
+            return AuthorizationResult.AsSuccess();
+        }
+
+        public async Task<IEnumerable<Property>> GetContactPropertiesAsync()
+        {
+            var authenticationDetails = GetConfiguredAuthenticationDetails();
+            if (authenticationDetails.Mode == AuthenticationMode.Unauthenticated)
             {
                 _logger.Info<HubspotContactService>("Cannot access HubSpot API via API key or OAuth, as neither a key has been configured nor a refresh token stored.");
                 return Enumerable.Empty<Property>();
@@ -119,9 +127,10 @@ namespace Umbraco.Forms.Integrations.Crm.Hubspot.Services
             return properties.OrderBy(x => x.Label);
         }
 
-        public async Task<CommandResult> PostContact(Record record, List<MappedProperty> fieldMappings)
+        public async Task<CommandResult> PostContactAsync(Record record, List<MappedProperty> fieldMappings)
         {
-            if (!TryGetConfiguredAuthenticationDetails(out HubspotAuthentication authenticationDetails))
+            var authenticationDetails = GetConfiguredAuthenticationDetails();
+            if (authenticationDetails.Mode == AuthenticationMode.Unauthenticated)
             {
                 _logger.Warn<HubspotContactService>("Cannot access HubSpot API via API key or OAuth, as neither a key has been configured nor a refresh token stored.");
                 return CommandResult.NotConfigured;
@@ -166,22 +175,19 @@ namespace Umbraco.Forms.Integrations.Crm.Hubspot.Services
             return CommandResult.Failed;
         }
 
-        private bool TryGetConfiguredAuthenticationDetails(out HubspotAuthentication authentication)
+        private AuthenticationDetail GetConfiguredAuthenticationDetails()
         {
-            authentication = new HubspotAuthentication();
+            var authentication = new AuthenticationDetail();
             if (TryGetApiKey(out string apiKey))
             {
                 authentication.ApiKey = apiKey;
-                return true;
             }
-
-            if (TryGetSavedRefreshToken(out string refreshToken))
+            else if (TryGetSavedRefreshToken(out string refreshToken))
             {
-                authentication.RefreshToken= refreshToken;
-                return true;
+                authentication.RefreshToken = refreshToken;
             }
 
-            return false;
+            return authentication;
         }
 
         private bool TryGetApiKey(out string apiKey)
@@ -248,7 +254,7 @@ namespace Umbraco.Forms.Integrations.Crm.Hubspot.Services
         private async Task<HttpResponseMessage> GetResponse(
             string url,
             HttpMethod httpMethod,
-            HubspotAuthentication authenticationDetails = null,
+            AuthenticationDetail authenticationDetails = null,
             object content = null,
             string contentType = null)
         {
@@ -264,10 +270,10 @@ namespace Umbraco.Forms.Integrations.Crm.Hubspot.Services
                 // Apply appropriate authentication details to the request.  Either the API key as a querystring or the access token as a header.
                 switch (authenticationDetails.Mode)
                 {
-                    case HubspotAuthenticationMode.ApiKey:
-                        requestMessage.RequestUri = new Uri($"{CrmApiBaseUrl}{url}?hapikey={authenticationDetails.ApiKey}");
+                    case AuthenticationMode.ApiKey:
+                        requestMessage.RequestUri = new Uri($"{url}?hapikey={authenticationDetails.ApiKey}");
                         break;
-                    case HubspotAuthenticationMode.OAuth:
+                    case AuthenticationMode.OAuth:
                         requestMessage.Headers.Authorization =
                             new AuthenticationHeaderValue("Bearer", await GetOAuthAccessTokenFromCacheOrRefreshToken(authenticationDetails.RefreshToken));
                         break;
@@ -296,10 +302,10 @@ namespace Umbraco.Forms.Integrations.Crm.Hubspot.Services
             }
         }
 
-        private async Task<HandleFailedRequestResult> HandleFailedRequest(HttpStatusCode statusCode, string requestUrl, HttpMethod httpMethod, HubspotAuthentication authenticationDetails)
+        private async Task<HandleFailedRequestResult> HandleFailedRequest(HttpStatusCode statusCode, string requestUrl, HttpMethod httpMethod, AuthenticationDetail authenticationDetails)
         {
             var result = new HandleFailedRequestResult();
-            if (authenticationDetails.Mode == HubspotAuthenticationMode.OAuth)
+            if (authenticationDetails.Mode == AuthenticationMode.OAuth)
             {
                 if (statusCode == HttpStatusCode.Unauthorized)
                 {

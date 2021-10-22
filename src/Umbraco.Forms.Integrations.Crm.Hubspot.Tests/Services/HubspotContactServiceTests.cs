@@ -108,7 +108,7 @@ namespace Umbraco.Forms.Integrations.Crm.Hubspot.Tests
             var mockedKeyValueService = new Mock<IKeyValueService>();
             var sut = new HubspotContactService(mockedConfig.Object, mockedLogger.Object, mockedAppCaches.Object, mockedKeyValueService.Object);
 
-            var result = await sut.GetContactProperties();
+            var result = await sut.GetContactPropertiesAsync();
 
             mockedLogger
                 .Verify(x => x.Info(It.Is<Type>(y => y == typeof(HubspotContactService)), It.IsAny<string>()), Times.Once);
@@ -127,7 +127,7 @@ namespace Umbraco.Forms.Integrations.Crm.Hubspot.Tests
             var httpClient = CreateMockedHttpClient(HttpStatusCode.InternalServerError);
             HubspotContactService.ClientFactory = () => httpClient;
 
-            var result = await sut.GetContactProperties();
+            var result = await sut.GetContactPropertiesAsync();
 
             mockedLogger
                 .Verify(x => x.Error(It.Is<Type>(y => y == typeof(HubspotContactService)), It.IsAny<string>(), It.IsAny<object[]>()), Times.Once);
@@ -146,7 +146,7 @@ namespace Umbraco.Forms.Integrations.Crm.Hubspot.Tests
             var httpClient = CreateMockedHttpClient(HttpStatusCode.OK, s_contactPropertiesResponse);
             HubspotContactService.ClientFactory = () => httpClient;
 
-            var result = await sut.GetContactProperties();
+            var result = await sut.GetContactPropertiesAsync();
 
             Assert.AreEqual(3, result.Count());
             Assert.AreEqual("Email,First Name,Last Name", string.Join(",", result.Select(x => x.Label)));
@@ -164,7 +164,7 @@ namespace Umbraco.Forms.Integrations.Crm.Hubspot.Tests
 
             var record = new Record();
             var fieldMappings = new List<MappedProperty>();
-            var result = await sut.PostContact(record, fieldMappings);
+            var result = await sut.PostContactAsync(record, fieldMappings);
 
             mockedLogger
                 .Verify(x => x.Warn(It.Is<Type>(y => y == typeof(HubspotContactService)), It.IsAny<string>()), Times.Once);
@@ -185,7 +185,7 @@ namespace Umbraco.Forms.Integrations.Crm.Hubspot.Tests
 
             var record = new Record();
             var fieldMappings = new List<MappedProperty>();
-            var result = await sut.PostContact(record, fieldMappings);
+            var result = await sut.PostContactAsync(record, fieldMappings);
 
             mockedLogger
                 .Verify(x => x.Error(It.Is<Type>(y => y == typeof(HubspotContactService)), It.IsAny<string>()), Times.Once);
@@ -220,7 +220,7 @@ namespace Umbraco.Forms.Integrations.Crm.Hubspot.Tests
                     HubspotField = "firstname"
                 }
             };
-            var result = await sut.PostContact(record, fieldMappings);
+            var result = await sut.PostContactAsync(record, fieldMappings);
 
             mockedLogger
                 .Verify(x => x.Warn(It.Is<Type>(y => y == typeof(HubspotContactService)), It.IsAny<string>(), It.IsAny<object[]>()), Times.Never);
@@ -250,7 +250,7 @@ namespace Umbraco.Forms.Integrations.Crm.Hubspot.Tests
                     HubspotField = "firstname"
                 }
             };
-            var result = await sut.PostContact(record, fieldMappings);
+            var result = await sut.PostContactAsync(record, fieldMappings);
 
             mockedLogger
                 .Verify(x => x.Warn(It.Is<Type>(y => y == typeof(HubspotContactService)), It.IsAny<string>(), It.IsAny<object[]>()), Times.Once);
