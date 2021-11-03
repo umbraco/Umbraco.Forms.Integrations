@@ -15,7 +15,7 @@
             <dd>Paste the authorization code below and click to complete the authentication.</dd>
         </dl>
         <input type="text" placeholder="Enter authorization code" ng-model="vm.authorizationCode" />
-        <button ng-click="vm.authorize()" ng-disabled="vm.authorizationCode === ''">Authorize</button>
+        <umb-button type="button" disabled="vm.authorizationCode === ''" action="vm.authorize()" label="Authorize"></umb-button>
     </div>
 
     <div ng-show="!vm.loading && vm.authorizationStatus !== 'Unauthenticated'">
