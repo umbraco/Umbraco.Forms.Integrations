@@ -1,13 +1,8 @@
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
-namespace Umbraco.Forms.Integrations.Crm.Hubspot.OAuthCallback
+namespace Umbraco.Forms.Integrations.Crm.Hubspot.OAuthProxy
 {
     public class Program
     {
@@ -18,6 +13,13 @@ namespace Umbraco.Forms.Integrations.Crm.Hubspot.OAuthCallback
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>
             Host.CreateDefaultBuilder(args)
+#if DEBUG
+                .ConfigureAppConfiguration(config
+                    => config.AddJsonFile(
+                        "appsettings.Local.json",
+                        optional: true,
+                        reloadOnChange: true))
+#endif
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
                     webBuilder.UseStartup<Startup>();

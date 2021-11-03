@@ -15,7 +15,7 @@
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
     },
-    "Umbraco.Forms.Integrations.Crm.Hubspot.OAuthCallback": {
+    "Umbraco.Forms.Integrations.Crm.Hubspot.OAuthProxy": {
       "commandName": "Project",
       "dotnetRunMessages": "true",
       "launchBrowser": true,

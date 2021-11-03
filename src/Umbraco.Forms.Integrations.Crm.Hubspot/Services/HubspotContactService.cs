@@ -33,12 +33,12 @@ namespace Umbraco.Forms.Integrations.Crm.Hubspot.Services
         private readonly IKeyValueService _keyValueService;
 
         private const string CrmApiBaseUrl = "https://api.hubapi.com/crm/v3/";
-        private const string AuthApiTokenUrl = "https://api.hubapi.com/oauth/v1/token";
         private const string InstallUrlFormat = "https://app-eu1.hubspot.com/oauth/authorize?client_id={0}&redirect_uri={1}&scope={2}";
         private const string OAuthScopes = "crm.objects.contacts.read%20crm.objects.contacts.write";
-        private const string OAauthClientId = "";
-        private const string OAauthSecret = "";
+        private const string OAauthClientId = "1a04f5bf-e99e-48e1-9d62-6c25bf2bdefe";
+
         private const string OAuthRedirectUrl = "https://localhost:44364/";
+        private const string OAuthTokenProxyUrl = "https://localhost:44364/oauth/v1/token";
 
         private const string AccessTokenCacheKey = "HubSpotOAuthAccessToken";
 
@@ -61,11 +61,10 @@ namespace Umbraco.Forms.Integrations.Crm.Hubspot.Services
             var tokenRequest = new GetTokenRequest
             {
                 ClientId = OAauthClientId,
-                ClientSecret = OAauthSecret,
                 RedirectUrl = OAuthRedirectUrl,
                 AuthorizationCode = code,
             };
-            var response = await GetResponse(AuthApiTokenUrl, HttpMethod.Post, content: tokenRequest, contentType: "application/x-www-form-urlencoded").ConfigureAwait(false);
+            var response = await GetResponse(OAuthTokenProxyUrl, HttpMethod.Post, content: tokenRequest, contentType: "application/x-www-form-urlencoded").ConfigureAwait(false);
             if (response.IsSuccessStatusCode)
             {
                 var tokenResponse = await response.Content.ReadAsAsync<TokenResponse>();
@@ -220,11 +219,10 @@ namespace Umbraco.Forms.Integrations.Crm.Hubspot.Services
             var tokenRequest = new RefreshTokenRequest
             {
                 ClientId = OAauthClientId,
-                ClientSecret = OAauthSecret,
                 RedirectUrl = OAuthRedirectUrl,
                 RefreshToken = refreshToken,
             };
-            var response = await GetResponse(AuthApiTokenUrl, HttpMethod.Post, content: tokenRequest, contentType: "application/x-www-form-urlencoded").ConfigureAwait(false);
+            var response = await GetResponse(OAuthTokenProxyUrl, HttpMethod.Post, content: tokenRequest, contentType: "application/x-www-form-urlencoded").ConfigureAwait(false);
             if (response.IsSuccessStatusCode)
             {
                 var tokenResponse = await response.Content.ReadAsAsync<TokenResponse>();

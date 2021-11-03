@@ -8,8 +8,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Umbraco.Forms.Integrations.Crm.Hubspot.OAuthProxy.Configuration;
 
-namespace Umbraco.Forms.Integrations.Crm.Hubspot.OAuthCallback
+namespace Umbraco.Forms.Integrations.Crm.Hubspot.OAuthProxy
 {
     public class Startup
     {
@@ -23,7 +24,15 @@ namespace Umbraco.Forms.Integrations.Crm.Hubspot.OAuthCallback
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.Configure<AppSettings>(Configuration.GetSection("AppSettings"));
+
+            services.AddHttpClient("HubspotToken", c =>
+            {
+                c.BaseAddress = new Uri("https://api.hubapi.com");
+            });
+
             services.AddRazorPages();
+            services.AddControllers();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -49,6 +58,7 @@ namespace Umbraco.Forms.Integrations.Crm.Hubspot.OAuthCallback
 
             app.UseEndpoints(endpoints =>
             {
+                endpoints.MapControllers();
                 endpoints.MapRazorPages();
             });
         }
