@@ -17,7 +17,7 @@ steps:
   inputs:
     command: 'publish'
     projects: $(project)
-    publishWebProjects: true
+    publishWebProjects: false
 #- task: AzureWebApp@1
 #  displayName: 'Deploy Web App'
 #  inputs:
