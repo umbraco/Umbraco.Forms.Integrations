@@ -168,10 +168,14 @@ namespace Umbraco.Forms.Integrations.Crm.Hubspot.Services
                 {
                     return CommandResult.Success;
                 }
+                else
+                {
+                    _logger.Error<HubspotContactService>("Error submitting a HubSpot contact request ");
+                    return CommandResult.Failed;
+                }
             }
 
-            _logger.Error<HubspotContactService>("Error submitting a HubSpot contact request ");
-            return CommandResult.Failed;
+            return CommandResult.Success;
         }
 
         private AuthenticationDetail GetConfiguredAuthenticationDetails()
