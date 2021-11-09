@@ -1,6 +1,6 @@
 # Umbraco.Forms.Integrations
 
-This repository houses open-source extensions, created for Umbraco Forms, that integrate with third-party plaforms.
+This repository houses open-source extensions, created for Umbraco Forms, that integrate with third-party platforms.
 
 ## Available Integrations
 
