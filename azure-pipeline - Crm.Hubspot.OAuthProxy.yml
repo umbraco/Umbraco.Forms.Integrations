@@ -6,24 +6,21 @@ pool:
 
 variables:
   projectName: 'Umbraco.Forms.Integrations.Crm.Hubspot.OAuthProxy'
-  solution: '**/*.sln'
   project: 'src/$(projectName)/$(projectName).csproj'
-  buildPlatform: 'Any CPU'
   buildConfiguration: 'Release'
 
 steps:
-- task: NuGetToolInstaller@1
-  displayName: 'Install NuGet'
-
-- task: NuGetCommand@2
-  displayName: 'NuGet Restore'
+- script: dotnet build $(project) --configuration $(buildConfiguration)
+  displayName: 'Buid Web App'
+- task: DotNetCoreCLI@2
+  displayName: 'Publish Web App'
   inputs:
-    restoreSolution: '$(solution)'
-
-- task: VSBuild@1
-  displayName: 'Build Project'
-  inputs:
-    solution: '$(project)'
-    msbuildArgs: '/p:DeployOnBuild=true /p:WebPublishMethod=Package /p:PackageAsSingleFile=true /p:SkipInvalidConfigurations=true /p:PackageLocation="$(build.artifactStagingDirectory)"'
-    platform: '$(buildPlatform)'
-    configuration: '$(buildConfiguration)'
+    command: 'publish'
+    publishWebProjects: true
+#- task: AzureWebApp@1
+#  displayName: 'Deploy Web App'
+#  inputs:
+#    azureSubscription: '<Azure service connection>'
+#    appType: 'webAppLinux'
+#    appName: '<Name of web app>'
+#    package: '$(System.DefaultWorkingDirectory)/**/*.zip'
