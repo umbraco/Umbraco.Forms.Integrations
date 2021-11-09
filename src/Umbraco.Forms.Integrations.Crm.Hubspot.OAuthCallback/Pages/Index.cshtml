@@ -6,14 +6,22 @@
 
 <div class="text-center">
     <h1 class="display-4">Umbraco Forms / Hubspot</h1>
-    @if (string.IsNullOrEmpty(Model.AuthorizationCode))
-    {
-        <p>Authentication failed - no authorization code received.</p>
-    }
-    else
+    @if (!string.IsNullOrEmpty(Model.AuthorizationCode))
     {
         <p>To complete the integration, please copy the following code and enter it in Umbraco using the form provided.</p>
 
-        <p><input type="text" value="@Model.AuthorizationCode" readonly style="width: 700px; font-size: 36px; text-align: center" /></p>
+        <p><input id="auth-code" type="text" value="@Model.AuthorizationCode" readonly style="width: 700px; font-size: 36px; text-align: center" /></p>
+
+        <button onclick="copyToClipboard()">Copy To Clipboard</button>
     }
 </div>
+
+<script>
+    function copyToClipboard() {
+        var authCodeInputElement = document.getElementById("auth-code");
+        authCodeInputElement.select();
+        authCodeInputElement.setSelectionRange(0, 99999);
+        navigator.clipboard.writeText(authCodeInputElement.value);
+        alert("Code copied to clipboard");
+    }
+</script>
