@@ -8,6 +8,8 @@ variables:
   projectName: 'Umbraco.Forms.Integrations.Crm.Hubspot.OAuthProxy'
   project: 'src/$(projectName)/$(projectName).csproj'
   buildConfiguration: 'Release'
+  azureServiceConnection: ''
+  webAppName: 'umbraco-forms-hubspot'
 
 steps:
 - script: dotnet build $(project) --configuration $(buildConfiguration)
@@ -17,11 +19,10 @@ steps:
   inputs:
     command: 'publish'
     projects: $(project)
-    publishWebProjects: false
-#- task: AzureWebApp@1
-#  displayName: 'Deploy Web App'
-#  inputs:
-#    azureSubscription: '<Azure service connection>'
-#    appType: 'webAppLinux'
-#    appName: '<Name of web app>'
-#    package: '$(System.DefaultWorkingDirectory)/**/*.zip'
+    publishWebProjects: true
+- task: AzureWebApp@1
+  displayName: 'Deploy Web App'
+  inputs:
+    azureSubscription: $(azureServiceConnection)
+    appName: $(webAppName)
+    package: '$(System.DefaultWorkingDirectory)/**/*.zip'
