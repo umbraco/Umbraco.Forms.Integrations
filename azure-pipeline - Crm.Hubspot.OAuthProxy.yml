@@ -8,8 +8,8 @@ variables:
   projectName: 'Umbraco.Forms.Integrations.Crm.Hubspot.OAuthProxy'
   project: 'src/$(projectName)/$(projectName).csproj'
   buildConfiguration: 'Release'
-  azureServiceConnection: ''
-  webAppName: 'umbraco-forms-hubspot'
+  azureServiceConnection: 'Umbraco Forms Integrations - Umbraco Cloud Services Dev - Hubspot Auth'
+  webAppName: 'azapp-forms-hubspot-auth-we-dev-svc'
 
 steps:
 - script: dotnet build $(project) --configuration $(buildConfiguration)
