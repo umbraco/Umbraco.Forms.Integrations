@@ -26,3 +26,16 @@ steps:
     azureSubscription: $(azureServiceConnection)
     appName: $(webAppName)
     package: '$(System.DefaultWorkingDirectory)/**/*.zip'
+- task: AzureAppServiceSettings@1
+  displayName: 'Set Web App Settings'
+  inputs:
+    azureSubscription: $(azureServiceConnection)
+    appName: $(webAppName)
+    appSettings: |
+      [
+        {
+          "name": "ClientSecret",
+          "value": $(hubSpotAppSecretKey),
+          "slotSetting": false
+        }
+      ]
