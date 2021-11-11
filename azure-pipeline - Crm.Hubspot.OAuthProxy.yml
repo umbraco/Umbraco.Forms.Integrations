@@ -34,7 +34,7 @@ steps:
     appSettings: |
       [
         {
-          "name": "ClientSecret",
+          "name": "AppSettings:ClientSecret",
           "value": "$(hubSpotAppSecretKey)",
           "slotSetting": false
         }

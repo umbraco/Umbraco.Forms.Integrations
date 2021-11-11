@@ -37,8 +37,8 @@ namespace Umbraco.Forms.Integrations.Crm.Hubspot.Services
         private const string OAuthScopes = "crm.objects.contacts.read%20crm.objects.contacts.write";
         private const string OAauthClientId = "1a04f5bf-e99e-48e1-9d62-6c25bf2bdefe";
 
-        private const string OAuthRedirectUrl = "https://localhost:44364/";
-        private const string OAuthTokenProxyUrl = "https://localhost:44364/oauth/v1/token";
+        private const string OAuthRedirectUrl = "https://hubspot-forms-auth.rainbowsrock.net/";
+        private const string OAuthTokenProxyUrl = "https://hubspot-forms-auth.rainbowsrock.net//oauth/v1/token";
 
         private const string AccessTokenCacheKey = "HubSpotOAuthAccessToken";
 
