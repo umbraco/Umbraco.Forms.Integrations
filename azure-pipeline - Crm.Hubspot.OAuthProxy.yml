@@ -8,8 +8,10 @@ variables:
   projectName: 'Umbraco.Forms.Integrations.Crm.Hubspot.OAuthProxy'
   project: 'src/$(projectName)/$(projectName).csproj'
   buildConfiguration: 'Release'
-  azureServiceConnection: 'Umbraco Forms Integrations - Umbraco Cloud Services Dev - Hubspot Auth'
-  webAppName: 'azapp-forms-hubspot-auth-we-dev-svc'
+  azureServiceConnectionDev: 'Umbraco Forms Integrations - Umbraco Cloud Services Dev - Hubspot Auth'
+  azureServiceConnectionLive: 'Umbraco Forms Integrations - Umbraco Cloud Services Live - Hubspot Auth'
+  webAppNameDev: 'azapp-forms-hubspot-auth-we-dev-svc'
+  webAppNameLive: 'azapp-forms-hubspot-auth-we-live-svc'
 
 steps:
 - script: dotnet build $(project) --configuration $(buildConfiguration)
@@ -21,16 +23,35 @@ steps:
     projects: $(project)
     publishWebProjects: false
 - task: AzureWebApp@1
-  displayName: 'Deploy Web App'
+  displayName: 'Deploy Web App (Dev)'
   inputs:
-    azureSubscription: $(azureServiceConnection)
-    appName: $(webAppName)
+    azureSubscription: $(azureServiceConnectionDev)
+    appName: $(webAppNameDev)
     package: '$(System.DefaultWorkingDirectory)/**/*.zip'
 - task: AzureAppServiceSettings@1
-  displayName: 'Set Web App Settings'
+  displayName: 'Set Web App Settings (Dev)'
   inputs:
-    azureSubscription: $(azureServiceConnection)
-    appName: $(webAppName)
+    azureSubscription: $(azureServiceConnectionDev)
+    appName: $(webAppNameDev)
+    appSettings: |
+      [
+        {
+          "name": "AppSettings:ClientSecret",
+          "value": "$(hubSpotAppSecretKey)",
+          "slotSetting": false
+        }
+      ]
+- task: AzureWebApp@1
+  displayName: 'Deploy Web App (Live)'
+  inputs:
+    azureSubscription: $(azureServiceConnectionLive)
+    appName: $(webAppNameLive)
+    package: '$(System.DefaultWorkingDirectory)/**/*.zip'
+- task: AzureAppServiceSettings@1
+  displayName: 'Set Web App Settings (Live)'
+  inputs:
+    azureSubscription: $(azureServiceConnectionLive)
+    appName: $(webAppNameLive)
     appSettings: |
       [
         {
