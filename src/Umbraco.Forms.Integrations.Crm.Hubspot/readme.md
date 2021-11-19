@@ -46,6 +46,14 @@ A button is available to clear the authentication with HubSpot, following which 
 
 When the OAuth authentication method is being used, the API call to retrieve the token is proxied via and endpoint on the same website, allowing the Umbraco Forms HubSpot app secret key to remain secret (i.e. not included in configuration or hard-coded into the dll).
 
+##### OAuth Proxy Site
+
+The website used for the OAuth proxy is defined as infrastructure as code in [these templates(https://github.com/umbraco/Umbraco.Cloud.Infrastructure/blob/master/tf-modules/azure/services/umbraco-forms-hubspot-auth/README.md)] (Umbraco HQ access only).
+
+##### Hubspot App
+
+The Hubspot App used for authentication is managed from [here](https://app-eu1.hubspot.com/developer/25171316/application/457256) (Umbraco HQ access only - account hubspot-developers-8usep1.com / 25171316).).
+
 ### Working With the HubSpot/Umbraco Forms Integration
 
 Add the "Save Contact to Hubspot" workflow to a form and configure the mappings between the form and Hubspot fields.
