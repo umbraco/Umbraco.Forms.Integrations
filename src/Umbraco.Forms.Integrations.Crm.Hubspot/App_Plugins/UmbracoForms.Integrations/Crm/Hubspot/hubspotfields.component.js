@@ -6,16 +6,16 @@ angular
         templateUrl: "/App_Plugins/UmbracoForms.Integrations/Crm/Hubspot/hubspot-field-mapper-template.html",
         bindings: {
             setting: "<"
-        },        
+        },
     }
-);
+    );
 
 function HubSpotFieldsController($routeParams, umbracoFormsIntegrationsCrmHubspotResource, pickerResource, overlayService, notificationsService) {
     var vm = this;
 
     vm.authorizationCode = "";
     vm.authenticationUrl = "";
-    vm.loading = false;
+    vm.loading = true;
     vm.authorizationStatus = "Unauthenticated";
 
     function getFieldsForMapping() {
@@ -37,10 +37,11 @@ function HubSpotFieldsController($routeParams, umbracoFormsIntegrationsCrmHubspo
                     description: x.description
                 }
             });
+            vm.loading = false;
         });
     }
 
-    vm.$onInit = function() {
+    vm.$onInit = function () {
 
         if (!vm.setting.value) {
             vm.mappings = [];
@@ -49,7 +50,6 @@ function HubSpotFieldsController($routeParams, umbracoFormsIntegrationsCrmHubspo
         }
 
         umbracoFormsIntegrationsCrmHubspotResource.isAuthorizationConfigured().then(function (response) {
-            vm.loading = false;
             if (response !== "Unauthenticated") {
                 vm.authorizationStatus = response;
                 getFieldsForMapping();
@@ -58,29 +58,47 @@ function HubSpotFieldsController($routeParams, umbracoFormsIntegrationsCrmHubspo
                 vm.authorizationStatus = "Unauthenticated";
                 umbracoFormsIntegrationsCrmHubspotResource.getAuthenticationUrl().then(function (response) {
                     vm.authenticationUrl = response;
+                    vm.loading = false;
                 });
             }
         });
-    }
+    };
+
+    vm.openAuth = function () {
+        window.open(vm.authenticationUrl);
+    };
+
+    // Setup the post message handler for automatic authentication without having to copy and paste the code from the proxy site.
+    window.addEventListener("message", function (event) {
+        if (event.data.type === "hubspot:oauth:success") {
+            umbracoFormsIntegrationsCrmHubspotResource.authorize(event.data.code).then(function (response) {
+                handleAuthorizationCallback(response);
+            });
+        }
+    }, false);
+
+    function handleAuthorizationCallback(response) {
+        if (response.success) {
+            vm.authorizationStatus = "OAuth";
+            vm.authorizationCode = "";
+            notificationsService.showNotification({
+                type: 0,
+                header: "Authorization succeeded",
+                message: "Your Umbraco Forms installation is now connected to your HubSpot account",
+            });
+            getFieldsForMapping();
+        } else {
+            notificationsService.showNotification({
+                type: 2,
+                header: "Authorization failed",
+                message: response.errorMessage
+            });
+        }
+    };
 
     vm.authorize = function () {
         umbracoFormsIntegrationsCrmHubspotResource.authorize(vm.authorizationCode).then(function (response) {
-            if (response.success) {
-                vm.authorizationStatus = "OAuth";
-                vm.authorizationCode = "";
-                notificationsService.showNotification({
-                    type: 0,
-                    header: "Authorization succeeded",
-                    message: "Your Umbraco Forms installation is now connected to your HubSpot account",
-                });
-                getFieldsForMapping();
-            } else {
-                notificationsService.showNotification({
-                    type: 2,
-                    header: "Authorization failed",
-                    message: response.errorMessage
-                });
-            }
+            handleAuthorizationCallback(response);
         });
     }
 
@@ -131,7 +149,7 @@ function HubSpotFieldsController($routeParams, umbracoFormsIntegrationsCrmHubspo
         if (item) {
             return item.description;
         }
-        
+
         return "";
     }
 

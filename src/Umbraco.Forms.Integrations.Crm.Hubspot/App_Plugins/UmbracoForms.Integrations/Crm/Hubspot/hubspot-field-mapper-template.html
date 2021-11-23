@@ -7,13 +7,8 @@
     <div ng-show="!vm.loading && vm.authorizationStatus === 'Unauthenticated'">
         <p>Umbraco Forms is not configured with a HubSpot CRM account.</p>
         <p>To do this you can either create and save an API key into the <i>UmbracoForms.config</i> file.</p>
-        <p>Or you can follow the steps below to complete an OAuth connection.</p>
-        <dl>
-            <dt>Step 1.</dt>
-            <dd>Click <a href="{{vm.authenticationUrl}}" target="_blank" style="text-decoration: underline">here</a> to authenticate with HubSpot.</dd>
-            <dt>Step 2.</dt>
-            <dd>Paste the authorization code below and click to complete the authentication.</dd>
-        </dl>
+        <p>Or you can click <a ng-click="vm.openAuth()" style="text-decoration: underline">here</a> to complete an OAuth connection.</p>
+        <p><em>If your browser is unable to process the automated connection, paste the provided authorization code below and click to complete the authentication.</em></dd>
         <input type="text" placeholder="Enter authorization code" ng-model="vm.authorizationCode" />
         <umb-button type="button" disabled="vm.authorizationCode === ''" action="vm.authorize()" label="Authorize"></umb-button>
     </div>
