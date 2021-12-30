@@ -1,11 +1,15 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using System;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
+using Umbraco.Cms.Integrations.Authorization.Core.Models.Enums;
+using Umbraco.Cms.Integrations.Authorization.Core.Models.Dtos;
 using Umbraco.Forms.Integrations.Crm.Hubspot.OAuthProxy.Configuration;
+using Umbraco.Forms.Integrations.Crm.Hubspot.OAuthProxy.Factories;
 
 namespace Umbraco.Forms.Integrations.Crm.Hubspot.OAuthProxy.Controllers
 {
@@ -15,34 +19,55 @@ namespace Umbraco.Forms.Integrations.Crm.Hubspot.OAuthProxy.Controllers
         private readonly IHttpClientFactory _httpClientFactory;
         private readonly AppSettings _appSettings;
 
-        public OAuthProxyController(IHttpClientFactory httpClientFactory, IOptions<AppSettings> appSettings)
+        private readonly AuthorizationServiceFactory _authorizationServiceFactory;
+
+        public OAuthProxyController(IHttpClientFactory httpClientFactory, IOptions<AppSettings> appSettings,
+            AuthorizationServiceFactory authorizationServiceFactory)
         {
             _httpClientFactory = httpClientFactory;
             _appSettings = appSettings.Value;
+
+            _authorizationServiceFactory = authorizationServiceFactory;
         }
 
         [HttpPost]
         [Route("/oauth/v1/token")]
         public async Task ProxyTokenRequest()
         {
-            var httpClient = _httpClientFactory.CreateClient("HubspotToken");
+            if (Request.Headers.TryGetValue("service_type", out var serviceType))
+            {
+                try
+                {
+                    var serviceTypeParsed =
+                        (ServiceType.ServiceTypeEnum) Enum.Parse(typeof(ServiceType.ServiceTypeEnum), serviceType);
 
-            var response = await httpClient.PostAsync("oauth/v1/token", GetContent(Request.Form));
-            var content = await response.Content.ReadAsStringAsync();
+                    var service = _authorizationServiceFactory.Create(serviceTypeParsed);
 
-            Response.StatusCode = (int)response.StatusCode;
+                    var content = service.GetContent(Request.Form);
 
-            Response.ContentType = response.Content.Headers.ContentType?.ToString();
-            Response.ContentLength = response.Content.Headers.ContentLength;
+                    var response = await service.ProcessAsync(content);
 
-            await Response.WriteAsync(content);
-        }
+                    await Response.WriteAsync(response.Content);
+                }
+                catch (ArgumentException ex)
+                {
+                    Response.StatusCode = StatusCodes.Status500InternalServerError;
 
-        private HttpContent GetContent(IFormCollection form)
-        {
-            var dictionary = form.ToDictionary(x => x.Key, x => x.Value.ToString());
-            dictionary.Add("client_secret", _appSettings.ClientSecret);
-            return new FormUrlEncodedContent(dictionary);
+                    await Response.WriteAsync(ex.Message);
+                }
+                catch (NotImplementedException ex)
+                {
+                    Response.StatusCode = StatusCodes.Status500InternalServerError;
+
+                    await Response.WriteAsync(ex.Message);
+                }
+            }
+            else
+            {
+                Response.StatusCode = StatusCodes.Status500InternalServerError;
+
+                await Response.WriteAsync("Service Type header is missing.");
+            }
         }
     }
 }

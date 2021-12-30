@@ -1,14 +1,12 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+
+using Umbraco.Cms.Integrations.Authorization.Core;
 using Umbraco.Forms.Integrations.Crm.Hubspot.OAuthProxy.Configuration;
+using Umbraco.Forms.Integrations.Crm.Hubspot.OAuthProxy.Factories;
 
 namespace Umbraco.Forms.Integrations.Crm.Hubspot.OAuthProxy
 {
@@ -26,13 +24,14 @@ namespace Umbraco.Forms.Integrations.Crm.Hubspot.OAuthProxy
         {
             services.Configure<AppSettings>(Configuration.GetSection("AppSettings"));
 
-            services.AddHttpClient("HubspotToken", c =>
-            {
-                c.BaseAddress = new Uri("https://api.hubapi.com");
-            });
+            services.AddHttpContextAccessor();
+
+            services.AddTransient<AuthorizationServiceFactory>();
 
             services.AddRazorPages();
             services.AddControllers();
+
+            services.AddAuthorizationModule();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

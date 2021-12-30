@@ -4,4 +4,8 @@
     <TargetFramework>net5.0</TargetFramework>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Umbraco.Cms.Integrations.Authorization\Umbraco.Cms.Integrations.Authorization.Core.csproj" />
+  </ItemGroup>
+
 </Project>
