@@ -1,12 +1,10 @@
 ﻿using System;
 using System.Net.Http;
-using Microsoft.AspNetCore.Http;
+
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Options;
+
 using Umbraco.Cms.Integrations.Authorization.Core.Models.Enums;
 using Umbraco.Cms.Integrations.Authorization.Core.Interfaces;
-using Umbraco.Cms.Integrations.Authorization.Core.Models.Dtos;
-using Umbraco.Forms.Integrations.Crm.Hubspot.OAuthProxy.Configuration;
 using Umbraco.Forms.Integrations.Crm.Hubspot.OAuthProxy.Services;
 
 namespace Umbraco.Forms.Integrations.Crm.Hubspot.OAuthProxy.Factories
@@ -28,10 +26,12 @@ namespace Umbraco.Forms.Integrations.Crm.Hubspot.OAuthProxy.Factories
         {
             switch (serviceType)
             {
-                case ServiceType.ServiceTypeEnum.Hubspot:
+                case ServiceType.ServiceTypeEnum.HubspotAuthorization:
                     return new HubspotService(_httpClientFactory, _configuration);
-                case ServiceType.ServiceTypeEnum.Semrush:
-                    return new SemrushService(_httpClientFactory, _configuration);
+                case ServiceType.ServiceTypeEnum.SemrushAuthorization:
+                    return new SemrushAuthorizationService(_httpClientFactory, _configuration);
+                case ServiceType.ServiceTypeEnum.SemrushReauthorization:
+                    return new SemrushReauthorizationService(_httpClientFactory, _configuration);
                 default: throw new NotImplementedException("Service Type not implemented.");
             }
         }

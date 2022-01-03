@@ -5,8 +5,9 @@ namespace Umbraco.Cms.Integrations.Authorization.Core.Models.Enums
     {
         public enum ServiceTypeEnum
         {
-            Hubspot,
-            Semrush,
+            HubspotAuthorization,
+            SemrushAuthorization,
+            SemrushReauthorization,
             Shopify
         }
     }

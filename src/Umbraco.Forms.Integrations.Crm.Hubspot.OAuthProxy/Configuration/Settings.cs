@@ -7,6 +7,8 @@ namespace Umbraco.Forms.Integrations.Crm.Hubspot.OAuthProxy.Configuration
 
         public string AuthEndpoint { get; set; }
 
+        public string RefreshAuthEndpoint { get; set; }
+
         public string ClientId { get; set; }
 
         public string ClientSecret { get; set; }

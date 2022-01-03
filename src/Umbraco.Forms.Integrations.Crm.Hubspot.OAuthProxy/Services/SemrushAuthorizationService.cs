@@ -5,7 +5,6 @@ using System.Threading.Tasks;
 
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Options;
 
 using Umbraco.Cms.Integrations.Authorization.Core.Models.Dtos;
 using Umbraco.Cms.Integrations.Authorization.Core.Interfaces;
@@ -13,7 +12,7 @@ using Umbraco.Forms.Integrations.Crm.Hubspot.OAuthProxy.Configuration;
 
 namespace Umbraco.Forms.Integrations.Crm.Hubspot.OAuthProxy.Services
 {
-    public class SemrushService: IAuthorizationService
+    public class SemrushAuthorizationService: IAuthorizationService
     {
         private readonly IHttpClientFactory _httpClientFactory;
 
@@ -21,7 +20,7 @@ namespace Umbraco.Forms.Integrations.Crm.Hubspot.OAuthProxy.Services
 
         private readonly Settings _settings;
 
-        public SemrushService(IHttpClientFactory httpClientFactory, IConfiguration configuration)
+        public SemrushAuthorizationService(IHttpClientFactory httpClientFactory, IConfiguration configuration)
         {
             _httpClientFactory = httpClientFactory;
 
