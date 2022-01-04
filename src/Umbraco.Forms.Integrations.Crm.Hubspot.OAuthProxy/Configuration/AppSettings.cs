@@ -2,6 +2,10 @@
 {
     public class AppSettings
     {
-        public string ClientSecret { get; set; }
+        public string HubspotClientSecret { get; set; }
+
+        public string SemrushClientSecret { get; set; }
+
+        public string this[string propertyName] => (string)GetType().GetProperty(propertyName)?.GetValue(this, null);
     }
 }

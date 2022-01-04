@@ -30,6 +30,10 @@ namespace Umbraco.Forms.Integrations.Crm.Hubspot.OAuthProxy
             {
                 c.BaseAddress = new Uri("https://api.hubapi.com");
             });
+            services.AddHttpClient("SemrushToken", c =>
+            {
+                c.BaseAddress = new Uri("https://oauth.semrush.com/");
+            });
 
             services.AddRazorPages();
             services.AddControllers();
