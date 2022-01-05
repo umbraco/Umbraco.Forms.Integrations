@@ -5,7 +5,7 @@ pool:
   vmImage: 'windows-latest'
 
 variables:
-  projectName: 'Umbraco.Forms.Integrations.Crm.Hubspot.OAuthProxy'
+  projectName: 'Umbraco.Cms.Integrations.OAuthProxy'
   project: 'src/$(projectName)/$(projectName).csproj'
   buildConfiguration: 'Release'
   azureServiceConnectionDev: 'Umbraco Forms Integrations - Umbraco Cloud Services Dev - Hubspot Auth'
@@ -36,8 +36,13 @@ steps:
     appSettings: |
       [
         {
-          "name": "AppSettings:ClientSecret",
+          "name": "AppSettings:HubspotClientSecret",
           "value": "$(hubSpotAppSecretKey)",
+          "slotSetting": false
+        },
+        {
+          "name": "AppSettings:SemrushClientSecret",
+          "value": "$(semrushAppSecretKey)",
           "slotSetting": false
         }
       ]
@@ -55,8 +60,13 @@ steps:
     appSettings: |
       [
         {
-          "name": "AppSettings:ClientSecret",
+          "name": "AppSettings:HubspotClientSecret",
           "value": "$(hubSpotAppSecretKey)",
+          "slotSetting": false
+        },
+        {
+          "name": "AppSettings:SemrushClientSecret",
+          "value": "$(semrushAppSecretKey)",
           "slotSetting": false
         }
       ]

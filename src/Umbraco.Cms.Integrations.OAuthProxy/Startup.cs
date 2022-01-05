@@ -1,13 +1,11 @@
+using System;
+
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+
 using Umbraco.Forms.Integrations.Crm.Hubspot.OAuthProxy.Configuration;
 
 namespace Umbraco.Forms.Integrations.Crm.Hubspot.OAuthProxy
@@ -28,7 +26,11 @@ namespace Umbraco.Forms.Integrations.Crm.Hubspot.OAuthProxy
 
             services.AddHttpClient("HubspotToken", c =>
             {
-                c.BaseAddress = new Uri("https://api.hubapi.com");
+                c.BaseAddress = new Uri("https://api.hubapi.com/");
+            });
+            services.AddHttpClient("SemrushToken", c =>
+            {
+                c.BaseAddress = new Uri("https://oauth.semrush.com/");
             });
 
             services.AddRazorPages();

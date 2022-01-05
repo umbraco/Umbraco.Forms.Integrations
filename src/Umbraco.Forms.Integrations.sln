@@ -15,12 +15,12 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Umbraco.Forms.Integrations.
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{D8563F12-E8CF-4900-BEF4-531B8C1FE8A3}"
 	ProjectSection(SolutionItems) = preProject
-		..\azure-pipeline - Crm.Hubspot.OAuthProxy.yml = ..\azure-pipeline - Crm.Hubspot.OAuthProxy.yml
+		..\azure-pipeline - Cms.OAuthProxy.yml = ..\azure-pipeline - Cms.OAuthProxy.yml
 		..\azure-pipeline - Crm.Hubspot.yml = ..\azure-pipeline - Crm.Hubspot.yml
 		..\README.md = ..\README.md
 	EndProjectSection
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Umbraco.Forms.Integrations.Crm.Hubspot.OAuthProxy", "Umbraco.Forms.Integrations.Crm.Hubspot.OAuthProxy\Umbraco.Forms.Integrations.Crm.Hubspot.OAuthProxy.csproj", "{B3FD7257-B50B-4221-A5CF-59AC25862924}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Umbraco.Cms.Integrations.OAuthProxy", "Umbraco.Cms.Integrations.OAuthProxy\Umbraco.Cms.Integrations.OAuthProxy.csproj", "{B3FD7257-B50B-4221-A5CF-59AC25862924}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
