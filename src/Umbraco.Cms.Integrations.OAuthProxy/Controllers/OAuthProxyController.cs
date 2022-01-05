@@ -20,7 +20,15 @@ namespace Umbraco.Cms.Integrations.OAuthProxy.Controllers
 
         public const string ServiceNameHeaderKey = "service_name";
 
-        private static List<string> ValidServiceNames = new List<string> {"Hubspot", "Semrush"};
+        /// <summary>
+        /// Integrated services with their token URIs
+        /// </summary>
+        private static Dictionary<string, string> ValidServices = new Dictionary<string, string>
+        {
+            { "Hubspot", "oauth/v1/token" }, { "Semrush", "oauth2/access_token" }
+        };
+
+        //private static List<string> ValidServiceNames = new List<string> {"Hubspot", "Semrush"};
 
         public OAuthProxyController(IHttpClientFactory httpClientFactory, IOptions<AppSettings> appSettings)
         {
@@ -37,7 +45,7 @@ namespace Umbraco.Cms.Integrations.OAuthProxy.Controllers
                 serviceName = "Hubspot";
             }
 
-            if (!ValidServiceNames.Contains(serviceName))
+            if (!ValidServices.ContainsKey(serviceName))
             {
                 throw 
                     new InvalidOperationException($"Provided {ServiceNameHeaderKey} header value of {serviceName} is not supported");
@@ -46,7 +54,7 @@ namespace Umbraco.Cms.Integrations.OAuthProxy.Controllers
             var httpClient = _httpClientFactory.CreateClient($"{serviceName}Token");
 
             var response =
-                await httpClient.PostAsync(GetAuthUri(serviceName), GetContent(Request.Form, serviceName));
+                await httpClient.PostAsync(ValidServices[serviceName], GetContent(Request.Form, serviceName));
             var content = await response.Content.ReadAsStringAsync();
 
             Response.StatusCode = (int)response.StatusCode;
@@ -65,7 +73,5 @@ namespace Umbraco.Cms.Integrations.OAuthProxy.Controllers
         }
 
         private string GetClientSecret(string serviceName) => _appSettings[$"{serviceName}ClientSecret"];
-
-        private string GetAuthUri(string serviceName) => _appSettings[$"{serviceName}AuthUri"];
     }
 }
