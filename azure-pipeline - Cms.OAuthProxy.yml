@@ -1,5 +1,5 @@
 trigger:
-- feature/semrush-auth
+- main
 
 pool:
   vmImage: 'windows-latest'
