@@ -20,11 +20,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		..\README.md = ..\README.md
 	EndProjectSection
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Umbraco.Forms.Integrations.Crm.Hubspot.OAuthProxy", "Umbraco.Forms.Integrations.Crm.Hubspot.OAuthProxy\Umbraco.Forms.Integrations.Crm.Hubspot.OAuthProxy.csproj", "{B3FD7257-B50B-4221-A5CF-59AC25862924}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Auth", "Auth", "{47054359-718F-4CEF-B381-0C99B58CAF89}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Umbraco.Cms.Integrations.Authorization.Core", "Umbraco.Cms.Integrations.Authorization\Umbraco.Cms.Integrations.Authorization.Core.csproj", "{A2029E2E-429C-416F-94EB-41210D3E17C5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Umbraco.Cms.Integrations.OAuthProxy", "Umbraco.Cms.Integrations.OAuthProxy\Umbraco.Cms.Integrations.OAuthProxy.csproj", "{B3FD7257-B50B-4221-A5CF-59AC25862924}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -48,10 +44,6 @@ Global
 		{B3FD7257-B50B-4221-A5CF-59AC25862924}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B3FD7257-B50B-4221-A5CF-59AC25862924}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B3FD7257-B50B-4221-A5CF-59AC25862924}.Release|Any CPU.Build.0 = Release|Any CPU
-		{A2029E2E-429C-416F-94EB-41210D3E17C5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{A2029E2E-429C-416F-94EB-41210D3E17C5}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{A2029E2E-429C-416F-94EB-41210D3E17C5}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{A2029E2E-429C-416F-94EB-41210D3E17C5}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -61,7 +53,6 @@ Global
 		{621A30D4-2251-43FF-BB4A-A4808C6A67D6} = {B068CD05-EA88-4457-B8D9-6DB899E7EBE1}
 		{53742941-B77B-4A95-B247-F3ADD944C2FD} = {621A30D4-2251-43FF-BB4A-A4808C6A67D6}
 		{B3FD7257-B50B-4221-A5CF-59AC25862924} = {621A30D4-2251-43FF-BB4A-A4808C6A67D6}
-		{A2029E2E-429C-416F-94EB-41210D3E17C5} = {47054359-718F-4CEF-B381-0C99B58CAF89}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {24944114-049F-4C44-95C5-E50600988018}
