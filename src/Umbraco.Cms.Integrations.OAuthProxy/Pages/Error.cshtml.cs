@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
 using System.Diagnostics;
 
-namespace Umbraco.Forms.Integrations.Crm.Hubspot.OAuthProxy.Pages
+namespace Umbraco.Cms.Integrations.OAuthProxy.Pages
 {
     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
     [IgnoreAntiforgeryToken]

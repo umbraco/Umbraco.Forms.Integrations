@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
 
-namespace Umbraco.Forms.Integrations.Crm.Hubspot.OAuthProxy.Pages
+namespace Umbraco.Cms.Integrations.OAuthProxy.Pages
 {
     public class IndexModel : PageModel
     {

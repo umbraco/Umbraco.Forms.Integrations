@@ -2,7 +2,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 
-namespace Umbraco.Forms.Integrations.Crm.Hubspot.OAuthProxy
+namespace Umbraco.Cms.Integrations.OAuthProxy
 {
     public class Program
     {

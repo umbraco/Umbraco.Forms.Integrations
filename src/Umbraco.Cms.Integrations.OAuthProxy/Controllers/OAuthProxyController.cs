@@ -7,8 +7,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
-
-using Umbraco.Forms.Integrations.Crm.Hubspot.OAuthProxy.Configuration;
+using Umbraco.Cms.Integrations.OAuthProxy.Configuration;
 
 namespace Umbraco.Cms.Integrations.OAuthProxy.Controllers
 {

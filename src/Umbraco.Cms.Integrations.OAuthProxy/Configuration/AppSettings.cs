@@ -1,4 +1,4 @@
-﻿namespace Umbraco.Forms.Integrations.Crm.Hubspot.OAuthProxy.Configuration
+﻿namespace Umbraco.Cms.Integrations.OAuthProxy.Configuration
 {
     public class AppSettings
     {
@@ -6,6 +6,6 @@
 
         public string SemrushClientSecret { get; set; }
 
-        public string this[string propertyName] => (string) GetType().GetProperty(propertyName)?.GetValue(this, null);
+        public string this[string propertyName] => (string)GetType().GetProperty(propertyName)?.GetValue(this, null);
     }
 }

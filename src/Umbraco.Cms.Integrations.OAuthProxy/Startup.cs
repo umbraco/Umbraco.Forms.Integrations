@@ -5,10 +5,9 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Umbraco.Cms.Integrations.OAuthProxy.Configuration;
 
-using Umbraco.Forms.Integrations.Crm.Hubspot.OAuthProxy.Configuration;
-
-namespace Umbraco.Forms.Integrations.Crm.Hubspot.OAuthProxy
+namespace Umbraco.Cms.Integrations.OAuthProxy
 {
     public class Startup
     {
