@@ -22,12 +22,10 @@ namespace Umbraco.Cms.Integrations.OAuthProxy.Controllers
         /// <summary>
         /// Integrated services with their token URIs
         /// </summary>
-        private static Dictionary<string, string> ValidServices = new Dictionary<string, string>
+        private static Dictionary<string, string> ValidServices = new()
         {
-            { "Hubspot", "oauth/v1/token" }, { "Semrush", "oauth2/access_token" }
+            { "Hubspot", "oauth/v1/token" }, { "HubspotForms", "oauth/v1/token" }, { "Semrush", "oauth2/access_token" }
         };
-
-        //private static List<string> ValidServiceNames = new List<string> {"Hubspot", "Semrush"};
 
         public OAuthProxyController(IHttpClientFactory httpClientFactory, IOptions<AppSettings> appSettings)
         {
