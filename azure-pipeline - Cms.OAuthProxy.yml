@@ -41,6 +41,11 @@ steps:
           "slotSetting": false
         },
         {
+          "name": "AppSettings:HubspotFormsClientSecret",
+          "value": "$(hubSpotFormsAppSecretKey)",
+          "slotSetting": false
+        },
+        {
           "name": "AppSettings:SemrushClientSecret",
           "value": "$(semrushAppSecretKey)",
           "slotSetting": false
@@ -62,6 +67,11 @@ steps:
         {
           "name": "AppSettings:HubspotClientSecret",
           "value": "$(hubSpotAppSecretKey)",
+          "slotSetting": false
+        },
+        {
+          "name": "AppSettings:HubspotFormsClientSecret",
+          "value": "$(hubSpotFormsAppSecretKey)",
           "slotSetting": false
         },
         {
