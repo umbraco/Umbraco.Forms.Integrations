@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+
 using Umbraco.Cms.Integrations.OAuthProxy.Configuration;
 
 namespace Umbraco.Cms.Integrations.OAuthProxy
@@ -34,6 +35,10 @@ namespace Umbraco.Cms.Integrations.OAuthProxy
             services.AddHttpClient("SemrushToken", c =>
             {
                 c.BaseAddress = new Uri("https://oauth.semrush.com/");
+            });
+            services.AddHttpClient("ShopifyToken", c =>
+            {
+                c.BaseAddress = new Uri("https://shop-replace.myshopify.com/admin/");
             });
 
             services.AddRazorPages();
