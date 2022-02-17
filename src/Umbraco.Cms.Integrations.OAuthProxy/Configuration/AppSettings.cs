@@ -8,6 +8,8 @@
 
         public string SemrushClientSecret { get; set; }
 
+        public string ShopifyClientSecret { get; set; }
+
         public string this[string propertyName] => (string)GetType().GetProperty(propertyName)?.GetValue(this, null);
     }
 }
