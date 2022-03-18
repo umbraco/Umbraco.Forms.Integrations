@@ -1,0 +1,78 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Net.Http;
+using Newtonsoft.Json;
+using Umbraco.Forms.Core;
+using Umbraco.Forms.Core.Enums;
+using Umbraco.Forms.Core.Persistence.Dtos;
+using Umbraco.Forms.Integrations.Automation.Zapier.Models;
+using Umbraco.Forms.Integrations.Automation.Zapier.Validators;
+
+namespace Umbraco.Forms.Integrations.Automation.Zapier
+{
+    public class ZapierWorkflow : WorkflowType
+    {
+        public ZapierWorkflow()
+        {
+            Name = "Trigger Zap";
+            Id = new Guid("d05b95e5-86f8-4c31-99b8-4ec7fc62a787");
+            Description = "Automation workflow for triggering Zaps in Zapier.";
+            Icon = "icon-tools";
+        }
+
+        [Core.Attributes.Setting("Fields Mappings",
+            Description = "Please map fields of the form against Zap ones",
+            View = "FieldMapper")]
+        public string Mappings { get; set; }
+
+        [Core.Attributes.Setting("WebHook Uri", 
+            Description = "Zapier WebHook URL",
+            View = "TextField")]
+        public string WebHookUri { get; set; }
+
+        // Using a static HttpClient (see: https://www.aspnetmonsters.com/2016/08/2016-08-27-httpclientwrong/).
+        private readonly static HttpClient s_client = new HttpClient();
+
+        // Access to the client within the class is via ClientFactory(), allowing us to mock the responses in tests.
+        public static Func<HttpClient> ClientFactory = () => s_client;
+
+        public override WorkflowExecutionStatus Execute(Record record, RecordEventArgs e)
+        {
+            try
+            {
+                var content = new Dictionary<string, string>();
+
+                var mappings = JsonConvert.DeserializeObject<List<Mapping>>(Mappings);
+                if (mappings.Any())
+                {
+                    foreach (var mapping in mappings)
+                    {
+                        var fieldRecord = record.RecordFields[Guid.Parse(mapping.Value)];
+                        content.Add(mapping.Alias, string.IsNullOrEmpty(mapping.StaticValue) ? fieldRecord.ValuesAsString() : mapping.StaticValue);
+                    }
+                }
+
+                var result = ClientFactory().PostAsync(WebHookUri, new FormUrlEncodedContent(content)).Result;
+
+                return result.IsSuccessStatusCode ? WorkflowExecutionStatus.Completed : WorkflowExecutionStatus.Failed;
+            }
+            catch (Exception exception)
+            {
+                Umbraco.Core.Composing.Current.Logger.Error(typeof(ZapierWorkflow), exception);
+
+                return WorkflowExecutionStatus.Failed;
+            }
+        }
+
+        public override List<Exception> ValidateSettings()
+        {
+            var exceptions = new List<Exception>();
+
+            var validator = new WebHookValidator();
+            validator.IsValid(WebHookUri, ref exceptions);
+
+            return exceptions;
+        }
+    }
+}
