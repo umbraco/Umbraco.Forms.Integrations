@@ -22,4 +22,8 @@
     <PackageReference Include="UmbracoForms.Core" Version="8.11.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="App_Plugins\UmbracoForms.Integrations\Automation\Zapier\" />
+  </ItemGroup>
+
 </Project>
