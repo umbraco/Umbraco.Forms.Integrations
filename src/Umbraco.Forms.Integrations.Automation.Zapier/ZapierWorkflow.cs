@@ -1,20 +1,23 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Net.Http;
-using Newtonsoft.Json;
+
 using Umbraco.Forms.Core;
 using Umbraco.Forms.Core.Enums;
 using Umbraco.Forms.Core.Persistence.Dtos;
-using Umbraco.Forms.Integrations.Automation.Zapier.Models;
+using Umbraco.Forms.Integrations.Automation.Zapier.Services;
 using Umbraco.Forms.Integrations.Automation.Zapier.Validators;
 
 namespace Umbraco.Forms.Integrations.Automation.Zapier
 {
     public class ZapierWorkflow : WorkflowType
     {
-        public ZapierWorkflow()
+        private readonly IMappingService _mappingService;
+
+        public ZapierWorkflow(IMappingService mappingService)
         {
+            _mappingService = mappingService;
+
             Name = "Trigger Zap";
             Id = new Guid("d05b95e5-86f8-4c31-99b8-4ec7fc62a787");
             Description = "Automation workflow for triggering Zaps in Zapier.";
@@ -25,6 +28,11 @@ namespace Umbraco.Forms.Integrations.Automation.Zapier
             Description = "Please map fields of the form against Zap ones",
             View = "FieldMapper")]
         public string Mappings { get; set; }
+
+        [Core.Attributes.Setting("Standard Fields Mappings",
+            Description = "Please map fields of the form against Zap ones",
+            View = "StandardFieldMapper")]
+        public string StandardFieldsMappings { get; set; }
 
         [Core.Attributes.Setting("WebHook Uri", 
             Description = "Zapier WebHook URL",
@@ -41,17 +49,10 @@ namespace Umbraco.Forms.Integrations.Automation.Zapier
         {
             try
             {
-                var content = new Dictionary<string, string>();
-
-                var mappings = JsonConvert.DeserializeObject<List<Mapping>>(Mappings);
-                if (mappings.Any())
-                {
-                    foreach (var mapping in mappings)
-                    {
-                        var fieldRecord = record.RecordFields[Guid.Parse(mapping.Value)];
-                        content.Add(mapping.Alias, string.IsNullOrEmpty(mapping.StaticValue) ? fieldRecord.ValuesAsString() : mapping.StaticValue);
-                    }
-                }
+                var content = _mappingService
+                    .IncludeFieldsMappings(Mappings, e)
+                    .IncludeStandardFieldsMappings(StandardFieldsMappings, e)
+                    .Map();
 
                 var result = ClientFactory().PostAsync(WebHookUri, new FormUrlEncodedContent(content)).Result;
 
@@ -74,5 +75,7 @@ namespace Umbraco.Forms.Integrations.Automation.Zapier
 
             return exceptions;
         }
+
+        
     }
 }
