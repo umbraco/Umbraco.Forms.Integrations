@@ -23,7 +23,6 @@
 		<readme><![CDATA[An extension for Umbraco Forms adding support for calling Zapier triggers.]]></readme>
 	</info>
 	<files>
-		<folder path="App_Plugins/UmbracoForms.Integrations/Automation/Zapier" orgPath="App_Plugins/UmbracoForms.Integrations/Automation/Zapier" />
 		<file path="bin/release/net472/Umbraco.Forms.Integrations.Automation.Zapier.dll" orgPath="bin/Umbraco.Forms.Integrations.Automation.Zapier.dll" />
 	</files>
 </umbPackage>
