@@ -7,16 +7,17 @@ using Umbraco.Forms.Core.Enums;
 using Umbraco.Forms.Core.Persistence.Dtos;
 using Umbraco.Forms.Integrations.Automation.Zapier.Services;
 using Umbraco.Forms.Integrations.Automation.Zapier.Validators;
+using Umbraco.Web;
 
 namespace Umbraco.Forms.Integrations.Automation.Zapier
 {
     public class ZapierWorkflow : WorkflowType
     {
-        private readonly IMappingService _mappingService;
+        private readonly IUmbracoContextAccessor _umbracoContextAccessor;
 
-        public ZapierWorkflow(IMappingService mappingService)
+        public ZapierWorkflow(IUmbracoContextAccessor umbracoContextAccessor)
         {
-            _mappingService = mappingService;
+            _umbracoContextAccessor = umbracoContextAccessor;
 
             Name = "Trigger Zap";
             Id = new Guid("d05b95e5-86f8-4c31-99b8-4ec7fc62a787");
@@ -49,7 +50,9 @@ namespace Umbraco.Forms.Integrations.Automation.Zapier
         {
             try
             {
-                var content = _mappingService
+                IMappingService mappingService = new MappingService(_umbracoContextAccessor);
+
+                var content = mappingService
                     .IncludeFieldsMappings(Mappings, e)
                     .IncludeStandardFieldsMappings(StandardFieldsMappings, e)
                     .Map();
