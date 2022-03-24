@@ -11,6 +11,9 @@ using Umbraco.Web;
 
 namespace Umbraco.Forms.Integrations.Automation.Zapier.Services
 {
+    /// <summary>
+    /// Fluent Builder for packing fields mappings.
+    /// </summary>
     public class FieldMappingBuilder: IFieldMappingBuilder
     {
         private readonly Dictionary<string, string> _content;
@@ -37,8 +40,13 @@ namespace Umbraco.Forms.Integrations.Automation.Zapier.Services
             {
                 foreach (var mapping in mappingsList)
                 {
-                    var fieldRecord = e.Record.RecordFields[Guid.Parse(mapping.Value)];
-                    _content.Add(mapping.Alias, string.IsNullOrEmpty(mapping.StaticValue) ? fieldRecord.ValuesAsString() : mapping.StaticValue);
+                    var fieldRecord = !string.IsNullOrEmpty(mapping.Value) ? e.Record.RecordFields[Guid.Parse(mapping.Value)] : null;
+
+                    _content.Add(mapping.Alias, 
+                        fieldRecord != null 
+                            ? string.IsNullOrEmpty(mapping.StaticValue) 
+                                ? fieldRecord.ValuesAsString() : mapping.StaticValue
+                            : mapping.StaticValue);
                 }
             }
             else
