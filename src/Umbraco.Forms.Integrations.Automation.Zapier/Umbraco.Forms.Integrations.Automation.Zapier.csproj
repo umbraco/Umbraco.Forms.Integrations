@@ -19,7 +19,7 @@
   <ItemGroup>
     <PackageReference Include="UmbracoCms.Web" Version="8.1.0" />
 	<PackageReference Include="UmbracoCms.Core" Version="8.1.0" />
-    <PackageReference Include="UmbracoForms.Core" Version="8.11.0" />
+    <PackageReference Include="UmbracoForms.Core" Version="8.9.1" />
   </ItemGroup>
 
   <ItemGroup>

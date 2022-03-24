@@ -26,12 +26,12 @@ namespace Umbraco.Forms.Integrations.Automation.Zapier
         }
 
         [Core.Attributes.Setting("Fields Mappings",
-            Description = "Please map fields of the form against Zap ones",
+            Description = "Please map form information to the Zap ones.",
             View = "FieldMapper")]
         public string Mappings { get; set; }
 
         [Core.Attributes.Setting("Standard Fields Mappings",
-            Description = "Please map fields of the form against Zap ones",
+            Description = "Please map any standard form information to send.",
             View = "StandardFieldMapper")]
         public string StandardFieldsMappings { get; set; }
 
@@ -50,14 +50,14 @@ namespace Umbraco.Forms.Integrations.Automation.Zapier
         {
             try
             {
-                IMappingService mappingService = new MappingService(_umbracoContextAccessor);
+                IFieldMappingBuilder builder = new FieldMappingBuilder(_umbracoContextAccessor);
 
-                var content = mappingService
+                var content = builder
                     .IncludeFieldsMappings(Mappings, e)
                     .IncludeStandardFieldsMappings(StandardFieldsMappings, e)
                     .Map();
 
-                var result = ClientFactory().PostAsync(WebHookUri, new FormUrlEncodedContent(content)).Result;
+                var result = ClientFactory().PostAsync(WebHookUri, new FormUrlEncodedContent(content)).GetAwaiter().GetResult();
 
                 return result.IsSuccessStatusCode ? WorkflowExecutionStatus.Completed : WorkflowExecutionStatus.Failed;
             }

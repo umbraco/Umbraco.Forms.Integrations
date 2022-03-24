@@ -19,7 +19,7 @@ namespace Umbraco.Forms.Integrations.Automation.Zapier.Controllers
 
             var user = userService.GetByUsername(userModel.Username);
 
-            return user != null && user.Groups.Any(p => p.Alias == "admin");
+            return user != null && user.Groups.Any(p => p.Name == userModel.UserGroup);
         }
     }
 }

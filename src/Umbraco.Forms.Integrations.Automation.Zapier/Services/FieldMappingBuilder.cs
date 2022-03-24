@@ -11,20 +11,26 @@ using Umbraco.Web;
 
 namespace Umbraco.Forms.Integrations.Automation.Zapier.Services
 {
-    public class MappingService: IMappingService
+    public class FieldMappingBuilder: IFieldMappingBuilder
     {
         private readonly Dictionary<string, string> _content;
 
         private readonly IUmbracoContextAccessor _umbracoContextAccessor;
 
-        public MappingService(IUmbracoContextAccessor umbracoContextAccessor)
+        public FieldMappingBuilder(IUmbracoContextAccessor umbracoContextAccessor)
         {
             _umbracoContextAccessor = umbracoContextAccessor;
 
             _content = new Dictionary<string, string>();
         }
 
-        public IMappingService IncludeFieldsMappings(string mappings, RecordEventArgs e)
+        /// <summary>
+        /// Add form fields to the request content sent to Zapier. If no propery is mapped, all fields will be included by their alias.
+        /// </summary>
+        /// <param name="mappings">Serialized details of the form fields</param>
+        /// <param name="e">Form record details</param>
+        /// <returns></returns>
+        public IFieldMappingBuilder IncludeFieldsMappings(string mappings, RecordEventArgs e)
         {
             var mappingsList = JsonConvert.DeserializeObject<List<FieldMapping>>(mappings);
             if (mappingsList.Any())
@@ -35,17 +41,29 @@ namespace Umbraco.Forms.Integrations.Automation.Zapier.Services
                     _content.Add(mapping.Alias, string.IsNullOrEmpty(mapping.StaticValue) ? fieldRecord.ValuesAsString() : mapping.StaticValue);
                 }
             }
+            else
+            {
+                foreach (var recordField in e.Record.RecordFields)
+                {
+                    _content.Add(recordField.Value.Alias, recordField.Value.ValuesAsString());
+                }
+            }
 
             return this;
         }
 
-        public IMappingService IncludeStandardFieldsMappings(string mappings, RecordEventArgs e)
+        /// <summary>
+        /// Add form standard fields - that are set as Included in the settings of the workflow - to the request content sent to Zapier.
+        /// </summary>
+        /// <param name="mappings">Serialized details of the form standard fields</param>
+        /// <param name="e">Form record details</param>
+        /// <returns></returns>
+        public IFieldMappingBuilder IncludeStandardFieldsMappings(string mappings, RecordEventArgs e)
         {
             if (!string.IsNullOrEmpty(mappings))
             {
                 var standardFieldMappings =
-                    JsonConvert.DeserializeObject<IEnumerable<StandardFieldMapping>>(mappings,
-                        FormsJsonSerializerSettings.Default).ToList();
+                    JsonConvert.DeserializeObject<IEnumerable<StandardFieldMapping>>(mappings).ToList();
 
                 foreach (StandardFieldMapping fieldMapping in standardFieldMappings.Where(x => x.Include))
                 {
