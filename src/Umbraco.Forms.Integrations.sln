@@ -22,6 +22,14 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Umbraco.Cms.Integrations.OAuthProxy", "Umbraco.Cms.Integrations.OAuthProxy\Umbraco.Cms.Integrations.OAuthProxy.csproj", "{B3FD7257-B50B-4221-A5CF-59AC25862924}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Automation", "Automation", "{8C56413E-07EF-4C1B-8D72-5493B6D35847}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Zapier", "Zapier", "{B05E7FB6-2403-4971-AB34-4BE43A69FBE2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Umbraco.Forms.Integrations.Automation.Zapier", "Umbraco.Forms.Integrations.Automation.Zapier\Umbraco.Forms.Integrations.Automation.Zapier.csproj", "{9602AB40-C74D-4067-814F-AF7EC33A5F8C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Umbraco.Forms.Integrations.Testsite.V8", "Umbraco.Forms.Integrations.Testsite.V8\Umbraco.Forms.Integrations.Testsite.V8.csproj", "{32A69D60-02EF-4705-8722-55258E2E4FC4}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -44,6 +52,14 @@ Global
 		{B3FD7257-B50B-4221-A5CF-59AC25862924}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B3FD7257-B50B-4221-A5CF-59AC25862924}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B3FD7257-B50B-4221-A5CF-59AC25862924}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9602AB40-C74D-4067-814F-AF7EC33A5F8C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9602AB40-C74D-4067-814F-AF7EC33A5F8C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9602AB40-C74D-4067-814F-AF7EC33A5F8C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9602AB40-C74D-4067-814F-AF7EC33A5F8C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{32A69D60-02EF-4705-8722-55258E2E4FC4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{32A69D60-02EF-4705-8722-55258E2E4FC4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{32A69D60-02EF-4705-8722-55258E2E4FC4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{32A69D60-02EF-4705-8722-55258E2E4FC4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -53,6 +69,8 @@ Global
 		{621A30D4-2251-43FF-BB4A-A4808C6A67D6} = {B068CD05-EA88-4457-B8D9-6DB899E7EBE1}
 		{53742941-B77B-4A95-B247-F3ADD944C2FD} = {621A30D4-2251-43FF-BB4A-A4808C6A67D6}
 		{B3FD7257-B50B-4221-A5CF-59AC25862924} = {621A30D4-2251-43FF-BB4A-A4808C6A67D6}
+		{B05E7FB6-2403-4971-AB34-4BE43A69FBE2} = {8C56413E-07EF-4C1B-8D72-5493B6D35847}
+		{9602AB40-C74D-4067-814F-AF7EC33A5F8C} = {B05E7FB6-2403-4971-AB34-4BE43A69FBE2}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {24944114-049F-4C44-95C5-E50600988018}
