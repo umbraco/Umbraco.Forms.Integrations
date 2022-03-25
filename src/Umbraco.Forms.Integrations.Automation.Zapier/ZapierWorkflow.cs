@@ -14,8 +14,6 @@ namespace Umbraco.Forms.Integrations.Automation.Zapier
 {
     public class ZapierWorkflow : WorkflowType
     {
-        private const string UserGroup = "Umbraco.Cms.Integrations.Automation.Zapier.UserGroup";
-
         private readonly IUmbracoContextAccessor _umbracoContextAccessor;
 
         public ZapierWorkflow(IUmbracoContextAccessor umbracoContextAccessor)
@@ -78,9 +76,6 @@ namespace Umbraco.Forms.Integrations.Automation.Zapier
 
             var validator = new WebHookValidator();
             validator.IsValid(WebHookUri, ref exceptions);
-
-            if(string.IsNullOrEmpty(ConfigurationManager.AppSettings[UserGroup]))
-                exceptions.Add(new Exception("User group setting is required."));
 
             return exceptions;
         }
