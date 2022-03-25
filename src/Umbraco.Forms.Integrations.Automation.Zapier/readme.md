@@ -1,6 +1,6 @@
 # Umbraco.Forms.Integrations.Automation.Zapier
 
-This integration provides a custom workflow, allowing form entries to be mapped to the fields of a Zap tool trigger from Zapier.
+This integration provides a custom workflow allowing form entries to be mapped to the fields of a Zap tool trigger from Zapier.
 
 A Zap is an automated workflow that connects various apps and services together. Each Zap consists of a trigger and one or more actions.
 
@@ -33,7 +33,9 @@ setting in `Web.config`:
 ```
 
 ### Working With the Zapier Forms Integration
-Add the _Trigger Zap_ workflow to a form and configure which fields will be sent to the Zap.
+Add the _Trigger Zap_ workflow to a form, configure which fields will be sent to the Zap and add the webhook URL of the Zap.
 
 You can add mappings for each of the form's fields (if no mapping is created, all fields will be included by default), and also pick one of the
 standard fields: Form ID, Form Name, Page URL, Submission date/time.
+
+When the form is submitted, the workflow will be invoked and a POST request, with the content built based on the workflow's settings, will trigger the Zap and the actions will be executed.
