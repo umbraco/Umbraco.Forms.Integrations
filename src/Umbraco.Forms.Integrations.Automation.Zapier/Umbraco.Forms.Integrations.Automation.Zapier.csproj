@@ -1,8 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFramework>net472</TargetFramework>
-  </PropertyGroup>
+	<PropertyGroup>
+		<TargetFrameworks>net472;net50</TargetFrameworks>
+	</PropertyGroup>
 
 	<PropertyGroup>
 		<PackageId>Umbraco.Forms.Integrations.Automation.Zapier</PackageId>
@@ -16,14 +16,22 @@
 		<Company>Umbraco</Company>
 	</PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="UmbracoCms.Web" Version="8.1.0" />
-	<PackageReference Include="UmbracoCms.Core" Version="8.1.0" />
-    <PackageReference Include="UmbracoForms.Core" Version="8.9.1" />
-  </ItemGroup>
+	<ItemGroup Condition="'$(TargetFramework)' == 'net472'">
+		<PackageReference Include="UmbracoCms.Web" Version="8.1.0" />
+		<PackageReference Include="UmbracoCms.Core" Version="8.1.0" />
+		<PackageReference Include="UmbracoForms.Core" Version="8.9.1" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="App_Plugins\UmbracoForms.Integrations\Automation\Zapier\" />
-  </ItemGroup>
+	<ItemGroup Condition="'$(TargetFramework)' == 'net50'">
+		<PackageReference Include="Umbraco.Cms.Web.Website" version="9.0.1" />
+		<PackageReference Include="Umbraco.Cms.Web.BackOffice" version="9.0.1" />
+		<PackageReference Include="Umbraco.Forms.Core.Providers" version="9.1.0" />
+	</ItemGroup>
+
+	<Target Name="RemoveLuceneAnalyzer" BeforeTargets="CoreCompile">
+		<ItemGroup>
+			<Analyzer Remove="@(Analyzer)" Condition="%(FileName) == 'Lucene.Net.CodeAnalysis.CSharp'" />
+		</ItemGroup>
+	</Target>
 
 </Project>

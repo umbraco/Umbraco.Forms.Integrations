@@ -4,10 +4,25 @@ using System.Linq;
 
 using Newtonsoft.Json;
 
-using Umbraco.Core.Models.PublishedContent;
+
 using Umbraco.Forms.Core;
+using Umbraco.Forms.Core.Models;
+using Umbraco.Forms.Core.Persistence.Dtos;
 using Umbraco.Forms.Core.Providers.Models;
+
+#if NETCOREAPP
+using Umbraco.Cms.Core.Models.PublishedContent;
+using Umbraco.Cms.Core.Web;
+using Umbraco.Cms.Web.Common.UmbracoContext;
+using Umbraco.Cms.Core.Routing;
+using Umbraco.Cms.Web.Common;
+using Umbraco.Extensions;
+using Umbraco.Cms.Core;
+#else
 using Umbraco.Web;
+using Umbraco.Forms.Core.Providers.Models;
+using Umbraco.Core.Models.PublishedContent;
+#endif
 
 namespace Umbraco.Forms.Integrations.Automation.Zapier.Services
 {
@@ -18,6 +33,22 @@ namespace Umbraco.Forms.Integrations.Automation.Zapier.Services
     {
         private readonly Dictionary<string, string> _content;
 
+
+
+#if NETCOREAPP
+        private readonly IUmbracoHelperAccessor _umbracoHelperAccessor;
+
+        private readonly IPublishedUrlProvider _publishedUrlProvider;
+
+        public FieldMappingBuilder(IUmbracoHelperAccessor umbracoHelperAccessor, IPublishedUrlProvider publishedUrlProvider)
+        {
+            _umbracoHelperAccessor = umbracoHelperAccessor;
+
+            _publishedUrlProvider = publishedUrlProvider;
+
+            _content = new Dictionary<string, string>();
+        }
+#else
         private readonly IUmbracoContextAccessor _umbracoContextAccessor;
 
         public FieldMappingBuilder(IUmbracoContextAccessor umbracoContextAccessor)
@@ -27,20 +58,23 @@ namespace Umbraco.Forms.Integrations.Automation.Zapier.Services
             _content = new Dictionary<string, string>();
         }
 
+#endif
+
+
         /// <summary>
         /// Add form fields to the request content sent to Zapier. If no propery is mapped, all fields will be included by their alias.
         /// </summary>
         /// <param name="mappings">Serialized details of the form fields</param>
         /// <param name="e">Form record details</param>
         /// <returns></returns>
-        public IFieldMappingBuilder IncludeFieldsMappings(string mappings, RecordEventArgs e)
+        public IFieldMappingBuilder IncludeFieldsMappings(string mappings, Record record)
         {
             var mappingsList = JsonConvert.DeserializeObject<List<FieldMapping>>(mappings);
             if (mappingsList.Any())
             {
                 foreach (var mapping in mappingsList)
                 {
-                    var fieldRecord = !string.IsNullOrEmpty(mapping.Value) ? e.Record.RecordFields[Guid.Parse(mapping.Value)] : null;
+                    var fieldRecord = !string.IsNullOrEmpty(mapping.Value) ? record.RecordFields[Guid.Parse(mapping.Value)] : null;
 
                     _content.Add(mapping.Alias, 
                         fieldRecord != null 
@@ -51,7 +85,7 @@ namespace Umbraco.Forms.Integrations.Automation.Zapier.Services
             }
             else
             {
-                foreach (var recordField in e.Record.RecordFields)
+                foreach (var recordField in record.RecordFields)
                 {
                     _content.Add(recordField.Value.Alias, recordField.Value.ValuesAsString());
                 }
@@ -60,13 +94,15 @@ namespace Umbraco.Forms.Integrations.Automation.Zapier.Services
             return this;
         }
 
+        private readonly IUmbracoContextFactory _umbracoContextFactory;
+
         /// <summary>
         /// Add form standard fields - that are set as Included in the settings of the workflow - to the request content sent to Zapier.
         /// </summary>
         /// <param name="mappings">Serialized details of the form standard fields</param>
         /// <param name="e">Form record details</param>
         /// <returns></returns>
-        public IFieldMappingBuilder IncludeStandardFieldsMappings(string mappings, RecordEventArgs e)
+        public IFieldMappingBuilder IncludeStandardFieldsMappings(string mappings, Record record, Form form)
         {
             if (!string.IsNullOrEmpty(mappings))
             {
@@ -78,18 +114,30 @@ namespace Umbraco.Forms.Integrations.Automation.Zapier.Services
                     switch (fieldMapping.Field)
                     {
                         case StandardField.FormId:
-                            _content.Add(fieldMapping.KeyName, e.Form.Id.ToString());
+                            _content.Add(fieldMapping.KeyName, form.Id.ToString());
                             break;
                         case StandardField.FormName:
-                            _content.Add(fieldMapping.KeyName, e.Form.Name);
+                            _content.Add(fieldMapping.KeyName, form.Name);
                             break;
                         case StandardField.PageUrl:
+#if NETCOREAPP
+                            if (_umbracoHelperAccessor.TryGetUmbracoHelper(out UmbracoHelper umbracoHelper))
+                            {
+                                IPublishedContent publishedContent = umbracoHelper.Content(record.UmbracoPageId);
+                                if (publishedContent != null)
+                                {
+                                    var pageUrl = publishedContent.Url(_publishedUrlProvider, mode: UrlMode.Absolute);
+                                    _content.Add(fieldMapping.KeyName, pageUrl);
+                                }
+                            }
+#else
                             UmbracoContext umbracoContext = _umbracoContextAccessor.UmbracoContext;
-                            var pageUrl = umbracoContext.UrlProvider.GetUrl(e.Record.UmbracoPageId, UrlMode.Absolute);
+                            var pageUrl = umbracoContext.UrlProvider.GetUrl(record.UmbracoPageId, UrlMode.Absolute);
                             _content.Add(fieldMapping.KeyName, pageUrl);
-                            break;
+#endif
+                                break;
                         case StandardField.SubmissionDate:
-                            _content.Add(fieldMapping.KeyName, e.Record.Created.ToString());
+                            _content.Add(fieldMapping.KeyName, record.Created.ToString());
                             break;
                         default:
                             throw new InvalidOperationException(
