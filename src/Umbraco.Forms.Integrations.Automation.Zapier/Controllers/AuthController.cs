@@ -1,7 +1,6 @@
 ﻿using System.Configuration;
 using System.Linq;
-
-
+using System.Threading.Tasks;
 using Umbraco.Forms.Integrations.Automation.Zapier.Configuration;
 using Umbraco.Forms.Integrations.Automation.Zapier.Models;
 
@@ -48,10 +47,11 @@ namespace Umbraco.Forms.Integrations.Automation.Zapier.Controllers
 #endif
 
         [HttpPost]
-        public bool ValidateUser([FromBody] UserModel userModel)
+        public async Task<bool> ValidateUser([FromBody] UserModel userModel)
         {
 #if NETCOREAPP
-            var isUserValid = _backOfficeUserManager.ValidateCredentialsAsync(userModel.Username, userModel.Password).GetAwaiter().GetResult();
+            var isUserValid =
+                await _backOfficeUserManager.ValidateCredentialsAsync(userModel.Username, userModel.Password);
 #else
             var isUserValid = Security.ValidateBackOfficeCredentials(userModel.Username, userModel.Password);
 #endif
