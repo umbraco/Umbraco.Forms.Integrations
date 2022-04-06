@@ -10,6 +10,8 @@
 
         public string ShopifyClientSecret { get; set; }
 
+        public string GoogleClientSecret { get; set; }
+
         public string this[string propertyName] => (string)GetType().GetProperty(propertyName)?.GetValue(this, null);
     }
 }
