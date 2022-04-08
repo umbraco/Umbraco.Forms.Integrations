@@ -13,28 +13,11 @@ Requires minimum versions of Umbraco:
 
 ### Authentication
 
-The package supports two modes of authentication:
+The package supports authentication using the OAuth protocol.
 
-- API Key
-- OAuth
+Using the workflow, the user will be made aware that the installation is not authenticated with HubSpot and can't currently be used.
 
-#### API Key
-
-Log into your HubSpot account, go to _Settings > Integrations > API Key_ and create an API key.
-
-Add this to a setting in `UmbracoForms.config`:
-
-```
-<setting key="HubSpotApiKey" value="[your API key]" />
-```
-
-#### OAuth
-
-The OAuth flow for authentication will be used if an API key is not configured.
-
-When using the workflow, the user will be made aware that the installation is not authenticated with HubSpot and can't currently be used.
-
-The will be prompted to click a link which will take them to the HubSpot authentication page for the Umbraco Forms HubSpot app.
+They will be prompted to click a link which will take them to the HubSpot authentication page for the Umbraco Forms HubSpot app.
 
 They will need to log into their HubSpot account and agree to the permissions that the app requires (which is to be able to read and write contact information).
 
