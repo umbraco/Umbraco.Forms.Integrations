@@ -16,7 +16,7 @@ namespace Umbraco.Cms.Integrations.OAuthProxy.Configuration
             { "HubspotForms", "oauth/v1/token" }, 
             { "Semrush", "oauth2/access_token" }, 
             { "Shopify", "oauth/access_token" },
-            { "Google", "oauth2/token" }
+            { "Google", "o/oauth2/token" }
         };
 
         public static void AddServiceClients(this IServiceCollection services)
