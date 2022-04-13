@@ -9,6 +9,7 @@ using Umbraco.Forms.Integrations.Automation.Zapier.Services;
 using Umbraco.Forms.Integrations.Automation.Zapier.Validators;
 
 #if NETCOREAPP
+using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Umbraco.Cms.Core.Routing;
 using Umbraco.Cms.Core.Web;
@@ -77,8 +78,6 @@ namespace Umbraco.Forms.Integrations.Automation.Zapier
 
         // Access to the client within the class is via ClientFactory(), allowing us to mock the responses in tests.
         public static Func<HttpClient> ClientFactory = () => s_client;
-
-
 
 #if NETCOREAPP
         public override WorkflowExecutionStatus Execute(WorkflowExecutionContext context)
