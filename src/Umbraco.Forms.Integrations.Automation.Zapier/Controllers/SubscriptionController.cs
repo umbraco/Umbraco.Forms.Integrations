@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Linq;
-using System.Net;
 using Umbraco.Forms.Core.Services;
 using Umbraco.Forms.Integrations.Automation.Zapier.Configuration;
 using Umbraco.Forms.Integrations.Automation.Zapier.Models.Dtos;
@@ -45,16 +44,14 @@ namespace Umbraco.Forms.Integrations.Automation.Zapier.Controllers
             Options = options.Value;
 
             _logger = logger;
-#else
-            Options = new ZapierSettings(ConfigurationManager.AppSettings);
-#endif
-            _formService = formService;
 
-#if NETCOREAPP
             _workflowService = workflowService;
 #else
+            Options = new ZapierSettings(ConfigurationManager.AppSettings);
+
             _workflowServices = workflowServices;
 #endif
+            _formService = formService;
 
             _userValidationService = userValidationService;
         }
@@ -66,12 +63,12 @@ namespace Umbraco.Forms.Integrations.Automation.Zapier.Controllers
             string password = string.Empty;
 
 #if NETCOREAPP
-                        if (Request.Headers.TryGetValue(Constants.ZapierAppConfiguration.UsernameHeaderKey, 
-                                out var usernameValues))
-                            username = usernameValues.First();
-                        if (Request.Headers.TryGetValue(Constants.ZapierAppConfiguration.PasswordHeaderKey, 
-                                out var passwordValues))
-                            password = passwordValues.First();
+            if (Request.Headers.TryGetValue(Constants.ZapierAppConfiguration.UsernameHeaderKey,
+                    out var usernameValues))
+                username = usernameValues.First();
+            if (Request.Headers.TryGetValue(Constants.ZapierAppConfiguration.PasswordHeaderKey,
+                    out var passwordValues))
+                password = passwordValues.First();
 #else
             if (Request.Headers.TryGetValues(Constants.ZapierAppConfiguration.UsernameHeaderKey,
                     out var usernameValues))
@@ -88,8 +85,6 @@ namespace Umbraco.Forms.Integrations.Automation.Zapier.Controllers
 
             if (dto == null) return false;
 
-            var zapierWorkflowTypeId = new Guid("d05b95e5-86f8-4c31-99b8-4ec7fc62a787");
-
             try
             {
                 // 1. get forms
@@ -98,10 +93,11 @@ namespace Umbraco.Forms.Integrations.Automation.Zapier.Controllers
                 {
                     // 2. check if 'Trigger Zapier' workflow exists on the form
 #if NETCOREAPP
-                    var zapierWorkflows = _workflowService.Get(form).Where(p => p.WorkflowTypeId == zapierWorkflowTypeId).ToList();
+                    var zapierWorkflows = _workflowService.Get(form)
+                        .Where(p => p.WorkflowTypeId == new Guid(Constants.ZapierWorkflowTypeId)).ToList();
 #else
                     var zapierWorkflows = _workflowServices.Get(form)
-                        .Where(p => p.WorkflowTypeId == zapierWorkflowTypeId).ToList();
+                        .Where(p => p.WorkflowTypeId == new Guid(Constants.ZapierWorkflowTypeId)).ToList();
 #endif
                     if (zapierWorkflows.Any())
                     {

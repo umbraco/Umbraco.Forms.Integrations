@@ -28,31 +28,31 @@ namespace Umbraco.Forms.Integrations.Automation.Zapier.Controllers
 
         private readonly IFormService _formService;
 
-        private readonly IWorkflowService _workflowService;
-
-        private readonly IRecordReaderService _recordReaderService;
-
         private readonly IUserValidationService _userValidationService;
 
 #if NETCOREAPP
+        private readonly IWorkflowService _workflowService;
+
         public PollingController(IOptions<ZapierSettings> options, IFormService formService, IWorkflowService workflowService,
             IRecordReaderService recordReaderService, IUserValidationService userValidationService)
 #else
-        public PollingController(IFormService formService, IWorkflowService workflowService, 
+        private readonly IWorkflowServices _workflowServices;
+
+        public PollingController(IFormService formService, IWorkflowServices workflowServices, 
             IRecordReaderService recordReaderService, IUserValidationService userValidationService)
 #endif
         {
 #if NETCOREAPP
             Options = options.Value;
+
+            _workflowService = workflowService;
 #else
             Options = new ZapierSettings(ConfigurationManager.AppSettings);
+
+            _workflowServices = workflowServices;
 #endif
 
             _formService = formService;
-
-            _workflowService = workflowService;
-
-            _recordReaderService = recordReaderService;
 
             _userValidationService = userValidationService;
         }
@@ -72,12 +72,12 @@ namespace Umbraco.Forms.Integrations.Automation.Zapier.Controllers
                     out var passwordValues))
                 password = passwordValues.First();
 #else
-                        if (Request.Headers.TryGetValues(Constants.ZapierAppConfiguration.UsernameHeaderKey,
-                                out var usernameValues))
-                            username = usernameValues.First();
-                        if (Request.Headers.TryGetValues(Constants.ZapierAppConfiguration.PasswordHeaderKey,
-                                out var passwordValues))
-                            password = passwordValues.First();
+            if (Request.Headers.TryGetValues(Constants.ZapierAppConfiguration.UsernameHeaderKey,
+                    out var usernameValues))
+                username = usernameValues.First();
+            if (Request.Headers.TryGetValues(Constants.ZapierAppConfiguration.PasswordHeaderKey,
+                    out var passwordValues))
+                password = passwordValues.First();
 #endif
 
             if (string.IsNullOrEmpty(username) || string.IsNullOrEmpty(password)) return null;
@@ -85,16 +85,15 @@ namespace Umbraco.Forms.Integrations.Automation.Zapier.Controllers
             var isAuthorized = _userValidationService.Validate(username, password, Options.UserGroup).GetAwaiter().GetResult();
             if (!isAuthorized) return null;
 
-            var zapierWorkflowId = new Guid("d05b95e5-86f8-4c31-99b8-4ec7fc62a787");
-
             // 1. get forms
             var forms = _formService.Get();
             foreach (var form in forms)
             {
 #if NETCOREAPP
-                var hasZapierWorkflow = _workflowService.Get(form).Any(p => p.WorkflowTypeId == zapierWorkflowId);
+                var hasZapierWorkflow = _workflowService.Get(form).Any(p => p.WorkflowTypeId == new Guid(Constants.ZapierWorkflowTypeId));
 #else
-                var hasZapierWorkflow = form.WorkflowIds.Contains(zapierWorkflowId);
+                var hasZapierWorkflow = _workflowServices.Get(form)
+                    .Any(p => p.WorkflowTypeId == new Guid(Constants.ZapierWorkflowTypeId));
 #endif
 
                 if (hasZapierWorkflow)
