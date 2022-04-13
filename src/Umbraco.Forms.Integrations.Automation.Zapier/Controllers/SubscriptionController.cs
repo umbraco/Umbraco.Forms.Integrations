@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+
 using Umbraco.Forms.Core.Services;
 using Umbraco.Forms.Integrations.Automation.Zapier.Configuration;
 using Umbraco.Forms.Integrations.Automation.Zapier.Models.Dtos;
@@ -13,6 +14,7 @@ using Umbraco.Cms.Web.Common.Controllers;
 #else
 using System.Web.Http;
 using System.Configuration;
+using Umbraco.Forms.Core.Data.Storage;
 using Umbraco.Web.WebApi;
 #endif
 
@@ -26,18 +28,21 @@ namespace Umbraco.Forms.Integrations.Automation.Zapier.Controllers
         private readonly ILogger<SubscriptionController> _logger;
 
         private readonly IWorkflowService _workflowService;
-#else
-        private readonly IWorkflowServices _workflowServices;
-#endif
 
         private readonly IFormService _formService;
+#else
+        private readonly IWorkflowServices _workflowServices;
+
+        private readonly IFormStorage _formStorage;
+#endif
 
         private readonly IUserValidationService _userValidationService;
 
 #if NETCOREAPP
-        public SubscriptionController(IOptions<ZapierSettings> options, ILogger<SubscriptionController> logger, IFormService formService, IWorkflowService workflowService, IUserValidationService userValidationService)
+        public SubscriptionController(IOptions<ZapierSettings> options, ILogger<SubscriptionController> logger, IFormService formService, 
+            IWorkflowService workflowService, IUserValidationService userValidationService)
 #else
-        public SubscriptionController(IFormService formService, IWorkflowServices workflowServices, IUserValidationService userValidationService)
+        public SubscriptionController(IWorkflowServices workflowServices, IFormStorage formStorage, IUserValidationService userValidationService)
 #endif
         {
 #if NETCOREAPP
@@ -46,12 +51,15 @@ namespace Umbraco.Forms.Integrations.Automation.Zapier.Controllers
             _logger = logger;
 
             _workflowService = workflowService;
+
+            _formService = formService;
 #else
             Options = new ZapierSettings(ConfigurationManager.AppSettings);
 
             _workflowServices = workflowServices;
+
+            _formStorage = formStorage;
 #endif
-            _formService = formService;
 
             _userValidationService = userValidationService;
         }
@@ -88,7 +96,11 @@ namespace Umbraco.Forms.Integrations.Automation.Zapier.Controllers
             try
             {
                 // 1. get forms
+#if NETCOREAPP
                 var forms = _formService.Get();
+#else
+                var forms = _formStorage.GetAll();
+#endif
                 foreach (var form in forms)
                 {
                     // 2. check if 'Trigger Zapier' workflow exists on the form

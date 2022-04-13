@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 
 using System.Linq;
-using Umbraco.Forms.Core.Data.Storage;
+
 using Umbraco.Forms.Core.Providers.Models;
 using Umbraco.Forms.Core.Services;
 using Umbraco.Forms.Integrations.Automation.Zapier.Configuration;
@@ -12,12 +12,11 @@ using Umbraco.Forms.Integrations.Automation.Zapier.Services;
 using Microsoft.Extensions.Options;
 
 using Umbraco.Cms.Web.Common.Controllers;
-using Umbraco.Cms.Core.Services;
 #else
 using System.Configuration;
 
+using Umbraco.Forms.Core.Data.Storage;
 using Umbraco.Web.WebApi;
-using Umbraco.Core.Services;
 #endif
 
 namespace Umbraco.Forms.Integrations.Automation.Zapier.Controllers
@@ -26,20 +25,21 @@ namespace Umbraco.Forms.Integrations.Automation.Zapier.Controllers
     {
         private readonly ZapierSettings Options;
 
-        private readonly IFormService _formService;
-
         private readonly IUserValidationService _userValidationService;
 
 #if NETCOREAPP
+        private readonly IFormService _formService;
+
         private readonly IWorkflowService _workflowService;
 
-        public PollingController(IOptions<ZapierSettings> options, IFormService formService, IWorkflowService workflowService,
-            IRecordReaderService recordReaderService, IUserValidationService userValidationService)
+        public PollingController(IOptions<ZapierSettings> options, IFormService formService, IWorkflowService workflowService, IUserValidationService userValidationService)
 #else
         private readonly IWorkflowServices _workflowServices;
 
-        public PollingController(IFormService formService, IWorkflowServices workflowServices, 
-            IRecordReaderService recordReaderService, IUserValidationService userValidationService)
+        private readonly IFormStorage _formStorage;
+
+        public PollingController(IWorkflowServices workflowServices, 
+            IFormStorage formStorage, IUserValidationService userValidationService)
 #endif
         {
 #if NETCOREAPP
@@ -50,9 +50,9 @@ namespace Umbraco.Forms.Integrations.Automation.Zapier.Controllers
             Options = new ZapierSettings(ConfigurationManager.AppSettings);
 
             _workflowServices = workflowServices;
-#endif
 
-            _formService = formService;
+            _formStorage = formStorage;
+#endif
 
             _userValidationService = userValidationService;
         }
@@ -86,7 +86,11 @@ namespace Umbraco.Forms.Integrations.Automation.Zapier.Controllers
             if (!isAuthorized) return null;
 
             // 1. get forms
+#if NETCOREAPP
             var forms = _formService.Get();
+#else
+            var forms = _formStorage.GetAll();
+#endif
             foreach (var form in forms)
             {
 #if NETCOREAPP
