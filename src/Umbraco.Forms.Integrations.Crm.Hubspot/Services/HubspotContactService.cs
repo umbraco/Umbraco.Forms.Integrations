@@ -34,7 +34,7 @@ namespace Umbraco.Forms.Integrations.Crm.Hubspot.Services
 
         private const string CrmApiBaseUrl = "https://api.hubapi.com/crm/v3/";
         private const string InstallUrlFormat = "https://app-eu1.hubspot.com/oauth/authorize?client_id={0}&redirect_uri={1}&scope={2}";
-        private const string OAuthScopes = "oauth forms crm.objects.contacts.read%20crm.objects.contacts.write";
+        private const string OAuthScopes = "oauth%20forms%20crm.objects.contacts.read%20crm.objects.contacts.write";
         private const string OAauthClientId = "1a04f5bf-e99e-48e1-9d62-6c25bf2bdefe";
 
         private const string OAuthBaseUrl = "https://hubspot-forms-auth.umbraco.com/";  // For local testing: "https://localhost:44364/"
