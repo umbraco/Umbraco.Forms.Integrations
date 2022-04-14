@@ -71,7 +71,7 @@ steps:
         },
         {
           "name": "AppSettings:HubspotFormsClientSecret",
-          "value": "$(hubSpotFormsAppSecretKey)",
+          "value": "$(hubSpotAppSecretKey)",
           "slotSetting": false
         },
         {
