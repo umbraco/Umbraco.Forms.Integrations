@@ -11,9 +11,7 @@ using Umbraco.Forms.Integrations.Automation.Zapier.Validators;
 #if NETCOREAPP
 using Microsoft.Extensions.Logging;
 using Umbraco.Cms.Core.Routing;
-using Umbraco.Cms.Core.Web;
 using Umbraco.Cms.Web.Common;
-
 #else
 using Umbraco.Web;
 using Umbraco.Forms.Core.Persistence.Dtos;
@@ -39,7 +37,7 @@ namespace Umbraco.Forms.Integrations.Automation.Zapier
             _logger = logger;
 
             Name = "Trigger Zap";
-            Id = new Guid("d05b95e5-86f8-4c31-99b8-4ec7fc62a787");
+            Id = new Guid(Constants.ZapierWorkflowTypeId);
             Description = "Automation workflow for triggering Zaps in Zapier.";
             Icon = "icon-tools";
         }
@@ -51,7 +49,7 @@ namespace Umbraco.Forms.Integrations.Automation.Zapier
             _umbracoContextAccessor = umbracoContextAccessor;
 
             Name = "Trigger Zap";
-            Id = new Guid("d05b95e5-86f8-4c31-99b8-4ec7fc62a787");
+            Id = new Guid(Constants.ZapierWorkflowTypeId);
             Description = "Automation workflow for triggering Zaps in Zapier.";
             Icon = "icon-tools";
         }
@@ -77,8 +75,6 @@ namespace Umbraco.Forms.Integrations.Automation.Zapier
 
         // Access to the client within the class is via ClientFactory(), allowing us to mock the responses in tests.
         public static Func<HttpClient> ClientFactory = () => s_client;
-
-
 
 #if NETCOREAPP
         public override WorkflowExecutionStatus Execute(WorkflowExecutionContext context)

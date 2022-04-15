@@ -8,6 +8,8 @@ using Umbraco.Forms.Integrations.Automation.Zapier.Configuration;
 #else
 using Umbraco.Core.Composing;
 #endif
+using Umbraco.Core;
+using Umbraco.Forms.Integrations.Automation.Zapier.Services;
 
 namespace Umbraco.Forms.Integrations.Automation.Zapier
 {
@@ -21,11 +23,13 @@ namespace Umbraco.Forms.Integrations.Automation.Zapier
                 .Bind(builder.Config.GetSection(Constants.Configuration.Settings));
 
             builder.WithCollectionBuilder<WorkflowCollectionBuilder>().Add<ZapierWorkflow>();
+
+            builder.Services.AddScoped<IUserValidationService, UserValidationService>();
         }
 #else
         public void Compose(Composition composition)
         {
-            
+            composition.Register<IUserValidationService, UserValidationService>(Lifetime.Scope);
         }
 #endif
     }
