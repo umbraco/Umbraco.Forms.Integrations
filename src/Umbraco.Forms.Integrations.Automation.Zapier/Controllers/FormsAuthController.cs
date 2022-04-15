@@ -20,7 +20,7 @@ using Umbraco.Core.Services;
 
 namespace Umbraco.Forms.Integrations.Automation.Zapier.Controllers
 {
-    public class AuthController : UmbracoApiController
+    public class FormsAuthController : UmbracoApiController
     {
         private readonly ZapierSettings Options;
 
@@ -29,7 +29,7 @@ namespace Umbraco.Forms.Integrations.Automation.Zapier.Controllers
 #if NETCOREAPP
         private readonly IBackOfficeUserManager _backOfficeUserManager;
 
-        public AuthController(IBackOfficeUserManager backOfficeUserManager, IUserService userService, IOptions<ZapierSettings> options)
+        public FormsAuthController(IBackOfficeUserManager backOfficeUserManager, IUserService userService, IOptions<ZapierSettings> options)
         {
             _backOfficeUserManager = backOfficeUserManager;
 
@@ -38,7 +38,7 @@ namespace Umbraco.Forms.Integrations.Automation.Zapier.Controllers
             Options = options.Value;
         }
 #else
-        public AuthController(IUserService userService)
+        public FormsAuthController(IUserService userService)
         {
             Options = new ZapierSettings(ConfigurationManager.AppSettings);
 

@@ -20,12 +20,12 @@ using Umbraco.Web.WebApi;
 
 namespace Umbraco.Forms.Integrations.Automation.Zapier.Controllers
 {
-    public class SubscriptionController : UmbracoApiController
+    public class FormsSubscriptionController : UmbracoApiController
     {
         private readonly ZapierSettings Options;
 
 #if NETCOREAPP
-        private readonly ILogger<SubscriptionController> _logger;
+        private readonly ILogger<FormsSubscriptionController> _logger;
 
         private readonly IWorkflowService _workflowService;
 
@@ -39,10 +39,10 @@ namespace Umbraco.Forms.Integrations.Automation.Zapier.Controllers
         private readonly IUserValidationService _userValidationService;
 
 #if NETCOREAPP
-        public SubscriptionController(IOptions<ZapierSettings> options, ILogger<SubscriptionController> logger, IFormService formService, 
+        public FormsSubscriptionController(IOptions<ZapierSettings> options, ILogger<FormsSubscriptionController> logger, IFormService formService, 
             IWorkflowService workflowService, IUserValidationService userValidationService)
 #else
-        public SubscriptionController(IWorkflowServices workflowServices, IFormStorage formStorage, IUserValidationService userValidationService)
+        public FormsSubscriptionController(IWorkflowServices workflowServices, IFormStorage formStorage, IUserValidationService userValidationService)
 #endif
         {
 #if NETCOREAPP
@@ -135,7 +135,7 @@ namespace Umbraco.Forms.Integrations.Automation.Zapier.Controllers
 #if NETCOREAPP
                 _logger.LogError(e.Message);
 #else
-                Logger.Error(typeof(SubscriptionController), e);
+                Logger.Error(typeof(FormsSubscriptionController), e);
 #endif
                 return false;
             }

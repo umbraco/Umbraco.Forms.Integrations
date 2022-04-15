@@ -21,7 +21,7 @@ using Umbraco.Web.WebApi;
 
 namespace Umbraco.Forms.Integrations.Automation.Zapier.Controllers
 {
-    public class PollingController : UmbracoApiController
+    public class FormsPollingController : UmbracoApiController
     {
         private readonly ZapierSettings Options;
 
@@ -32,13 +32,13 @@ namespace Umbraco.Forms.Integrations.Automation.Zapier.Controllers
 
         private readonly IWorkflowService _workflowService;
 
-        public PollingController(IOptions<ZapierSettings> options, IFormService formService, IWorkflowService workflowService, IUserValidationService userValidationService)
+        public FormsPollingController(IOptions<ZapierSettings> options, IFormService formService, IWorkflowService workflowService, IUserValidationService userValidationService)
 #else
         private readonly IWorkflowServices _workflowServices;
 
         private readonly IFormStorage _formStorage;
 
-        public PollingController(IWorkflowServices workflowServices, 
+        public FormsPollingController(IWorkflowServices workflowServices, 
             IFormStorage formStorage, IUserValidationService userValidationService)
 #endif
         {
