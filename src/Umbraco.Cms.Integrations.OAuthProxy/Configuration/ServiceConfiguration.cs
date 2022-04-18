@@ -16,7 +16,7 @@ namespace Umbraco.Cms.Integrations.OAuthProxy.Configuration
             { "HubspotForms", "oauth/v1/token" }, 
             { "Semrush", "oauth2/access_token" }, 
             { "Shopify", "oauth/access_token" },
-            { "Google", "o/oauth2/token" }
+            { "Google", "token"}
         };
 
         public static void AddServiceClients(this IServiceCollection services)
@@ -39,7 +39,7 @@ namespace Umbraco.Cms.Integrations.OAuthProxy.Configuration
             });
             services.AddHttpClient("GoogleToken", c =>
             {
-                c.BaseAddress = new Uri("https://accounts.google.com/");
+                c.BaseAddress = new Uri("https://oauth2.googleapis.com/");
             });
         }
     }
