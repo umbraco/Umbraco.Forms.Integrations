@@ -49,6 +49,11 @@ steps:
           "name": "AppSettings:SemrushClientSecret",
           "value": "$(semrushAppSecretKey)",
           "slotSetting": false
+        },
+        {
+          "name": "AppSettings:GoogleClientSecret",
+          "value": "$(googleAppSecretKey)",
+          "slotSetting": false
         }
       ]
 - task: AzureWebApp@1
@@ -77,6 +82,11 @@ steps:
         {
           "name": "AppSettings:SemrushClientSecret",
           "value": "$(semrushAppSecretKey)",
+          "slotSetting": false
+        },
+        {
+          "name": "AppSettings:GoogleClientSecret",
+          "value": "$(googleAppSecretKey)",
           "slotSetting": false
         }
       ]
