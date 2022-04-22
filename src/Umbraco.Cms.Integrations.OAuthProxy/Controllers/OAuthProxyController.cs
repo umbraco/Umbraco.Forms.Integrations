@@ -22,14 +22,6 @@ namespace Umbraco.Cms.Integrations.OAuthProxy.Controllers
         public const string ServiceNameHeaderKey = "service_name";
         public const string ServiceAddressReplacePrefixHeaderKey = "service_address_";
 
-        /// <summary>
-        /// Integrated services with their token URIs
-        /// </summary>
-        private static readonly Dictionary<string, string> ValidServices = new()
-        {
-            { "Hubspot", "oauth/v1/token" }, { "HubspotForms", "oauth/v1/token" }, { "Semrush", "oauth2/access_token" }, { "Shopify", "oauth/access_token" }
-        };
-
         public OAuthProxyController(IHttpClientFactory httpClientFactory, IOptions<AppSettings> appSettings)
         {
             _httpClientFactory = httpClientFactory;
@@ -45,7 +37,7 @@ namespace Umbraco.Cms.Integrations.OAuthProxy.Controllers
                 serviceName = "Hubspot";
             }
 
-            if (!ValidServices.ContainsKey(serviceName))
+            if (!ServiceConfiguration.ServiceProviders.ContainsKey(serviceName))
             {
                 throw 
                     new InvalidOperationException($"Provided {ServiceNameHeaderKey} header value of {serviceName} is not supported");
@@ -54,7 +46,7 @@ namespace Umbraco.Cms.Integrations.OAuthProxy.Controllers
             var httpClient = GetClient(serviceName);
 
             var response =
-                await httpClient.PostAsync(ValidServices[serviceName], GetContent(Request.Form, serviceName));
+                await httpClient.PostAsync(ServiceConfiguration.ServiceProviders[serviceName], GetContent(Request.Form, serviceName));
             var content = await response.Content.ReadAsStringAsync();
 
             Response.StatusCode = (int)response.StatusCode;
