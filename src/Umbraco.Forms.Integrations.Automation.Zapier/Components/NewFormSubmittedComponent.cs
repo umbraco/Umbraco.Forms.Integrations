@@ -1,15 +1,15 @@
 ﻿#if NETFRAMEWORK
 using System;
 using System.Collections.Generic;
-using System.Linq;
 
 using Umbraco.Core;
 using Umbraco.Core.Composing;
 using Umbraco.Core.Logging;
 using Umbraco.Core.Models.PublishedContent;
+using Umbraco.Core.Scoping;
 using Umbraco.Forms.Core.Data.Storage;
+using Umbraco.Forms.Integrations.Automation.Zapier.Extensions;
 using Umbraco.Forms.Integrations.Automation.Zapier.Helpers;
-using Umbraco.Forms.Integrations.Automation.Zapier.Models.Dtos;
 using Umbraco.Forms.Integrations.Automation.Zapier.Services;
 using Umbraco.Web;
 
@@ -28,7 +28,7 @@ namespace Umbraco.Forms.Integrations.Automation.Zapier.Components
         private readonly ZapierService _zapierService;
 
         private readonly ZapierFormSubscriptionHookService _zapierFormSubscriptionHookService;
-
+        
         private readonly ILogger _logger;
 
         public NewFormSubmittedComponent(IUmbracoContextAccessor umbracoContextAccessor, IRecordStorage recordStorage, 
@@ -66,18 +66,7 @@ namespace Umbraco.Forms.Integrations.Automation.Zapier.Components
 
             if (_zapierFormSubscriptionHookService.TryGetByName(e.Form.Name, out var zapFormConfigList))
             {
-                var content = new Dictionary<string, string>
-                {
-                    { Constants.Form.Id, e.Form.Id.ToString() },
-                    { Constants.Form.Name, e.Form.Name },
-                    { Constants.Form.SubmissionDate, DateTime.UtcNow.ToString("s") },
-                    { Constants.Form.PageUrl, pageUrl }
-                };
-
-                foreach (var recordField in e.Record.RecordFields)
-                {
-                    content.Add(recordField.Value.Alias, recordField.Value.ValuesAsString());
-                }
+                var content = e.Form.ToFormDictionary(e.Record, pageUrl);
 
                 foreach (var zapFormConfig in zapFormConfigList)
                 {

@@ -1,8 +1,4 @@
 ﻿#if NETCOREAPP
-using System;
-using System.Collections.Generic;
-using System.Linq;
-
 using Microsoft.Extensions.Logging;
 
 using Umbraco.Cms.Core.Events;
@@ -12,8 +8,8 @@ using Umbraco.Cms.Web.Common;
 using Umbraco.Extensions;
 using Umbraco.Forms.Core.Services;
 using Umbraco.Forms.Core.Services.Notifications;
+using Umbraco.Forms.Integrations.Automation.Zapier.Extensions;
 using Umbraco.Forms.Integrations.Automation.Zapier.Helpers;
-using Umbraco.Forms.Integrations.Automation.Zapier.Models.Dtos;
 using Umbraco.Forms.Integrations.Automation.Zapier.Services;
 
 namespace Umbraco.Forms.Integrations.Automation.Zapier.Components
@@ -72,18 +68,7 @@ namespace Umbraco.Forms.Integrations.Automation.Zapier.Components
                         }
                     }
 
-                    var content = new Dictionary<string, string>
-                    {
-                        { Constants.Form.Id, form.Id.ToString() },
-                        { Constants.Form.Name, form.Name },
-                        { Constants.Form.SubmissionDate, DateTime.UtcNow.ToString("s") },
-                        { Constants.Form.PageUrl, pageUrl }
-                    };
-
-                    foreach (var recordField in notificationSavedEntity.RecordFields)
-                    {
-                        content.Add(recordField.Value.Alias, recordField.Value.ValuesAsString());
-                    }
+                    var content = form.ToFormDictionary(notificationSavedEntity, pageUrl);
                     
                     foreach (var formConfigDto in zapFormConfigList)
                     {
