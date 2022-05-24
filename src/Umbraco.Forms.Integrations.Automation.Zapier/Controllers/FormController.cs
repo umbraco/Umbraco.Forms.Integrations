@@ -13,7 +13,7 @@ using Umbraco.Forms.Integrations.Automation.Zapier.Configuration;
 namespace Umbraco.Forms.Integrations.Automation.Zapier.Controllers
 {
     /// <summary>
-    /// When a Zapier user creates a new "New Form Submitted" trigger, the API is used to provide him with the list of forms.
+    /// When a Zapier user creates a new "New Form Submitted" trigger, the API is used to provide them with the list of forms.
     /// </summary>
     public class FormController : ZapierFormAuthorizedApiController
     {
