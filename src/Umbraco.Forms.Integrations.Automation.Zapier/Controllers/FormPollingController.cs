@@ -15,7 +15,7 @@ using Umbraco.Forms.Integrations.Automation.Zapier.Configuration;
 namespace Umbraco.Forms.Integrations.Automation.Zapier.Controllers
 {
     /// <summary>
-    /// When a Zapier user creates a "New Form Submitted" trigger, he is authenticated, then selects a form, the API provides an output json with the
+    /// When a Zapier user creates a "New Form Submitted" trigger, they are authenticated, they select a form, and the API provides an output json with the
     /// structure of the selected form.
     /// </summary>
     public class FormPollingController : ZapierFormAuthorizedApiController
