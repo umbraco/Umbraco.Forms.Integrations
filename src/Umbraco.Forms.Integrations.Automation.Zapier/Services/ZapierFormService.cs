@@ -1,13 +1,15 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 
-#if NETFRAMEWORK
+#if NETCOREAPP
+using Umbraco.Forms.Core.Services;
+#else
 using Umbraco.Forms.Core.Data.Storage;
 #endif
 
 using Umbraco.Cms.Integrations.Automation.Zapier.Models.Dtos;
-
-using Umbraco.Forms.Core.Services;
+using Umbraco.Forms.Core.Models;
 
 namespace Umbraco.Forms.Integrations.Automation.Zapier.Services
 {
@@ -46,6 +48,15 @@ namespace Umbraco.Forms.Integrations.Automation.Zapier.Services
                 Id = p.Id.ToString(),
                 Name = p.Name
             });
+        }
+
+        public Form GetById(string id)
+        {
+#if NETCOREAPP
+            return _formService.Get().FirstOrDefault(p => p.Id == Guid.Parse(id));
+#else
+            return _formStorage.GetAll().FirstOrDefault(p => p.Id == Guid.Parse(id));
+#endif
         }
     }
 }

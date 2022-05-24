@@ -1,12 +1,8 @@
 ﻿#if NETFRAMEWORK
-using System;
-using System.Collections.Generic;
-
 using Umbraco.Core;
 using Umbraco.Core.Composing;
 using Umbraco.Core.Logging;
 using Umbraco.Core.Models.PublishedContent;
-using Umbraco.Core.Scoping;
 using Umbraco.Forms.Core.Data.Storage;
 using Umbraco.Forms.Integrations.Automation.Zapier.Extensions;
 using Umbraco.Forms.Integrations.Automation.Zapier.Helpers;
@@ -64,7 +60,7 @@ namespace Umbraco.Forms.Integrations.Automation.Zapier.Components
             var umbracoPageId = e.Record.UmbracoPageId;
             var pageUrl = umbracoContext.UrlProvider.GetUrl(umbracoPageId, UrlMode.Absolute);
 
-            if (_zapierFormSubscriptionHookService.TryGetByName(e.Form.Name, out var zapFormConfigList))
+            if (_zapierFormSubscriptionHookService.TryGetById(e.Form.Id.ToString(), out var zapFormConfigList))
             {
                 var content = e.Form.ToFormDictionary(e.Record, pageUrl);
 

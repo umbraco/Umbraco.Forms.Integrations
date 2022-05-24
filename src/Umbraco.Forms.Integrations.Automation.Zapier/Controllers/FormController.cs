@@ -11,8 +11,6 @@ using Microsoft.Extensions.Options;
 using Umbraco.Cms.Web.Common.Controllers;
 #else
 using System.Configuration;
-
-using Umbraco.Web.WebApi;
 #endif
 
 namespace Umbraco.Forms.Integrations.Automation.Zapier.Controllers
@@ -20,7 +18,7 @@ namespace Umbraco.Forms.Integrations.Automation.Zapier.Controllers
     /// <summary>
     /// When a Zapier user creates a new "New Form Submitted" trigger, the API is used to provide him with the list of forms.
     /// </summary>
-    public class FormController : UmbracoApiController
+    public class FormController : ZapierFormAuthorizedApiController
     {
         private readonly ZapierSettings Options;
 
@@ -30,8 +28,10 @@ namespace Umbraco.Forms.Integrations.Automation.Zapier.Controllers
 
 #if NETCOREAPP
         public FormController(IOptions<ZapierSettings> options, IUserValidationService userValidationService, ZapierFormService zapierFormService)
+            : base(options, userValidationService)
 #else
         public FormController(ZapierFormService zapierFormService, IUserValidationService userValidationService)
+            : base(userValidationService)
 #endif
         {
 #if NETCOREAPP
@@ -47,29 +47,7 @@ namespace Umbraco.Forms.Integrations.Automation.Zapier.Controllers
 
         public IEnumerable<FormDto> GetForms()
         {
-            string username = string.Empty;
-            string password = string.Empty;
-
-#if NETCOREAPP
-            if (Request.Headers.TryGetValue(Constants.ZapierAppConfiguration.UsernameHeaderKey,
-                    out var usernameValues))
-                username = usernameValues.First();
-            if (Request.Headers.TryGetValue(Constants.ZapierAppConfiguration.PasswordHeaderKey,
-                    out var passwordValues))
-                password = passwordValues.First();
-#else
-            if (Request.Headers.TryGetValues(Constants.ZapierAppConfiguration.UsernameHeaderKey,
-                    out var usernameValues))
-                username = usernameValues.First();
-            if (Request.Headers.TryGetValues(Constants.ZapierAppConfiguration.PasswordHeaderKey,
-                    out var passwordValues))
-                password = passwordValues.First();
-#endif
-
-            if (string.IsNullOrEmpty(username) || string.IsNullOrEmpty(password)) return Enumerable.Empty<FormDto>();
-
-            var isAuthorized = _userValidationService.Validate(username, password, Options.UserGroup).GetAwaiter().GetResult();
-            if (!isAuthorized) return Enumerable.Empty<FormDto>();
+            if (!IsUserValid()) return Enumerable.Empty<FormDto>();
 
             return _zapierFormService.GetAll();
         }

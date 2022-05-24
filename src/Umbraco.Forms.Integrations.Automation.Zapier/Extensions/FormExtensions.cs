@@ -25,5 +25,23 @@ namespace Umbraco.Forms.Integrations.Automation.Zapier.Extensions
 
             return contentDict;
         }
+
+        public static Dictionary<string, string> ToFormDictionary(this Form form)
+        {
+            var contentDict = new Dictionary<string, string>
+            {
+                { Constants.Form.Id, form.Id.ToString() },
+                { Constants.Form.Name, form.Name },
+                { Constants.Form.SubmissionDate, DateTime.UtcNow.ToString("s") },
+                { Constants.Form.PageUrl, string.Empty }
+            };
+
+            foreach (var field in form.AllFields)
+            {
+                contentDict.Add(field.Alias, string.Empty);
+            }
+
+            return contentDict;
+        }
     }
 }

@@ -1,19 +1,17 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 
 using Umbraco.Cms.Integrations.Automation.Zapier.Models.Dtos;
 
 using Umbraco.Forms.Integrations.Automation.Zapier.Configuration;
+using Umbraco.Forms.Integrations.Automation.Zapier.Extensions;
 using Umbraco.Forms.Integrations.Automation.Zapier.Services;
 
 #if NETCOREAPP
 using Microsoft.Extensions.Options;
-
-using Umbraco.Cms.Web.Common.Controllers;
 #else
 using System.Configuration;
-
-using Umbraco.Web.WebApi;
 #endif
 
 namespace Umbraco.Forms.Integrations.Automation.Zapier.Controllers
@@ -22,7 +20,7 @@ namespace Umbraco.Forms.Integrations.Automation.Zapier.Controllers
     /// When a Zapier user creates a "New Form Submitted" trigger, he is authenticated, then selects a form, the API provides an output json with the
     /// structure of the selected form.
     /// </summary>
-    public class FormPollingController : UmbracoApiController
+    public class FormPollingController : ZapierFormAuthorizedApiController
     {
         private readonly ZapierSettings Options;
 
@@ -32,8 +30,10 @@ namespace Umbraco.Forms.Integrations.Automation.Zapier.Controllers
 
 #if NETCOREAPP
         public FormPollingController(IOptions<ZapierSettings> options, ZapierFormService zapierFormService, IUserValidationService userValidationService)
+            : base(options, userValidationService)
 #else
         public FormPollingController(ZapierFormService zapierFormService, IUserValidationService userValidationService)
+            : base(userValidationService)
 #endif
         {
 #if NETCOREAPP
@@ -47,34 +47,22 @@ namespace Umbraco.Forms.Integrations.Automation.Zapier.Controllers
             _userValidationService = userValidationService;
         }
 
+        [Obsolete("Used only for Umbraco Zapier app v1.0.0. For updated versions use GetFormById")]
         public IEnumerable<FormDto> GetSampleForm()
         {
-            string username = string.Empty;
-            string password = string.Empty;
-
-#if NETCOREAPP
-            if (Request.Headers.TryGetValue(Constants.ZapierAppConfiguration.UsernameHeaderKey,
-                    out var usernameValues))
-                username = usernameValues.First();
-            if (Request.Headers.TryGetValue(Constants.ZapierAppConfiguration.PasswordHeaderKey,
-                    out var passwordValues))
-                password = passwordValues.First();
-#else
-            if (Request.Headers.TryGetValues(Constants.ZapierAppConfiguration.UsernameHeaderKey,
-                    out var usernameValues))
-                username = usernameValues.First();
-            if (Request.Headers.TryGetValues(Constants.ZapierAppConfiguration.PasswordHeaderKey,
-                    out var passwordValues))
-                password = passwordValues.First();
-#endif
-
-            if (string.IsNullOrEmpty(username) || string.IsNullOrEmpty(password)) return null;
-
-            var isAuthorized = _userValidationService.Validate(username, password, Options.UserGroup).GetAwaiter()
-                .GetResult();
-            if (!isAuthorized) return null;
+            if (!IsUserValid()) return null;
 
             return _zapierFormService.GetAll().Take(1);
+        }
+
+        public List<Dictionary<string, string>> GetFormPropertiesById(string id)
+        {
+            if (!IsUserValid()) return new List<Dictionary<string, string>>();
+
+            var form = _zapierFormService.GetById(id);
+            return form != null
+                ? new List<Dictionary<string, string>> { form.ToFormDictionary() }
+                : new List<Dictionary<string, string>>();
         }
     }
 }

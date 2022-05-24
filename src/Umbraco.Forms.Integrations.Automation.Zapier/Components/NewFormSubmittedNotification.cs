@@ -56,7 +56,7 @@ namespace Umbraco.Forms.Integrations.Automation.Zapier.Components
             {
                 var form = _formService.Get(notificationSavedEntity.Form);
 
-                if (_zapierFormSubscriptionHookService.TryGetByName(form.Name, out var zapFormConfigList))
+                if (_zapierFormSubscriptionHookService.TryGetById(form.Id.ToString(), out var zapFormConfigList))
                 {
                     string pageUrl = string.Empty;
                     if (_umbracoHelperAccessor.TryGetUmbracoHelper(out UmbracoHelper umbracoHelper))
