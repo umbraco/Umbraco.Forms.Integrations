@@ -8,7 +8,7 @@ using Umbraco.Forms.Core.Services;
 using Umbraco.Forms.Core.Data.Storage;
 #endif
 
-using Umbraco.Cms.Integrations.Automation.Zapier.Models.Dtos;
+using Umbraco.Forms.Integrations.Automation.Zapier.Models.Dtos;
 using Umbraco.Forms.Core.Models;
 
 namespace Umbraco.Forms.Integrations.Automation.Zapier.Services

@@ -1,8 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 
-using Umbraco.Forms.Integrations.Automation.Zapier.Models.Dtos;
-
 #if NETCOREAPP
 using Microsoft.Extensions.Logging;
 
@@ -38,18 +36,15 @@ namespace Umbraco.Forms.Integrations.Automation.Zapier.Services
         }
 #endif
 
-        public bool TryGetById(string id, out IEnumerable<FormConfigDto> dto)
+        public bool TryGetById(string id, out IEnumerable<string> dto)
         {
             using (var scope = _scopeProvider.CreateScope())
             {
                 var entities =
                     scope.Database
-                        .Query<FormConfigDto>( "SELECT * FROM zapierSubscriptionHook where EntityId = @0", id)
-                        .ToList();
+                        .Query<string>( "SELECT HookUrl FROM zapierSubscriptionHook where EntityId = @0 and Type = 2", id).ToArray();
 
-                dto = entities.Any()
-                    ? entities.Select(p => new FormConfigDto { HookUrl = p.HookUrl })
-                    : null;
+                dto = entities;
 
                 return entities.Any();
             }

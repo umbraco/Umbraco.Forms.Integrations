@@ -1,16 +1,13 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 
-using Umbraco.Cms.Integrations.Automation.Zapier.Models.Dtos;
-using Umbraco.Forms.Integrations.Automation.Zapier.Configuration;
+using Umbraco.Forms.Integrations.Automation.Zapier.Models.Dtos;
 using Umbraco.Forms.Integrations.Automation.Zapier.Services;
 
 #if NETCOREAPP
 using Microsoft.Extensions.Options;
 
-using Umbraco.Cms.Web.Common.Controllers;
-#else
-using System.Configuration;
+using Umbraco.Forms.Integrations.Automation.Zapier.Configuration;
 #endif
 
 namespace Umbraco.Forms.Integrations.Automation.Zapier.Controllers
@@ -20,10 +17,6 @@ namespace Umbraco.Forms.Integrations.Automation.Zapier.Controllers
     /// </summary>
     public class FormController : ZapierFormAuthorizedApiController
     {
-        private readonly ZapierSettings Options;
-
-        private readonly IUserValidationService _userValidationService;
-
         private readonly ZapierFormService _zapierFormService;
 
 #if NETCOREAPP
@@ -34,15 +27,7 @@ namespace Umbraco.Forms.Integrations.Automation.Zapier.Controllers
             : base(userValidationService)
 #endif
         {
-#if NETCOREAPP
-            Options = options.Value;
-#else
-            Options = new ZapierSettings(ConfigurationManager.AppSettings);
-#endif
-
             _zapierFormService = zapierFormService;
-
-            _userValidationService = userValidationService;
         }
 
         public IEnumerable<FormDto> GetForms()

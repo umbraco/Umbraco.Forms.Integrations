@@ -1,7 +1,7 @@
 ﻿
 using Newtonsoft.Json;
 
-namespace Umbraco.Cms.Integrations.Automation.Zapier.Models.Dtos
+namespace Umbraco.Forms.Integrations.Automation.Zapier.Models.Dtos
 {
     public class FormDto
     {

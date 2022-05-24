@@ -2,16 +2,14 @@
 using System.Collections.Generic;
 using System.Linq;
 
-using Umbraco.Cms.Integrations.Automation.Zapier.Models.Dtos;
-
-using Umbraco.Forms.Integrations.Automation.Zapier.Configuration;
+using Umbraco.Forms.Integrations.Automation.Zapier.Models.Dtos;
 using Umbraco.Forms.Integrations.Automation.Zapier.Extensions;
 using Umbraco.Forms.Integrations.Automation.Zapier.Services;
 
 #if NETCOREAPP
 using Microsoft.Extensions.Options;
-#else
-using System.Configuration;
+
+using Umbraco.Forms.Integrations.Automation.Zapier.Configuration;
 #endif
 
 namespace Umbraco.Forms.Integrations.Automation.Zapier.Controllers
@@ -22,11 +20,7 @@ namespace Umbraco.Forms.Integrations.Automation.Zapier.Controllers
     /// </summary>
     public class FormPollingController : ZapierFormAuthorizedApiController
     {
-        private readonly ZapierSettings Options;
-
         private readonly ZapierFormService _zapierFormService;
-
-        private readonly IUserValidationService _userValidationService;
 
 #if NETCOREAPP
         public FormPollingController(IOptions<ZapierSettings> options, ZapierFormService zapierFormService, IUserValidationService userValidationService)
@@ -36,15 +30,7 @@ namespace Umbraco.Forms.Integrations.Automation.Zapier.Controllers
             : base(userValidationService)
 #endif
         {
-#if NETCOREAPP
-            Options = options.Value;
-#else
-            Options = new ZapierSettings(ConfigurationManager.AppSettings);
-#endif
-
             _zapierFormService = zapierFormService;
-
-            _userValidationService = userValidationService;
         }
 
         [Obsolete("Used only for Umbraco Zapier app v1.0.0. For updated versions use GetFormById")]
