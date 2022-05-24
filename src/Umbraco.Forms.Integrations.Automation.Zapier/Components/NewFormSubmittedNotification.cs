@@ -56,7 +56,7 @@ namespace Umbraco.Forms.Integrations.Automation.Zapier.Components
             {
                 var form = _formService.Get(notificationSavedEntity.Form);
 
-                if (_zapierFormSubscriptionHookService.TryGetById(form.Id.ToString(), out var zapHookUrls))
+                if (_zapierFormSubscriptionHookService.TryGetById(form.Id.ToString(), out var subscriptionHooks))
                 {
                     string pageUrl = string.Empty;
                     if (_umbracoHelperAccessor.TryGetUmbracoHelper(out UmbracoHelper umbracoHelper))
@@ -70,10 +70,10 @@ namespace Umbraco.Forms.Integrations.Automation.Zapier.Components
 
                     var content = form.ToFormDictionary(notificationSavedEntity, pageUrl);
                     
-                    foreach (var hookUrl in zapHookUrls)
+                    foreach (var subscriptionHook in subscriptionHooks)
                     {
                         var result =
-                            triggerHelper.FormExecute(hookUrl, content);
+                            triggerHelper.FormExecute(subscriptionHook, content);
 
                         if(!string.IsNullOrEmpty(result))
                             _logger.LogError(result);

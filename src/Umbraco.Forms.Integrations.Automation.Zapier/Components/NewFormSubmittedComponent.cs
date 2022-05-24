@@ -60,13 +60,13 @@ namespace Umbraco.Forms.Integrations.Automation.Zapier.Components
             var umbracoPageId = e.Record.UmbracoPageId;
             var pageUrl = umbracoContext.UrlProvider.GetUrl(umbracoPageId, UrlMode.Absolute);
 
-            if (_zapierFormSubscriptionHookService.TryGetById(e.Form.Id.ToString(), out var zapHookUrls))
+            if (_zapierFormSubscriptionHookService.TryGetById(e.Form.Id.ToString(), out var subscriptionHooks))
             {
                 var content = e.Form.ToFormDictionary(e.Record, pageUrl);
 
-                foreach (var hookUrl in zapHookUrls)
+                foreach (var subscriptionHook in subscriptionHooks)
                 {
-                    var result = triggerHelper.FormExecute(hookUrl, content);
+                    var result = triggerHelper.FormExecute(subscriptionHook, content);
 
                     if (!string.IsNullOrEmpty(result))
                         _logger.Error<NewFormSubmittedComponent>(result);

@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using Umbraco.Forms.Integrations.Automation.Zapier.Models.Dtos;
 
 #if NETCOREAPP
 using Microsoft.Extensions.Logging;
@@ -42,7 +43,7 @@ namespace Umbraco.Forms.Integrations.Automation.Zapier.Services
             {
                 var entities =
                     scope.Database
-                        .Query<string>( "SELECT HookUrl FROM zapierSubscriptionHook where EntityId = @0 and Type = 2", id).ToArray();
+                        .Query<string>( "SELECT HookUrl FROM zapierSubscriptionHook where EntityId=@0", id).ToArray();
 
                 dto = entities;
 
