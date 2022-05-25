@@ -3,8 +3,6 @@ namespace Umbraco.Forms.Integrations.Automation.Zapier
 {
     public class Constants
     {
-        public const string ZapierWorkflowTypeId = "d05b95e5-86f8-4c31-99b8-4ec7fc62a787";
-
         public const string UmbracoFormsIntegrationsAutomationZapierUserGroup = "Umbraco.Forms.Integrations.Automation.Zapier.UserGroup";
 
         public static class ZapierAppConfiguration
@@ -17,6 +15,22 @@ namespace Umbraco.Forms.Integrations.Automation.Zapier
         public static class Configuration
         {
             public const string Settings = "Umbraco:Forms:Integrations:Automation:Zapier:Settings";
+        }
+
+        public static class FormProperties
+        {
+            public const string Id = "formId";
+
+            public const string Name = "formName";
+
+            public const string SubmissionDate = "submissionDate";
+
+            public const string PageUrl = "pageUrl";
+        }
+
+        public static class EntityType
+        {
+            public const int Form = 2;
         }
     }
 }
