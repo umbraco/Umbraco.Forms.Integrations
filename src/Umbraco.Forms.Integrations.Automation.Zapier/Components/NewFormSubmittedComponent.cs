@@ -66,7 +66,7 @@ namespace Umbraco.Forms.Integrations.Automation.Zapier.Components
 
                 foreach (var subscriptionHook in subscriptionHooks)
                 {
-                    var result = triggerHelper.FormExecute(subscriptionHook, content);
+                    var result = triggerHelper.FormExecute(subscriptionHook.HookUrl, content);
 
                     if (!string.IsNullOrEmpty(result))
                         _logger.Error<NewFormSubmittedComponent>(result);

@@ -12,10 +12,10 @@ namespace Umbraco.Forms.Integrations.Automation.Zapier.Extensions
         {
             var contentDict = new Dictionary<string, string>
             {
-                { Constants.Form.Id, form.Id.ToString() },
-                { Constants.Form.Name, form.Name },
-                { Constants.Form.SubmissionDate, DateTime.UtcNow.ToString("s") },
-                { Constants.Form.PageUrl, pageUrl }
+                { Constants.FormProperties.Id, form.Id.ToString() },
+                { Constants.FormProperties.Name, form.Name },
+                { Constants.FormProperties.SubmissionDate, DateTime.UtcNow.ToString("s") },
+                { Constants.FormProperties.PageUrl, pageUrl }
             };
 
             foreach (var recordField in record.RecordFields)
@@ -30,10 +30,10 @@ namespace Umbraco.Forms.Integrations.Automation.Zapier.Extensions
         {
             var contentDict = new Dictionary<string, string>
             {
-                { Constants.Form.Id, form.Id.ToString() },
-                { Constants.Form.Name, form.Name },
-                { Constants.Form.SubmissionDate, DateTime.UtcNow.ToString("s") },
-                { Constants.Form.PageUrl, string.Empty }
+                { Constants.FormProperties.Id, form.Id.ToString() },
+                { Constants.FormProperties.Name, form.Name },
+                { Constants.FormProperties.SubmissionDate, DateTime.UtcNow.ToString("s") },
+                { Constants.FormProperties.PageUrl, string.Empty }
             };
 
             foreach (var field in form.AllFields)

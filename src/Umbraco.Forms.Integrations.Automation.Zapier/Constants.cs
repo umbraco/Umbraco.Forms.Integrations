@@ -17,7 +17,7 @@ namespace Umbraco.Forms.Integrations.Automation.Zapier
             public const string Settings = "Umbraco:Forms:Integrations:Automation:Zapier:Settings";
         }
 
-        public static class Form
+        public static class FormProperties
         {
             public const string Id = "formId";
 
@@ -26,6 +26,11 @@ namespace Umbraco.Forms.Integrations.Automation.Zapier
             public const string SubmissionDate = "submissionDate";
 
             public const string PageUrl = "pageUrl";
+        }
+
+        public static class EntityType
+        {
+            public const int Form = 2;
         }
     }
 }

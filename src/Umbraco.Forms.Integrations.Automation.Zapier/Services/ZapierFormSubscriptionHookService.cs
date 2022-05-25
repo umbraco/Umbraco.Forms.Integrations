@@ -37,13 +37,14 @@ namespace Umbraco.Forms.Integrations.Automation.Zapier.Services
         }
 #endif
 
-        public bool TryGetById(string id, out IEnumerable<string> dto)
+        public bool TryGetById(string id, out IEnumerable<SubscriptionDto> dto)
         {
             using (var scope = _scopeProvider.CreateScope())
             {
-                var entities =
-                    scope.Database
-                        .Query<string>( "SELECT HookUrl FROM zapierSubscriptionHook where EntityId=@0", id).ToArray();
+                var entities = scope.Database
+                    .Query<SubscriptionDto>("SELECT * FROM zapierSubscriptionHook where Type=@0", Constants.EntityType.Form)
+                    .Where(p => p.EntityId == id)
+                    .ToList();
 
                 dto = entities;
 
