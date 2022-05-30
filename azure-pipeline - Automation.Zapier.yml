@@ -1,5 +1,5 @@
 trigger:
-- feature/zapier-form-submitted
+- main
 
 pool:
   vmImage: 'windows-latest'
