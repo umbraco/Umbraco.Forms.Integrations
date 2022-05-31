@@ -46,5 +46,8 @@ namespace Umbraco.Forms.Integrations.Commerce.EMerchantPay.Models.Dtos
 
         [XmlElement("return_cancel_url")]
         public string ReturnCancelUrl { get; set; }
+
+        [XmlElement("redirect_url")]
+        public string RedirectUrl { get; set; }
     }
 }

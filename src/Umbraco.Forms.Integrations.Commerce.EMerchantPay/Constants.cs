@@ -5,6 +5,8 @@ namespace Umbraco.Forms.Integrations.Commerce.EMerchantPay
     {
         public const string WorkflowId = "b2731255-2e48-4345-9ae5-aaf5b8bfb10a";
 
+        public const int RequiredMappingsNo = 9;
+
         public static class Configuration
         {
             public const string Settings = "Umbraco:Forms:Integrations:Commerce:eMerchantPay:Settings";

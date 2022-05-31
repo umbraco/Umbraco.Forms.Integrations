@@ -1,0 +1,6 @@
+﻿{
+  "javascript": [
+    "~/App_Plugins/UmbracoForms.Integrations/Commerce/eMerchantPay/customer-details-mapper.controller.js"
+],
+	"css": [ "" ]
+}
