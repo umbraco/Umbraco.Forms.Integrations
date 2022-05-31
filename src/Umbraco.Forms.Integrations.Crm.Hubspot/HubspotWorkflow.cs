@@ -41,7 +41,7 @@ namespace Umbraco.Forms.Integrations.Crm.Hubspot
                 return WorkflowExecutionStatus.NotConfigured;
             }
 
-            var commandResult = _contactService.PostContactAsync(record, fieldMappings).GetAwaiter().GetResult();
+            var commandResult = _contactService.PostContactAsync(record, fieldMappings, null).GetAwaiter().GetResult();
             switch (commandResult)
             {
                 case CommandResult.NotConfigured:

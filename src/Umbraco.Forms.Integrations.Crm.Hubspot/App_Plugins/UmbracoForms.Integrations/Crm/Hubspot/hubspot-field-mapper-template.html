@@ -8,7 +8,7 @@
         <p>Umbraco Forms is not configured with a HubSpot CRM account.</p>
         <p>To do this you can either create and save an API key into the <i>UmbracoForms.config</i> file.</p>
         <p>Or you can click <a ng-click="vm.openAuth()" style="text-decoration: underline">here</a> to complete an OAuth connection.</p>
-        <p><em>If your browser is unable to process the automated connection, paste the provided authorization code below and click to complete the authentication.</em></dd>
+        <p><em>If your browser is unable to process the automated connection, paste the provided authorization code below and click to complete the authentication.</em>
         <input type="text" placeholder="Enter authorization code" ng-model="vm.authorizationCode" />
         <umb-button type="button" disabled="vm.authorizationCode === ''" action="vm.authorize()" label="Authorize"></umb-button>
     </div>

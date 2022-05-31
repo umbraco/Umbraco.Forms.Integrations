@@ -22,7 +22,7 @@ namespace Umbraco.Forms.Integrations.Crm.Hubspot.Services
     public class HubspotContactService : IContactService
     {
         // Using a static HttpClient (see: https://www.aspnetmonsters.com/2016/08/2016-08-27-httpclientwrong/).
-        private readonly static HttpClient s_client = new HttpClient();
+        private static readonly HttpClient s_client = new HttpClient();
 
         // Access to the client within the class is via ClientFactory(), allowing us to mock the responses in tests.
         internal static Func<HttpClient> ClientFactory = () => s_client;
@@ -35,7 +35,7 @@ namespace Umbraco.Forms.Integrations.Crm.Hubspot.Services
         private const string CrmApiBaseUrl = "https://api.hubapi.com/crm/v3/";
         private const string InstallUrlFormat = "https://app-eu1.hubspot.com/oauth/authorize?client_id={0}&redirect_uri={1}&scope={2}";
         private const string OAuthScopes = "oauth%20forms%20crm.objects.contacts.read%20crm.objects.contacts.write";
-        private const string OAauthClientId = "1a04f5bf-e99e-48e1-9d62-6c25bf2bdefe";
+        private const string OAuthClientId = "1a04f5bf-e99e-48e1-9d62-6c25bf2bdefe";
 
         private const string OAuthBaseUrl = "https://hubspot-forms-auth.umbraco.com/";  // For local testing: "https://localhost:44364/"
         private static string OAuthRedirectUrl = OAuthBaseUrl;
@@ -55,13 +55,13 @@ namespace Umbraco.Forms.Integrations.Crm.Hubspot.Services
 
         public AuthenticationMode IsAuthorizationConfigured() => GetConfiguredAuthenticationDetails().Mode;
 
-        public string GetAuthenticationUrl() => string.Format(InstallUrlFormat, OAauthClientId, OAuthRedirectUrl, OAuthScopes);
+        public string GetAuthenticationUrl() => string.Format(InstallUrlFormat, OAuthClientId, OAuthRedirectUrl, OAuthScopes);
 
         public async Task<AuthorizationResult> AuthorizeAsync(string code)
         {
             var tokenRequest = new GetTokenRequest
             {
-                ClientId = OAauthClientId,
+                ClientId = OAuthClientId,
                 RedirectUrl = OAuthRedirectUrl,
                 AuthorizationCode = code,
             };
@@ -127,7 +127,7 @@ namespace Umbraco.Forms.Integrations.Crm.Hubspot.Services
             return properties.OrderBy(x => x.Label);
         }
 
-        public async Task<CommandResult> PostContactAsync(Record record, List<MappedProperty> fieldMappings)
+        public async Task<CommandResult> PostContactAsync(Record record, List<MappedProperty> fieldMappings, Dictionary<string, string> additionalFields = null)
         {
             var authenticationDetails = GetConfiguredAuthenticationDetails();
             if (authenticationDetails.Mode == AuthenticationMode.Unauthenticated)
@@ -152,6 +152,15 @@ namespace Umbraco.Forms.Integrations.Crm.Hubspot.Services
                 {
                     // The field mapping value could not be found so write a warning in the log.
                     _logger.Warn<HubspotContactService>("The field mapping with Id, {FieldMappingId}, did not match any record fields. This is probably caused by the record field being marked as sensitive and the workflow has been set not to include sensitive data", mapping.FormField);
+                }
+            }
+
+            if (additionalFields != null)
+            {
+                // Add any extra fields that got passed (from a custom workflow)
+                foreach (var additionalField in additionalFields)
+                {
+                    postData.Properties.Add(additionalField.Key, additionalField.Value);
                 }
             }
 
@@ -223,7 +232,7 @@ namespace Umbraco.Forms.Integrations.Crm.Hubspot.Services
         {
             var tokenRequest = new RefreshTokenRequest
             {
-                ClientId = OAauthClientId,
+                ClientId = OAuthClientId,
                 RedirectUrl = OAuthRedirectUrl,
                 RefreshToken = refreshToken,
             };
