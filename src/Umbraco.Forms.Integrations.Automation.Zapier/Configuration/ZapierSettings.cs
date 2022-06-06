@@ -11,9 +11,13 @@ namespace Umbraco.Forms.Integrations.Automation.Zapier.Configuration
 
         public ZapierSettings(NameValueCollection appSettings)
         {
-            UserGroup = appSettings[Constants.UmbracoFormsIntegrationsAutomationZapierUserGroup];
+            UserGroupAlias = appSettings[Constants.UmbracoFormsIntegrationsAutomationZapierUserGroupAlias];
+
+            ApiKey = appSettings[Constants.UmbracoFormsIntegrationsAutomationZapierApiKey];
         }
 
-        public string UserGroup { get; set; }
+        public string UserGroupAlias { get; set; }
+
+        public string ApiKey { get; set; }
     }
 }
