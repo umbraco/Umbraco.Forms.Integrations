@@ -14,10 +14,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="UmbracoCms.Core" Version="8.14.0" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\Umbraco.Forms.Integrations.Crm.Hubspot\Umbraco.Forms.Integrations.Crm.Hubspot.csproj" />
   </ItemGroup>
 

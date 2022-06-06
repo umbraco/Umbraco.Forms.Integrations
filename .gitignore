@@ -396,6 +396,8 @@ src/Umbraco.Forms.Integrations.TestSite/Media
 src/Umbraco.Forms.Integrations.TestSite/scripts
 src/Umbraco.Forms.Integrations.TestSite/Umbraco
 src/Umbraco.Forms.Integrations.TestSite/Views
+src/Umbraco.Forms.Integrations.TestSite.V9/App_Plugins
+src/Umbraco.Forms.Integrations.TestSite.V9/Views
 *.zip
 appsettings.Local.json
 src/Umbraco.Forms.Integrations.Automation.Zapier/app.config
