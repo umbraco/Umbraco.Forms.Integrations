@@ -1,0 +1,10 @@
+﻿<div ng-controller="UmbracoForms.Integrations.Commerce.eMerchantPay.CurrencyController as vm">
+
+    <div>
+        <select ng-model="vm.selectedCurrency" ng-click="vm.saveCurrency()">
+            <option value="">Select currency</option>
+            <option ng-repeat="currency in vm.currencies" value="{{ currency.code }}">{{ currency.name }}</option>
+        </select>
+    </div>
+
+</div>

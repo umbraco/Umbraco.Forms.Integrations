@@ -60,19 +60,17 @@ namespace Umbraco.Forms.Integrations.Commerce.EMerchantPay.Services
             return Deserialize(response, Constants.RootNode.WpfPayment);
         }
 
-        public string Serialize(PaymentDto payment)
+        public async Task<PaymentDto> Reconcile(string uniqueId)
         {
-            var serializer = new XmlSerializer(typeof(PaymentDto), new XmlRootAttribute(Constants.RootNode.WpfPayment));
+            var reconcileRequestContent =
+                Serialize(new PaymentDto {UniqueId = uniqueId}, Constants.RootNode.WpfReconcile);
 
-            using (var stringWriter = new StringWriter())
-            {
-                using (XmlWriter writer = XmlWriter.Create(stringWriter))
-                {
-                    serializer.Serialize(writer, payment);
+            var reconcileResponse = await ClientFactory()
+                .PostAsync(new Uri($"{Options.WpfUrl}/reconcile"), reconcileRequestContent);
 
-                    return stringWriter.ToString();
-                }
-            }
+            var response = await reconcileResponse.Content.ReadAsStringAsync();
+
+            return Deserialize(response, Constants.RootNode.WpfPayment);
         }
     }
 }

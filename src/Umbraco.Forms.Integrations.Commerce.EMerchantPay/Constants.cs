@@ -5,7 +5,21 @@ namespace Umbraco.Forms.Integrations.Commerce.EMerchantPay
     {
         public const string WorkflowId = "b2731255-2e48-4345-9ae5-aaf5b8bfb10a";
 
-        public const int RequiredMappingsNo = 9;
+        /// <summary>
+        /// Fields mandatory for mapping:
+        /// 1. FirstName
+        /// 2. LastName
+        /// 3. Address
+        /// 4. ZipCode
+        /// 5. City
+        /// 6. State
+        /// 7. Country
+        /// 8. Email
+        /// 9. Phone
+        /// 10. Status
+        /// 11. UniqueId
+        /// </summary>
+        public const int RequiredMappingsNo = 11;
 
         public static class Configuration
         {
@@ -18,11 +32,15 @@ namespace Umbraco.Forms.Integrations.Commerce.EMerchantPay
             public const string UsernameKey = "Umbraco.Forms.Integrations.Commerce.eMerchantPay.Username";
 
             public const string PasswordKey = "Umbraco.Forms.Integrations.Commerce.eMerchantPay.Password";
+
+            public const string UmbracoBaseUrlKey = "Umbraco.Forms.Integrations.Commerce.eMerchantPay.UmbracoBaseUrl";
         }
 
         public static class ErrorCode
         {
             public const string ConsumerExists = "701";
+
+            public const string WorkflowError = "400";
         }
 
         public static class RootNode
@@ -36,6 +54,8 @@ namespace Umbraco.Forms.Integrations.Commerce.EMerchantPay
             public const string RetrieveConsumerResponse = "retrieve_consumer_response";
 
             public const string WpfPayment = "wpf_payment";
+
+            public const string WpfReconcile = "wpf_reconcile";
         }
     }
 }

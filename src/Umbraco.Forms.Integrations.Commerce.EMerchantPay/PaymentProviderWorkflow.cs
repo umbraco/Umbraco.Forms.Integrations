@@ -1,20 +1,26 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 using Umbraco.Forms.Core;
-using Umbraco.Forms.Core.Attributes;
 using Umbraco.Forms.Core.Enums;
+using Umbraco.Forms.Core.Models;
 using Umbraco.Forms.Integrations.Commerce.EMerchantPay.Builders;
+using Umbraco.Forms.Integrations.Commerce.EMerchantPay.Configuration;
 using Umbraco.Forms.Integrations.Commerce.EMerchantPay.ExtensionMethods;
+using Umbraco.Forms.Integrations.Commerce.EMerchantPay.Helpers;
 using Umbraco.Forms.Integrations.Commerce.EMerchantPay.Models.Dtos;
 using Umbraco.Forms.Integrations.Commerce.EMerchantPay.Services;
 
 #if NETCOREAPP
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Options;
 
 using Umbraco.Cms.Core.Web;
 #else
+using System.Configuration;
+
 using Umbraco.Web;
 using Umbraco.Forms.Core.Persistence.Dtos;
 #endif
@@ -23,66 +29,63 @@ namespace Umbraco.Forms.Integrations.Commerce.EMerchantPay
 {
     public class PaymentProviderWorkflow : WorkflowType
     {
-        private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly PaymentProviderSettings _paymentProviderSettings;
 
-        private readonly IUmbracoContextAccessor _umbracoContextAccessor;
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
         private readonly ConsumerService _consumerService;
 
         private readonly PaymentService _paymentService;
 
+        private readonly UrlHelper _urlHelper;
+
         #region WorkflowSettings
 
-        [Setting("Usage",
+        [Core.Attributes.Setting("Usage",
             Description = "Payment usage description",
             View = "TextField")]
         public string Usage { get; set; }
 
-        [Setting("Amount",
+        [Core.Attributes.Setting("Amount",
             Description = "Payment amount (without decimals)",
             View = "TextField")]
         public string Amount { get; set; }
 
-        [Setting("Currency",
+        [Core.Attributes.Setting("Currency",
             Description = "Payment currency",
-            PreValues = "DKK,EUR,USD",
-            View = "Dropdownlist")]
+            View = "~/App_Plugins/UmbracoForms.Integrations/Commerce/eMerchantPay/currency.html")]
         public string Currency { get; set; }
 
-        [Setting("Supplier",
+        [Core.Attributes.Setting("Supplier",
             Description = "Name of business supplier",
             View = "TextField")]
         public string Supplier { get; set; }
 
-        [Setting("CustomerDetails",
+        [Core.Attributes.Setting("CustomerDetails",
             Description = "Map customer details with form fields",
             View = "~/App_Plugins/UmbracoForms.Integrations/Commerce/eMerchantPay/customer-details-mapper.html")]
         public string CustomerDetailsMappings { get; set; }
 
-        [Setting("Success URL",
+        [Core.Attributes.Setting("Success URL",
             View = "Pickers.Content")]
         public string SuccessUrl { get; set; }
 
-        [Setting("Failure URL",
+        [Core.Attributes.Setting("Failure URL",
             View = "Pickers.Content")]
         public string FailureUrl { get; set; }
 
-        [Setting("Cancel URL",
+        [Core.Attributes.Setting("Cancel URL",
             View = "Pickers.Content")]
         public string CancelUrl { get; set; }
-
-        [Setting("Notification URL",
-            View = "Pickers.Content")]
-        public string NotificationUrl { get; set; }
 
         #endregion
 
 #if NETCOREAPP
-        public PaymentProviderWorkflow(IHttpContextAccessor httpContextAccessor,
-            ConsumerService consumerService, PaymentService paymentService)
+        public PaymentProviderWorkflow(IOptions<PaymentProviderSettings> paymentProviderSettings, IHttpContextAccessor httpContextAccessor,
+            ConsumerService consumerService, PaymentService paymentService, UrlHelper urlHelper)
 #else
-        public PaymentProviderWorkflow(IHttpContextAccessor httpContextAccessor, IUmbracoContextAccessor umbracoContextAccessor, 
-                ConsumerService consumerService, PaymentService paymentService)
+        public PaymentProviderWorkflow(IHttpContextAccessor httpContextAccessor,
+                ConsumerService consumerService, PaymentService paymentService, UrlHelper urlHelper)
 #endif
         {
             Id = new Guid(Constants.WorkflowId);
@@ -96,9 +99,12 @@ namespace Umbraco.Forms.Integrations.Commerce.EMerchantPay
 
             _httpContextAccessor = httpContextAccessor;
 
+            _urlHelper = urlHelper;
+
 #if NETCOREAPP
+            _paymentProviderSettings = paymentProviderSettings.Value;
 #else
-            _umbracoContextAccessor = umbracoContextAccessor;
+            _paymentProviderSettings = new PaymentProviderSettings(ConfigurationManager.AppSettings);
 #endif
         }
 
@@ -135,14 +141,24 @@ namespace Umbraco.Forms.Integrations.Commerce.EMerchantPay
             // step 2. Create Payment
             var transactionId = Guid.NewGuid();
 
+#if NETCOREAPP
+            var formId = context.Record.Form;
+            var recordUniqueId = context.Record.UniqueId;
+#else
+            var formId = record.Form;
+            var recordUniqueId = record.UniqueId;
+#endif
+            var uniqueIdKey = mappings.First(p => p.CustomerProperty == nameof(MappingValues.UniqueId)).Field.Id;
+            var statusKey = mappings.First(p => p.CustomerProperty == nameof(MappingValues.Status)).Field.Id;
+
             var payment = new PaymentDto
             {
                 TransactionId = transactionId.ToString(),
                 Usage = Usage,
-                NotificationUrl = "https://www.example.com/notification",
-                ReturnSuccessUrl = "https://www.example.com/success",
-                ReturnFailureUrl = "https://www.example.com/failure",
-                ReturnCancelUrl = "https://www.example.com/cancel",
+                NotificationUrl = $"{_paymentProviderSettings.UmbracoBaseUrl}/umbraco/api/paymentprovider/notifypayment?formId={formId}&recordUniqueId={recordUniqueId}&statusFieldId={statusKey}",
+                ReturnSuccessUrl = _urlHelper.GetPageUrl(int.Parse(SuccessUrl)),
+                ReturnFailureUrl = _urlHelper.GetPageUrl(int.Parse(FailureUrl)),
+                ReturnCancelUrl = _urlHelper.GetPageUrl(int.Parse(CancelUrl)),
                 Amount = int.Parse(Amount),
                 Currency = Currency,
                 ConsumerId = consumer.Id,
@@ -176,13 +192,28 @@ namespace Umbraco.Forms.Integrations.Commerce.EMerchantPay
 
             if (createPaymentResult.Status != "error")
             {
+                // add unique ID and status to record
+#if NETCOREAPP
+                context.Record.RecordFields[Guid.Parse(uniqueIdKey)].Values.Add(createPaymentResult.UniqueId);
+                context.Record.RecordFields[Guid.Parse(statusKey)].Values.Add(createPaymentResult.Status);
+#else
+                record.RecordFields[Guid.Parse(uniqueIdKey)].Values.Add(createPaymentResult.UniqueId);
+                record.RecordFields[Guid.Parse(statusKey)].Values.Add(createPaymentResult.Status);
+#endif
+
                 // TODO - update after Forms patch applied
                 _httpContextAccessor.HttpContext.Items["RedirectAfterFormSubmitUrl"] = createPaymentResult.RedirectUrl;
 
                 return WorkflowExecutionStatus.Completed;
             }
-            else
-                return WorkflowExecutionStatus.Failed;
+
+#if NETCOREAPP
+                context.Record.RecordFields[Guid.Parse(statusKey)].Values.Add("error");
+#else
+            record.RecordFields[Guid.Parse(statusKey)].Values.Add("error");
+#endif
+
+            return WorkflowExecutionStatus.Failed;
         }
 
         public override List<Exception> ValidateSettings()
@@ -203,9 +234,12 @@ namespace Umbraco.Forms.Integrations.Commerce.EMerchantPay
 
             if (!CancelUrl.IsContentValid(nameof(CancelUrl), out var cancelError)) list.Add(new Exception(cancelError));
 
-            if (!NotificationUrl.IsContentValid(nameof(NotificationUrl), out var notificationError)) list.Add(new Exception(notificationError));
-
             return list;
+        }
+
+        public static string X()
+        {
+            return string.Empty;
         }
     }
 }

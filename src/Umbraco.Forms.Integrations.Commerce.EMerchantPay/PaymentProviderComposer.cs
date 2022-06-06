@@ -4,10 +4,12 @@ using Microsoft.Extensions.DependencyInjection;
 using Umbraco.Cms.Core.Composing;
 using Umbraco.Cms.Core.DependencyInjection;
 using Umbraco.Forms.Integrations.Commerce.EMerchantPay.Configuration;
+using Umbraco.Forms.Integrations.Commerce.EMerchantPay.Helpers;
 using Umbraco.Forms.Integrations.Commerce.EMerchantPay.Services;
 #else
 using Umbraco.Core;
 using Umbraco.Core.Composing;
+using Umbraco.Forms.Integrations.Commerce.EMerchantPay.Helpers;
 using Umbraco.Forms.Integrations.Commerce.EMerchantPay.Services;
 #endif
 
@@ -25,6 +27,8 @@ namespace Umbraco.Forms.Integrations.Commerce.EMerchantPay
             builder.Services.AddSingleton<ConsumerService>();
 
             builder.Services.AddSingleton<PaymentService>();
+
+            builder.Services.AddSingleton<UrlHelper>();
         }
 #else
         public void Compose(Composition composition)
@@ -32,6 +36,8 @@ namespace Umbraco.Forms.Integrations.Commerce.EMerchantPay
             composition.Register<ConsumerService>(Lifetime.Singleton);
 
             composition.Register<PaymentService>(Lifetime.Singleton);
+
+            composition.Register<UrlHelper>(Lifetime.Singleton);
         }
 #endif
     }

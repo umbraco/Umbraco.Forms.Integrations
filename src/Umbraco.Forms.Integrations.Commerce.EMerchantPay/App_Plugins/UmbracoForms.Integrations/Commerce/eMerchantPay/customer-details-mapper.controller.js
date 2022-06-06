@@ -1,4 +1,4 @@
-﻿function CustomerDetailsMapperController($scope, $routeParams, pickerResource, notificationsService) {
+﻿function CustomerDetailsMapperController($scope, $routeParams, pickerResource, notificationsService, umbracoFormsIntegrationsCommerceEMerchantPayResource) {
 
     var vm = this;
 
@@ -28,8 +28,9 @@
         $scope.setting.value = JSON.stringify(vm.mappings);
     }
 
+
     function init() {
-        vm.customerProperties = ["Email", "FirstName", "LastName", "Phone", "Address", "ZipCode", "City", "State", "Country"];
+        vm.customerProperties = ["Email", "FirstName", "LastName", "Phone", "Address", "ZipCode", "City", "State", "Country", "Status", "UniqueId"];
 
         vm.fields = [];
         vm.selectedCustomerProperty = "";

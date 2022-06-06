@@ -18,6 +18,8 @@ namespace Umbraco.Forms.Integrations.Commerce.EMerchantPay.Configuration
             Username = appSettings[Constants.Configuration.UsernameKey];
 
             Password = appSettings[Constants.Configuration.PasswordKey];
+
+            UmbracoBaseUrl = appSettings[Constants.Configuration.UmbracoBaseUrlKey];
         }
 
         public string GatewayBaseUrl { get; set; }
@@ -27,5 +29,7 @@ namespace Umbraco.Forms.Integrations.Commerce.EMerchantPay.Configuration
         public string Username { get; set; }
 
         public string Password { get; set; }
+
+        public string UmbracoBaseUrl { get; set; }
     }
 }

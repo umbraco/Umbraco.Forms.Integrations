@@ -20,5 +20,9 @@ namespace Umbraco.Forms.Integrations.Commerce.EMerchantPay.Models.Dtos
         public string Email { get; set; }
 
         public string Phone { get; set; }
+
+        public string Status { get; set; }
+
+        public string UniqueId { get; set; }
     }
 }

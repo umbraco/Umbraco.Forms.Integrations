@@ -1,10 +1,12 @@
-﻿using System.Collections.Generic;
-using System.Xml.Serialization;
+﻿using System.Xml.Serialization;
 
 namespace Umbraco.Forms.Integrations.Commerce.EMerchantPay.Models.Dtos
 {
     public class PaymentDto : ResponseDto
     {
+        [XmlElement("unique_id")]
+        public string UniqueId { get; set; }
+
         [XmlElement("transaction_id")]
         public string TransactionId { get; set; }
 

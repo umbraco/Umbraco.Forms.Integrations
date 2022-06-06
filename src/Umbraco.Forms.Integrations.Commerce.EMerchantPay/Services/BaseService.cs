@@ -8,7 +8,7 @@ namespace Umbraco.Forms.Integrations.Commerce.EMerchantPay.Services
 {
     public abstract class BaseService<T> where T : class
     {
-        public StringContent Serialize(T input, string root)
+        protected StringContent Serialize(T input, string root)
         {
             var serializer = new XmlSerializer(typeof(T), new XmlRootAttribute(root));
 
@@ -23,7 +23,7 @@ namespace Umbraco.Forms.Integrations.Commerce.EMerchantPay.Services
             }
         }
 
-        public T Deserialize(string response, string root)
+        protected T Deserialize(string response, string root)
         {
             var serializer = new XmlSerializer(typeof(T), new XmlRootAttribute(root));
 
