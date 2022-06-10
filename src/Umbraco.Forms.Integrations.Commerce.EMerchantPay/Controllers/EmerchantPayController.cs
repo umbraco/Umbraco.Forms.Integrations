@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Threading;
 
 #if NETCOREAPP
@@ -18,7 +19,7 @@ using Umbraco.Web.Mvc;
 using Umbraco.Web.WebApi;
 #endif
 using Newtonsoft.Json;
-
+using Umbraco.Forms.Integrations.Commerce.EMerchantPay.Helpers;
 using Umbraco.Forms.Integrations.Commerce.EMerchantPay.Models.Dtos;
 
 
@@ -27,47 +28,14 @@ namespace Umbraco.Forms.Integrations.Commerce.EMerchantPay.Controllers
     [PluginController("UmbracoFormsIntegrationsCommerceEmerchantPay")]
     public class EmerchantPayController : UmbracoAuthorizedApiController
     {
-        private static readonly ReaderWriterLockSlim _lock = new ReaderWriterLockSlim();
+        private readonly CurrencyHelper _currencyHelper;
 
-#if NETCOREAPP
-        private readonly IWebHostEnvironment _webHostEnvironment;
-
-        public EmerchantPayController(IWebHostEnvironment webHostEnvironment)
+        public EmerchantPayController(CurrencyHelper currencyHelper)
         {
-            _webHostEnvironment = webHostEnvironment;
+            _currencyHelper = currencyHelper;
         }
-#endif
 
         [HttpGet]
-        public IEnumerable<CurrencyDto> GetCurrencies()
-        {
-#if NETCOREAPP
-            string currenciesFilePath =
-                $"{_webHostEnvironment.ContentRootPath}/App_Plugins/UmbracoForms.Integrations/Commerce/eMerchantPay/currencies.json";
-#else
-            string currenciesFilePath =
-                HttpContext.Current.Server.MapPath(
-                    "~/App_Plugins/UmbracoForms.Integrations/Commerce/eMerchantPay/currencies.json");
-#endif
-
-            _lock.EnterReadLock();
-
-            try
-            {
-                var content = System.IO.File.ReadAllText(currenciesFilePath);
-
-                var d = JsonConvert.DeserializeObject<IEnumerable<CurrencyDto>>(content);
-
-                return d;
-            }
-            catch (FileNotFoundException ex)
-            {
-                return Enumerable.Empty<CurrencyDto>();
-            }
-            catch (Exception ex)
-            {
-                return Enumerable.Empty<CurrencyDto>();
-            }
-        }
+        public IEnumerable<CurrencyDto> GetCurrencies() => _currencyHelper.GetCurrencies();
     }
 }

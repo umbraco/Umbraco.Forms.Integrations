@@ -41,11 +41,6 @@ namespace Umbraco.Forms.Integrations.Commerce.EMerchantPay
 
         #region WorkflowSettings
 
-        [Core.Attributes.Setting("Usage",
-            Description = "Payment usage description",
-            View = "TextField")]
-        public string Usage { get; set; }
-
         [Core.Attributes.Setting("Amount",
             Description = "Payment amount (without decimals)",
             View = "TextField")]
@@ -55,11 +50,6 @@ namespace Umbraco.Forms.Integrations.Commerce.EMerchantPay
             Description = "Payment currency",
             View = "~/App_Plugins/UmbracoForms.Integrations/Commerce/eMerchantPay/currency.html")]
         public string Currency { get; set; }
-
-        [Core.Attributes.Setting("Supplier",
-            Description = "Name of business supplier",
-            View = "TextField")]
-        public string Supplier { get; set; }
 
         [Core.Attributes.Setting("CustomerDetails",
             Description = "Map customer details with form fields",
@@ -154,7 +144,7 @@ namespace Umbraco.Forms.Integrations.Commerce.EMerchantPay
             var payment = new PaymentDto
             {
                 TransactionId = transactionId.ToString(),
-                Usage = Usage,
+                Usage = _paymentProviderSettings.Usage,
                 NotificationUrl = $"{_paymentProviderSettings.UmbracoBaseUrl}/umbraco/api/paymentprovider/notifypayment?formId={formId}&recordUniqueId={recordUniqueId}&statusFieldId={statusKey}",
                 ReturnSuccessUrl = _urlHelper.GetPageUrl(int.Parse(SuccessUrl)),
                 ReturnFailureUrl = _urlHelper.GetPageUrl(int.Parse(FailureUrl)),
@@ -175,7 +165,7 @@ namespace Umbraco.Forms.Integrations.Commerce.EMerchantPay
                     State = mappingBuilder.State,
                     Country = mappingBuilder.Country
                 },
-                BusinessAttribute = new BusinessAttribute { NameOfTheSupplier = Supplier },
+                BusinessAttribute = new BusinessAttribute { NameOfTheSupplier = _paymentProviderSettings.Supplier },
                 TransactionTypes = new TransactionTypeDto
                 {
                     TransactionTypes = new List<TransactionTypeRecordDto>
@@ -220,26 +210,23 @@ namespace Umbraco.Forms.Integrations.Commerce.EMerchantPay
         {
             var list = new List<Exception>();
 
-            if(string.IsNullOrEmpty(Usage)) list.Add(new Exception("Usage value is not valid."));
+            if (string.IsNullOrEmpty(Amount) || !int.TryParse(Amount, out _))
+                list.Add(new Exception("Amount value is not valid."));
 
-            if(string.IsNullOrEmpty(Amount) || !int.TryParse(Amount, out _)) list.Add(new Exception("Amount value is not valid."));
+            if (string.IsNullOrEmpty(Currency)) list.Add(new Exception("Currency field is required."));
 
-            if(string.IsNullOrEmpty(Currency)) list.Add(new Exception("Currency field is required."));
+            if (!CustomerDetailsMappings.TryParseMappings(out _))
+                list.Add(new Exception("Customer details mappings are required."));
 
-            if(!CustomerDetailsMappings.TryParseMappings(out _)) list.Add(new Exception("Customer details mappings are required."));
+            if (!SuccessUrl.IsContentValid(nameof(SuccessUrl), out var successError))
+                list.Add(new Exception(successError));
 
-            if (!SuccessUrl.IsContentValid(nameof(SuccessUrl), out var successError)) list.Add(new Exception(successError));
-
-            if (!FailureUrl.IsContentValid(nameof(FailureUrl), out var failureError)) list.Add(new Exception(failureError));
+            if (!FailureUrl.IsContentValid(nameof(FailureUrl), out var failureError))
+                list.Add(new Exception(failureError));
 
             if (!CancelUrl.IsContentValid(nameof(CancelUrl), out var cancelError)) list.Add(new Exception(cancelError));
 
             return list;
-        }
-
-        public static string X()
-        {
-            return string.Empty;
         }
     }
 }

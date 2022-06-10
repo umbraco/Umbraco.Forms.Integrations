@@ -33,6 +33,12 @@ namespace Umbraco.Forms.Integrations.Commerce.EMerchantPay
 
             public const string PasswordKey = "Umbraco.Forms.Integrations.Commerce.eMerchantPay.Password";
 
+            public const string SupplierKey = "Umbraco.Forms.Integrations.Commerce.eMerchantPay.Supplier";
+
+            public const string UsageKey = "Umbraco.Forms.Integrations.Commerce.eMerchantPay.Usage";
+
+            public const string CurrenciesKey = "Umbraco.Forms.Integrations.Commerce.eMerchantPay.Currencies";
+
             public const string UmbracoBaseUrlKey = "Umbraco.Forms.Integrations.Commerce.eMerchantPay.UmbracoBaseUrl";
         }
 
