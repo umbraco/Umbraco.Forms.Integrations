@@ -1,0 +1,27 @@
+﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
+	<PropertyGroup>
+		<EMerchantPayPropertyEditorFiles>$(MSBuildThisFileDirectory)..\App_Plugins\UmbracoForms.Integrations\Commerce\eMerchantPay\**\*.*</EMerchantPayPropertyEditorFiles>
+	</PropertyGroup>
+
+	<Target Name="CopyEMerchantPayPropertyEditorAssets" BeforeTargets="Build">
+		<ItemGroup>
+			<EMerchantPayPropertyEditorFiles Include="$(EMerchantPayPropertyEditorFiles)" />
+		</ItemGroup>
+		<Message Text="Copying eMerchantPay Property Editor files: $(EMerchantPayPropertyEditorFiles) - #@(EMerchantPayPropertyEditorFiles->Count()) files" Importance="high" />
+		<Copy
+			SourceFiles="@(EMerchantPayPropertyEditorFiles)"
+			DestinationFiles="@(EMerchantPayPropertyEditorFiles->'$(MSBuildProjectDirectory)\App_Plugins\UmbracoForms.Integrations\Commerce\eMerchantPay\%(RecursiveDir)%(Filename)%(Extension)')"
+			SkipUnchangedFiles="true" />
+
+	</Target>
+
+	<Target Name="ClearEMerchantPayPropertyEditorAssets" BeforeTargets="Clean">
+		<ItemGroup>
+			<EMerchantPayPropertyEditorDir Include="$(MSBuildProjectDirectory)\App_Plugins\UmbracoForms.Integrations\Commerce\eMerchantPay\" />
+		</ItemGroup>
+		<Message Text="Clear eMerchantPay Property Editor data" Importance="high" />
+		<RemoveDir Directories="@(EMerchantPayPropertyEditorDir)"  />
+	</Target>
+
+</Project>
