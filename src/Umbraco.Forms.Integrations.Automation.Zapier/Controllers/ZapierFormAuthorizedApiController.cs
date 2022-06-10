@@ -40,6 +40,7 @@ namespace Umbraco.Forms.Integrations.Automation.Zapier.Controllers
         {
             string username = string.Empty;
             string password = string.Empty;
+            string apiKey = string.Empty;
 
 #if NETCOREAPP
             if (Request.Headers.TryGetValue(Constants.ZapierAppConfiguration.UsernameHeaderKey,
@@ -48,6 +49,9 @@ namespace Umbraco.Forms.Integrations.Automation.Zapier.Controllers
             if (Request.Headers.TryGetValue(Constants.ZapierAppConfiguration.PasswordHeaderKey,
                     out var passwordValues))
                 password = passwordValues.First();
+            if (Request.Headers.TryGetValue(Constants.ZapierAppConfiguration.ApiKeyHeaderKey,
+                    out var apiKeyValues))
+                apiKey = apiKeyValues.First();
 #else
             if (Request.Headers.TryGetValues(Constants.ZapierAppConfiguration.UsernameHeaderKey,
                     out var usernameValues))
@@ -55,11 +59,14 @@ namespace Umbraco.Forms.Integrations.Automation.Zapier.Controllers
             if (Request.Headers.TryGetValues(Constants.ZapierAppConfiguration.PasswordHeaderKey,
                     out var passwordValues))
                 password = passwordValues.First();
+            if (Request.Headers.TryGetValues(Constants.ZapierAppConfiguration.ApiKeyHeaderKey,
+                    out var apiKeyValues))
+                apiKey = apiKeyValues.First();
 #endif
 
-            if (string.IsNullOrEmpty(username) || string.IsNullOrEmpty(password)) return false;
+            if (string.IsNullOrEmpty(apiKey) && (string.IsNullOrEmpty(username) || string.IsNullOrEmpty(password))) return false;
 
-            var isAuthorized = _userValidationService.Validate(username, password, Options.UserGroup).GetAwaiter()
+            var isAuthorized = _userValidationService.Validate(username, password, Options.ApiKey).GetAwaiter()
                 .GetResult();
             if (!isAuthorized) return false;
 
