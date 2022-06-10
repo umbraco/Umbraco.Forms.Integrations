@@ -3,13 +3,17 @@ namespace Umbraco.Forms.Integrations.Automation.Zapier
 {
     public class Constants
     {
-        public const string UmbracoFormsIntegrationsAutomationZapierUserGroup = "Umbraco.Forms.Integrations.Automation.Zapier.UserGroup";
+        public const string UmbracoFormsIntegrationsAutomationZapierUserGroupAlias = "Umbraco.Forms.Integrations.Automation.Zapier.UserGroupAlias";
+
+        public const string UmbracoFormsIntegrationsAutomationZapierApiKey = "Umbraco.Forms.Integrations.Automation.Zapier.ApiKey";
 
         public static class ZapierAppConfiguration
         {
             public const string UsernameHeaderKey = "X-USERNAME";
 
             public const string PasswordHeaderKey = "X-PASSWORD";
+
+            public const string ApiKeyHeaderKey = "X-APIKEY";
         }
 
         public static class Configuration

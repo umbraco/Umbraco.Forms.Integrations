@@ -1,11 +1,11 @@
 trigger:
-- main
+- feature/payment-provider-integration
 
 pool:
   vmImage: 'windows-latest'
 
 variables:
-  projectName: 'Umbraco.Forms.Integrations.Automation.Zapier'
+  projectName: 'Umbraco.Forms.Integrations.Commerce.EMerchantPay'
   solution: '**/*.sln'
   project: 'src/$(projectName)/$(projectName).csproj'
   testPoject: 'src/$(projectName).Tests/$(projectName).Tests.csproj'
