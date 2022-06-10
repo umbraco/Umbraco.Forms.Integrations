@@ -36,8 +36,5 @@
 		</ItemGroup>
 	</Target>
 
-	<Target Name="PostBuild" AfterTargets="PostBuildEvent">
-	  <Exec Command="set UmbracoFormsIntegrationsTestsiteV8Path=$(SolutionDir)\Umbraco.Forms.Integrations.Testsite.V8&#xD;&#xA;  set PaymentProviderDir=%25UmbracoFormsIntegrationsTestsiteV8Path%25\App_Plugins\UmbracoForms.Integrations\Commerce\eMerchantPay&#xD;&#xA;  if not exist %25PaymentProviderDir%25 mkdir -p %25PaymentProviderDir%25&#xD;&#xA;  xcopy &quot;$(ProjectDir)App_Plugins\UmbracoForms.Integrations\Commerce\Zapier&quot; &quot;%25PaymentProviderDir%25&quot; /e /y&#xD;&#xA;  xcopy &quot;$(ProjectDir)App_Plugins\UmbracoForms.Integrations\Commerce\eMerchantPay&quot; &quot;%25PaymentProviderDir%25&quot; /e /y" />
-	</Target>
 
 </Project>
