@@ -23,6 +23,7 @@
 		<readme><![CDATA[An extension for Umbraco Forms providing a custom workflow for handling payments through eMerchantPay gateway.]]></readme>
 	</info>
 	<files>
+		<folder path="App_Plugins/UmbracoForms.Integrations/Commerce/eMerchantPay" orgPath="App_Plugins/UmbracoForms.Integrations/Commerce/eMerchantPay" />
 		<file path="bin/release/net472/Umbraco.Forms.Integrations.Commerce.EMerchantPay.dll" orgPath="bin/Umbraco.Forms.Integrations.Commerce.EMerchantPay.dll" />
 	</files>
 </umbPackage>
