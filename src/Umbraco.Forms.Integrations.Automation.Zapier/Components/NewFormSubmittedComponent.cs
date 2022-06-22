@@ -17,7 +17,7 @@ namespace Umbraco.Forms.Integrations.Automation.Zapier.Components
 
     public class NewFormSubmittedComponent : IComponent
     {
-        private readonly IUmbracoContextAccessor _umbracoContextAccessor;
+        private readonly UmbUrlHelper _umbUrlHelper;
 
         private readonly IRecordStorage _recordStorage;
 
@@ -27,12 +27,14 @@ namespace Umbraco.Forms.Integrations.Automation.Zapier.Components
         
         private readonly ILogger _logger;
 
-        public NewFormSubmittedComponent(IUmbracoContextAccessor umbracoContextAccessor, IRecordStorage recordStorage, 
+        public NewFormSubmittedComponent(
+            UmbUrlHelper umbUrlHelper, 
+            IRecordStorage recordStorage, 
             ZapierService zapierService, 
             ZapierFormSubscriptionHookService zapierFormSubscriptionHookService,
             ILogger logger)
         {
-            _umbracoContextAccessor = umbracoContextAccessor;
+            _umbUrlHelper = umbUrlHelper;
 
             _recordStorage = recordStorage;
 
@@ -56,13 +58,9 @@ namespace Umbraco.Forms.Integrations.Automation.Zapier.Components
         {
             var triggerHelper = new TriggerHelper(_zapierService);
 
-            UmbracoContext umbracoContext = _umbracoContextAccessor.UmbracoContext;
-            var umbracoPageId = e.Record.UmbracoPageId;
-            var pageUrl = umbracoContext.UrlProvider.GetUrl(umbracoPageId, UrlMode.Absolute);
-
             if (_zapierFormSubscriptionHookService.TryGetById(e.Form.Id.ToString(), out var subscriptionHooks))
             {
-                var content = e.Form.ToFormDictionary(e.Record, pageUrl);
+                var content = e.Form.ToFormDictionary(e.Record, _umbUrlHelper.GetPageUrl(e.Record.UmbracoPageId));
 
                 foreach (var subscriptionHook in subscriptionHooks)
                 {
