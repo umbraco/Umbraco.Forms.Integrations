@@ -192,7 +192,7 @@ namespace Umbraco.Forms.Integrations.Commerce.EMerchantPay
 #endif
 
                 // TODO - update after Forms patch applied
-                _httpContextAccessor.HttpContext.Items["RedirectAfterFormSubmitUrl"] = createPaymentResult.RedirectUrl;
+                _httpContextAccessor.HttpContext.Items["FormsRedirectAfterFormSubmitUrl"] = createPaymentResult.RedirectUrl;
 
                 return WorkflowExecutionStatus.Completed;
             }
