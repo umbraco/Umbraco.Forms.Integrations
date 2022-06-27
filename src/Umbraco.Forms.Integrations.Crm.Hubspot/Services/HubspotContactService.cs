@@ -32,10 +32,12 @@ namespace Umbraco.Forms.Integrations.Crm.Hubspot.Services
         private readonly AppCaches _appCaches;
         private readonly IKeyValueService _keyValueService;
 
-        private const string CrmApiBaseUrl = "https://api.hubapi.com/crm/v3/";
+        private const string CrmApiHost = "https://api.hubapi.com";
+        private static readonly string CrmV3ApiBaseUrl = $"{CrmApiHost}/crm/v3/";
         private const string InstallUrlFormat = "https://app-eu1.hubspot.com/oauth/authorize?client_id={0}&redirect_uri={1}&scope={2}";
         private const string OAuthScopes = "oauth%20forms%20crm.objects.contacts.read%20crm.objects.contacts.write";
         private const string OAuthClientId = "1a04f5bf-e99e-48e1-9d62-6c25bf2bdefe";
+        private const string JsonContentType = "application/json";
 
         private const string OAuthBaseUrl = "https://hubspot-forms-auth.umbraco.com/";  // For local testing: "https://localhost:44364/"
         private static string OAuthRedirectUrl = OAuthBaseUrl;
@@ -102,7 +104,7 @@ namespace Umbraco.Forms.Integrations.Crm.Hubspot.Services
                 return Enumerable.Empty<Property>();
             }
 
-            var requestUrl = $"{CrmApiBaseUrl}properties/contacts";
+            var requestUrl = $"{CrmV3ApiBaseUrl}properties/contacts";
             var httpMethod = HttpMethod.Get;
             var response = await GetResponse(requestUrl, httpMethod, authenticationDetails).ConfigureAwait(false);
             if (response.IsSuccessStatusCode == false)
@@ -127,7 +129,10 @@ namespace Umbraco.Forms.Integrations.Crm.Hubspot.Services
             return properties.OrderBy(x => x.Label);
         }
 
-        public async Task<CommandResult> PostContactAsync(Record record, List<MappedProperty> fieldMappings, Dictionary<string, string> additionalFields = null)
+        public async Task<CommandResult> PostContactAsync(Record record, List<MappedProperty> fieldMappings)
+            => await PostContactAsync(record, fieldMappings, null);
+
+        public async Task<CommandResult> PostContactAsync(Record record, List<MappedProperty> fieldMappings, Dictionary<string, string> additionalFields)
         {
             var authenticationDetails = GetConfiguredAuthenticationDetails();
             if (authenticationDetails.Mode == AuthenticationMode.Unauthenticated)
@@ -138,15 +143,27 @@ namespace Umbraco.Forms.Integrations.Crm.Hubspot.Services
 
             // Map data from the workflow setting Hubspot fields
             // From the form field values submitted for this form submission
-            var postData = new PropertiesRequest();
+            var propertiesRequestV1 = new PropertiesRequestV1();
+            var propertiesRequestV3 = new PropertiesRequestV3();
+            var emailValue = string.Empty;
             foreach (var mapping in fieldMappings)
             {
                 var fieldId = mapping.FormField;
                 var recordField = record.GetRecordField(Guid.Parse(fieldId));
                 if (recordField != null)
                 {
+                    var value = recordField.ValuesAsString(false);
+
+                    propertiesRequestV1.Properties.Add(new PropertiesRequestV1.PropertyValue(mapping.HubspotField, value));
+                    propertiesRequestV3.Properties.Add(mapping.HubspotField, value);
+
                     // TODO: What about different field types in forms & Hubspot that are not simple text ones?
-                    postData.Properties.Add(mapping.HubspotField, recordField.ValuesAsString(false));
+
+                    // "Email" appears to be a special form field used for uniqueness checks, so we can safely look it up by name.
+                    if (mapping.HubspotField.ToLowerInvariant() == "email")
+                    {
+                        emailValue = value;
+                    }
                 }
                 else
                 {
@@ -160,32 +177,81 @@ namespace Umbraco.Forms.Integrations.Crm.Hubspot.Services
                 // Add any extra fields that got passed (from a custom workflow)
                 foreach (var additionalField in additionalFields)
                 {
-                    postData.Properties.Add(additionalField.Key, additionalField.Value);
+                    propertiesRequestV1.Properties.Add(new PropertiesRequestV1.PropertyValue(additionalField.Key, additionalField.Value));
+                    propertiesRequestV3.Properties.Add(additionalField.Key, additionalField.Value);
                 }
             }
 
             // POST data to hubspot
             // https://api.hubapi.com/crm/v3/objects/contacts?hapikey=YOUR_HUBSPOT_API_KEY
-            var requestUrl = $"{CrmApiBaseUrl}objects/contacts";
+            var requestUrl = $"{CrmV3ApiBaseUrl}objects/contacts";
             var httpMethod = HttpMethod.Post;
-            var response = await GetResponse(requestUrl, httpMethod, authenticationDetails, postData, "application/json").ConfigureAwait(false);
+            var response = await GetResponse(requestUrl, httpMethod, authenticationDetails, propertiesRequestV3, JsonContentType).ConfigureAwait(false);
 
             // Depending on POST status fail or mark workflow as completed
             if (response.IsSuccessStatusCode == false)
             {
-                var retryResult = await HandleFailedRequest(response.StatusCode, requestUrl, httpMethod, authenticationDetails);
-                if (retryResult.Success)
+                // A 409 - Conflict response indicates that the contact (by email address) already exists.
+                if (response.StatusCode == HttpStatusCode.Conflict)
                 {
-                    return CommandResult.Success;
+                    return await UpdateContactAsync(record, authenticationDetails, propertiesRequestV1, emailValue);
                 }
                 else
                 {
-                    _logger.Error<HubspotContactService>("Error submitting a HubSpot contact request ");
-                    return CommandResult.Failed;
+                    var retryResult = await HandleFailedRequest(response.StatusCode, requestUrl, httpMethod, authenticationDetails, propertiesRequestV3, JsonContentType);
+                    if (retryResult.Success)
+                    {
+                        _logger.Info<HubspotContactService>($"Hubspot contact record created from record {record.UniqueId}.");
+                        return CommandResult.Success;
+                    }
+                    else
+                    {
+                        _logger.Error<HubspotContactService>("Error creating a HubSpot contact.");
+                        return CommandResult.Failed;
+                    }
                 }
             }
+            else
+            {
+                _logger.Info<HubspotContactService>($"Hubspot contact record created from record {record.UniqueId}.");
+                return CommandResult.Success;
+            }
+        }
 
-            return CommandResult.Success;
+        private async Task<CommandResult> UpdateContactAsync(Record record, AuthenticationDetail authenticationDetails, PropertiesRequestV1 postData, string email)
+        {
+            if (!string.IsNullOrEmpty(email))
+            {
+                // When the contact exists we can update the details using https://legacydocs.hubspot.com/docs/methods/contacts/update_contact-by-email
+                // It uses the V1 API but support suggests it will be added to V3 before being depreciated so we can use safely:
+                // https://community.hubspot.com/t5/APIs-Integrations/Get-Contacts-from-contact-list-using-email/m-p/419493/highlight/true#M41567
+                var requestUrl = $"{CrmApiHost}/contacts/v1/contact/email/{email}/profile";
+                var response = await GetResponse(requestUrl, HttpMethod.Post, authenticationDetails, postData, JsonContentType).ConfigureAwait(false);
+                if (response.IsSuccessStatusCode == false)
+                {
+                    var retryResult = await HandleFailedRequest(response.StatusCode, requestUrl, HttpMethod.Post, authenticationDetails, postData, JsonContentType);
+                    if (retryResult.Success)
+                    {
+                        _logger.Info<HubspotContactService>($"Hubspot contact record updated from record {record.UniqueId}.");
+                        return CommandResult.Success;
+                    }
+                    else
+                    {
+                        _logger.Error<HubspotContactService>("Error updating a HubSpot contact.");
+                        return CommandResult.Failed;
+                    }
+                }
+                else
+                {
+                    _logger.Info<HubspotContactService>($"Hubspot contact record updated from record {record.UniqueId}.");
+                    return CommandResult.Success;
+                }
+            }
+            else
+            {
+                _logger.Warn<HubspotContactService>("Could not add a new HubSpot contact due to 409/Conflict response, but no email field was provided to carry out an update.");
+                return CommandResult.Failed;
+            }
         }
 
         private AuthenticationDetail GetConfiguredAuthenticationDetails()
@@ -304,7 +370,7 @@ namespace Umbraco.Forms.Integrations.Crm.Hubspot.Services
 
             switch (contentType)
             {
-                case "application/json":
+                case JsonContentType:
                     var serializedData = JsonConvert.SerializeObject(data);
                     return new StringContent(serializedData, Encoding.UTF8, contentType);
                 case "application/x-www-form-urlencoded":
@@ -314,7 +380,13 @@ namespace Umbraco.Forms.Integrations.Crm.Hubspot.Services
             }
         }
 
-        private async Task<HandleFailedRequestResult> HandleFailedRequest(HttpStatusCode statusCode, string requestUrl, HttpMethod httpMethod, AuthenticationDetail authenticationDetails)
+        private async Task<HandleFailedRequestResult> HandleFailedRequest(
+            HttpStatusCode statusCode,
+            string requestUrl,
+            HttpMethod httpMethod,
+            AuthenticationDetail authenticationDetails,
+            object content = null,
+            string contentType = "")
         {
             var result = new HandleFailedRequestResult();
             if (authenticationDetails.Mode == AuthenticationMode.OAuth)
@@ -327,7 +399,7 @@ namespace Umbraco.Forms.Integrations.Crm.Hubspot.Services
                     await RefreshOAuthAccessToken(authenticationDetails.RefreshToken);
 
                     // Repeat the operation using the refreshed token.
-                    var response = await GetResponse(requestUrl, httpMethod, authenticationDetails).ConfigureAwait(false);
+                    var response = await GetResponse(requestUrl, httpMethod, authenticationDetails, content, contentType).ConfigureAwait(false);
                     if (response.IsSuccessStatusCode)
                     {
                         result.Success = true;
