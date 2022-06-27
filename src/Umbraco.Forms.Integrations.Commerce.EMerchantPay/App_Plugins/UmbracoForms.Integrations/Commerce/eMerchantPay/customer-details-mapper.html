@@ -1,0 +1,41 @@
+﻿<div ng-controller="UmbracoForms.Integrations.Commerce.eMerchantPay.CustomerDetailsMapperController as vm">
+
+    <div>
+        <select ng-model="vm.selectedCustomerProperty">
+            <option value="">Select customer property</option>
+            <option ng-repeat="property in vm.customerProperties" value="{{ property }}">{{ property }}</option>
+        </select>
+        <select ng-model="vm.selectedField">
+            <option value="">Select field</option>
+            <option ng-repeat="field in vm.fields" value="{{ field.id }}">{{ field.value }}</option>
+        </select>
+    </div>
+    
+    <div class="mt2">
+        <umb-button type="button" class="mt2"
+                    action="vm.addMapping()"
+                    label="Add mapping"
+                    disabled="vm.selectedCustomerProperty.length === 0 || vm.selectedField.length === 0">
+        </umb-button>
+    </div>
+    
+    <div class="umb-forms-mappings mt2" ng-if="vm.mappings.length > 0">
+
+        <div class="umb-forms-mapping-header">
+            <div class="umb-forms-mapping-field -no-margin-left">Property</div>
+            <div class="umb-forms-mapping-field">Field</div>
+            <div class="umb-forms-mapping-remove -no-margin-right"></div>
+        </div>
+
+        <div class="umb-forms-mapping" ng-repeat="mapping in vm.mappings">
+            <div class="umb-forms-mapping-field -no-margin-left">{{ mapping.customerProperty }}</div>
+            <div class="umb-forms-mapping-field">{{ mapping.field.value }}</div>
+            <div class="umb-forms-mapping-remove -no-margin-right">
+                <a href="" ng-click="vm.deleteMapping($index)">
+                    <i class="icon-trash"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+
+</div>
