@@ -12,6 +12,8 @@
 
         public string GoogleClientSecret { get; set; }
 
+        public string DynamicsClientSecret { get; set; }
+
         public string this[string propertyName] => (string)GetType().GetProperty(propertyName)?.GetValue(this, null);
     }
 }
