@@ -145,7 +145,7 @@ namespace Umbraco.Forms.Integrations.Commerce.EMerchantPay
             {
                 TransactionId = transactionId.ToString(),
                 Usage = _paymentProviderSettings.Usage,
-                NotificationUrl = $"{_paymentProviderSettings.UmbracoBaseUrl}/umbraco/api/paymentprovider/notifypayment?formId={formId}&recordUniqueId={recordUniqueId}&statusFieldId={statusKey}",
+                NotificationUrl = $"{_paymentProviderSettings.UmbracoBaseUrl}umbraco/api/paymentprovider/notifypayment?formId={formId}&recordUniqueId={recordUniqueId}&statusFieldId={statusKey}",
                 ReturnSuccessUrl = _urlHelper.GetPageUrl(int.Parse(SuccessUrl)),
                 ReturnFailureUrl = _urlHelper.GetPageUrl(int.Parse(FailureUrl)),
                 ReturnCancelUrl = _urlHelper.GetPageUrl(int.Parse(CancelUrl)),
