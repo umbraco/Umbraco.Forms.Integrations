@@ -36,7 +36,7 @@ namespace Umbraco.Forms.Integrations.Automation.Zapier.Controllers
             _userValidationService = userValidationService;
         }
 
-        public bool IsUserValid()
+        public bool IsAccessValid()
         {
             string username = string.Empty;
             string password = string.Empty;
@@ -65,6 +65,9 @@ namespace Umbraco.Forms.Integrations.Automation.Zapier.Controllers
 #endif
 
             if (string.IsNullOrEmpty(apiKey) && (string.IsNullOrEmpty(username) || string.IsNullOrEmpty(password))) return false;
+
+            if (!string.IsNullOrEmpty(apiKey))
+                return apiKey == Options.ApiKey;
 
             var isAuthorized = _userValidationService.Validate(username, password, Options.ApiKey).GetAwaiter()
                 .GetResult();
