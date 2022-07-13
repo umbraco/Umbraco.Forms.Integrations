@@ -32,7 +32,7 @@ namespace Umbraco.Forms.Integrations.Automation.Zapier.Controllers
 
         public IEnumerable<FormDto> GetForms()
         {
-            if (!IsUserValid()) return Enumerable.Empty<FormDto>();
+            if (!IsAccessValid()) return Enumerable.Empty<FormDto>();
 
             return _zapierFormService.GetAll();
         }

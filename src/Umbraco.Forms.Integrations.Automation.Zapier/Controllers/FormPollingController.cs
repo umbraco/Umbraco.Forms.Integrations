@@ -46,7 +46,7 @@ namespace Umbraco.Forms.Integrations.Automation.Zapier.Controllers
 
         public List<Dictionary<string, string>> GetFormPropertiesById(string id)
         {
-            if (!IsUserValid()) return new List<Dictionary<string, string>>();
+            if (!IsAccessValid()) return new List<Dictionary<string, string>>();
 
             var form = _zapierFormService.GetById(id);
 
