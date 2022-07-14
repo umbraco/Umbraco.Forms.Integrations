@@ -1,6 +1,6 @@
 # Umbraco.Forms.Integrations.Automation.Zapier
 
-This integration provides a custom workflow allowing form entries to be mapped to the fields of a Zap tool trigger from Zapier.
+This integration is an add-on to the Umbraco CMS integration available [here](https://github.com/umbraco/Umbraco.Cms.Integrations/tree/main/src/Umbraco.Cms.Integrations.Automation.Zapier), and provides necessary components for handling form submissions based on the registered subscription hooks.
 
 A Zap is an automated workflow that connects various apps and services together. Each Zap consists of a trigger and one or more actions.
 
@@ -23,9 +23,17 @@ The Umbraco app manages two types of events:
 
 The trigger event to be used by this integration is _New Form Submission_.
 
-When creating the Zap trigger, you will be prompted to enter a username, password and the URL for your Umbraco website.
+When creating the Zap trigger, you will be prompted to enter a username, password and the URL for your Umbraco website, or you can use instead an API key.
+If the following setting is present, then the API key based authentication will take precendence and will be the main method of authorization.
+```
+<appSettings>
+...
+  <add key="Umbraco.Forms.Integrations.Automation.Zapier.ApiKey" value="[your_api_key]" />
+...
+</appSettings>
+```
 
-Then the Umbraco application will validate the credentials entered and return a message in case the validation fails.
+If no API key is present, then the Umbraco application will validate the credentials entered and return a message in case the validation fails.
 
 If you want to extend the security layer, you can also specify a user group that the user trying to connect needs to be a part of, by adding the following 
 setting in `Web.config`:
@@ -33,15 +41,20 @@ setting in `Web.config`:
 ```
 <appSettings>
 ...
-  <add key="Umbraco.Cms.Integrations.Automation.Zapier.UserGroup" value="[your User Group]" />
+  <add key="Umbraco.Forms.Integrations.Automation.Zapier.UserGroup" value="[your_user_group]" />
 ...
 </appSettings>
 ```
 
 ### Working With the Zapier Forms Integration
-Add the _Trigger Zap_ workflow to a form, configure which fields will be sent to the Zap and add the webhook URL of the Zap.
+In the _Content_ area of the backoffice, find the _Zapier Integrations_ dashboard.
 
-You can add mappings for each of the form's fields (if no mapping is created, all fields will be included by default), and also pick one of the
-standard fields: Form ID, Form Name, Page URL, Submission date/time.
+The dashboard is composed of two sections:
+* Content Properties - Zapier details and input fields for adding content configurations
+* Registered Subscription Hooks - list of registered entities.
 
-When the form is submitted, the workflow will be invoked and a POST request, with the content built based on the workflow's settings, will trigger the Zap and the actions will be executed.
+Subscription hooks are split in two categories: 
+* 1 = Content
+* 2 = Form
+
+The _Trigger Webhook_ action will send a test request to the Zap trigger, enabling the preview of requests in the Zap setup workflow.
