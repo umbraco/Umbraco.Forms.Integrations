@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 
 using Umbraco.Forms.Core.Persistence.Dtos;
-using Umbraco.Forms.Integrations.Commerce.EMerchantPay.Helpers;
 using Umbraco.Forms.Integrations.Commerce.EMerchantPay.Models.Dtos;
 
 namespace Umbraco.Forms.Integrations.Commerce.EMerchantPay.Builders
@@ -23,16 +22,17 @@ namespace Umbraco.Forms.Integrations.Commerce.EMerchantPay.Builders
             Values.State = GetValue(nameof(MappingValues.State), record, mappings);
             Values.Country = GetValue(nameof(MappingValues.Country), record, mappings);
             Values.Phone = GetValue(nameof(MappingValues.Phone), record, mappings);
-            Values.Status = GetValue(nameof(MappingValues.Status), record, mappings);
-            Values.UniqueId = GetValue(nameof(MappingValues.UniqueId), record, mappings);
 
             return this;
         }
 
         private string GetValue(string propertyName, Record record, List<Mapping> mappings)
         {
-            var key = mappings.First(p => p.CustomerProperty == propertyName).Field.Id;
-            return record.RecordFields[Guid.Parse(key)].ValuesAsString();
+            var mapping = mappings.FirstOrDefault(p => p.CustomerProperty == propertyName);
+
+            return mapping != null
+                ? record.RecordFields[Guid.Parse(mapping.Field.Id)].ValuesAsString()
+                : string.Empty;
         }
 
         public MappingValues Build() => Values;

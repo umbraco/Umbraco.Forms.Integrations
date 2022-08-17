@@ -5,22 +5,6 @@ namespace Umbraco.Forms.Integrations.Commerce.EMerchantPay
     {
         public const string WorkflowId = "b2731255-2e48-4345-9ae5-aaf5b8bfb10a";
 
-        /// <summary>
-        /// Fields mandatory for mapping:
-        /// 1. FirstName
-        /// 2. LastName
-        /// 3. Address
-        /// 4. ZipCode
-        /// 5. City
-        /// 6. State
-        /// 7. Country
-        /// 8. Email
-        /// 9. Phone
-        /// 10. Status
-        /// 11. UniqueId
-        /// </summary>
-        public const int RequiredMappingsNo = 11;
-
         public static class Configuration
         {
             public const string Settings = "Umbraco:Forms:Integrations:Commerce:eMerchantPay:Settings";
