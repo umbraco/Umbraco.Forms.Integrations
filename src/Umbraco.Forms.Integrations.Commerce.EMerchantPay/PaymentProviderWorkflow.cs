@@ -51,7 +51,22 @@ namespace Umbraco.Forms.Integrations.Commerce.EMerchantPay
             View = "~/App_Plugins/UmbracoForms.Integrations/Commerce/eMerchantPay/currency.html")]
         public string Currency { get; set; }
 
-        [Core.Attributes.Setting("CustomerDetails",
+        [Core.Attributes.Setting("Number of Items",
+           Description = "Map number of items with form field. If selected, final amount will be Amount x NumberOfItems.",
+           View = "~/App_Plugins/UmbracoForms.Integrations/Commerce/eMerchantPay/field-picker.html")]
+        public string NumberOfItems { get; set; }
+
+        [Core.Attributes.Setting("Record Status",
+           Description = "Map payment record status with form field",
+           View = "~/App_Plugins/UmbracoForms.Integrations/Commerce/eMerchantPay/field-picker.html")]
+        public string RecordStatus { get; set; }
+
+        [Core.Attributes.Setting("Record Payment Unique ID",
+           Description = "Map payment unique ID with form field",
+           View = "~/App_Plugins/UmbracoForms.Integrations/Commerce/eMerchantPay/field-picker.html")]
+        public string UniqueId { get; set; }
+
+        [Core.Attributes.Setting("Customer Details",
             Description = "Map customer details with form fields",
             View = "~/App_Plugins/UmbracoForms.Integrations/Commerce/eMerchantPay/customer-details-mapper.html")]
         public string CustomerDetailsMappings { get; set; }
@@ -138,8 +153,17 @@ namespace Umbraco.Forms.Integrations.Commerce.EMerchantPay
             var formId = record.Form;
             var recordUniqueId = record.UniqueId;
 #endif
-            var uniqueIdKey = mappings.First(p => p.CustomerProperty == nameof(MappingValues.UniqueId)).Field.Id;
-            var statusKey = mappings.First(p => p.CustomerProperty == nameof(MappingValues.Status)).Field.Id;
+            var uniqueIdKey = UniqueId;  
+            var statusKey = RecordStatus;
+
+
+            var numberOfItems = string.IsNullOrEmpty(NumberOfItems)
+                ? 0
+#if NETCOREAPP
+                : int.Parse(context.Record.RecordFields[Guid.Parse(NumberOfItems)].ValuesAsString());
+#else
+                : int.Parse(record.RecordFields[Guid.Parse(NumberOfItems)].ValuesAsString());
+#endif
 
             var payment = new PaymentDto
             {
@@ -149,7 +173,9 @@ namespace Umbraco.Forms.Integrations.Commerce.EMerchantPay
                 ReturnSuccessUrl = _urlHelper.GetPageUrl(int.Parse(SuccessUrl)),
                 ReturnFailureUrl = _urlHelper.GetPageUrl(int.Parse(FailureUrl)),
                 ReturnCancelUrl = _urlHelper.GetPageUrl(int.Parse(CancelUrl)),
-                Amount = int.Parse(Amount),
+                Amount = numberOfItems != 0
+                    ? numberOfItems * int.Parse(Amount)
+                    : int.Parse(Amount),
                 Currency = Currency,
                 ConsumerId = consumer.Id,
                 CustomerEmail = consumer.Email,
@@ -191,14 +217,13 @@ namespace Umbraco.Forms.Integrations.Commerce.EMerchantPay
                 record.RecordFields[Guid.Parse(statusKey)].Values.Add(createPaymentResult.Status);
 #endif
 
-                // TODO - update after Forms patch applied
-                _httpContextAccessor.HttpContext.Items["FormsRedirectAfterFormSubmitUrl"] = createPaymentResult.RedirectUrl;
+                _httpContextAccessor.HttpContext.Items[Core.Constants.ItemKeys.RedirectAfterFormSubmitUrl] = createPaymentResult.RedirectUrl;
 
                 return WorkflowExecutionStatus.Completed;
             }
 
 #if NETCOREAPP
-                context.Record.RecordFields[Guid.Parse(statusKey)].Values.Add("error");
+            context.Record.RecordFields[Guid.Parse(statusKey)].Values.Add("error");
 #else
             record.RecordFields[Guid.Parse(statusKey)].Values.Add("error");
 #endif
@@ -215,8 +240,12 @@ namespace Umbraco.Forms.Integrations.Commerce.EMerchantPay
 
             if (string.IsNullOrEmpty(Currency)) list.Add(new Exception("Currency field is required."));
 
+            if (string.IsNullOrEmpty(RecordStatus)) list.Add(new Exception("Record Status field is required."));
+
+            if (string.IsNullOrEmpty(UniqueId)) list.Add(new Exception("Payment Unique ID field is required."));
+
             if (!CustomerDetailsMappings.TryParseMappings(out _))
-                list.Add(new Exception("Customer details mappings are required."));
+                list.Add(new Exception("Customer email mapping is required."));
 
             if (!SuccessUrl.IsContentValid(nameof(SuccessUrl), out var successError))
                 list.Add(new Exception(successError));

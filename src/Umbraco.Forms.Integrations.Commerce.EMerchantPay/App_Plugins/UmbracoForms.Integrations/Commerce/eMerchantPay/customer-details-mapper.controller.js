@@ -1,4 +1,4 @@
-﻿function CustomerDetailsMapperController($scope, $routeParams, pickerResource, notificationsService, umbracoFormsIntegrationsCommerceEMerchantPayResource) {
+﻿function CustomerDetailsMapperController($scope, notificationsService, emerchantpayService) {
 
     var vm = this;
 
@@ -22,27 +22,25 @@
         vm.selectedField = "";
     }
 
-    vm.deleteMapping = function(index) {
-        vm.mappings.splice(index);
+    vm.deleteMapping = function (index) {
+
+        vm.mappings.splice(index, 1);
 
         $scope.setting.value = JSON.stringify(vm.mappings);
     }
 
 
     function init() {
-        vm.customerProperties = ["Email", "FirstName", "LastName", "Phone", "Address", "ZipCode", "City", "State", "Country", "Status", "UniqueId"];
+        vm.customerProperties = ["Email", "FirstName", "LastName", "Phone", "Address", "ZipCode", "City", "State", "Country"];
 
         vm.fields = [];
+
+        emerchantpayService.getFormFields(function (response) {
+            vm.fields = response;
+        });
+
         vm.selectedCustomerProperty = "";
         vm.selectedField = "";
-
-        var formId = $routeParams.id;
-
-        if (formId !== -1) {
-            pickerResource.getAllFields($routeParams.id).then(function (response) {
-                vm.fields = response.data;
-            });
-        }
 
         vm.mappings = $scope.setting.value
             ? JSON.parse($scope.setting.value)

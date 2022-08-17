@@ -20,14 +20,14 @@
 	<ItemGroup Condition="'$(TargetFramework)' == 'net472'">
 		<PackageReference Include="UmbracoCms.Web" Version="8.5.4" />
 		<PackageReference Include="UmbracoCms.Core" Version="8.5.4" />
-		<PackageReference Include="UmbracoForms.Core" Version="8.9.1" />
+		<PackageReference Include="UmbracoForms.Core" Version="8.13.0" />
 	</ItemGroup>
 
 	<ItemGroup Condition="'$(TargetFramework)' == 'net50'">
 		<PackageReference Include="Umbraco.Cms.Web.Website" version="9.0.1" />
 		<PackageReference Include="Umbraco.Cms.Web.BackOffice" version="9.0.1" />
 		<PackageReference Include="Umbraco.Cms.Core" version="9.0.1" />
-		<PackageReference Include="Umbraco.Forms.Core.Providers" version="9.1.0" />
+		<PackageReference Include="Umbraco.Forms.Core.Providers" version="9.5.0" />
 	</ItemGroup>
 
 	<Target Name="RemoveLuceneAnalyzer" BeforeTargets="CoreCompile">
@@ -35,6 +35,4 @@
 			<Analyzer Remove="@(Analyzer)" Condition="%(FileName) == 'Lucene.Net.CodeAnalysis.CSharp'" />
 		</ItemGroup>
 	</Target>
-
-
 </Project>

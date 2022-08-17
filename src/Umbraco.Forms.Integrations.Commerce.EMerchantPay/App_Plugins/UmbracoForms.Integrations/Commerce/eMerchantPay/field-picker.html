@@ -1,0 +1,10 @@
+﻿<div ng-controller="UmbracoForms.Integrations.Commerce.eMerchantPay.FieldPickerController as vm">
+
+    <div>
+        <select ng-model="vm.selectedField" ng-click="vm.saveField()">
+            <option value="">Select field</option>
+            <option ng-repeat="field in vm.fields" value="{{ field.id }}">{{ field.value }}</option>
+        </select>
+    </div>
+
+</div>
