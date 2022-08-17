@@ -5,7 +5,6 @@
 
             if (formId !== -1) {
                 pickerResource.getAllFields(formId).then(function (response) {
-                    console.log(response);
                     callback(response.data);
                 });
             } else callback([]);
