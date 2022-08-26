@@ -3,15 +3,9 @@
 using Umbraco.Forms.Integrations.Automation.Zapier.Configuration;
 using Umbraco.Forms.Integrations.Automation.Zapier.Services;
 
-#if NETCOREAPP
 using Microsoft.Extensions.Options;
 
 using Umbraco.Cms.Web.Common.Controllers;
-#else
-using System.Configuration;
-
-using Umbraco.Web.WebApi;
-#endif
 
 namespace Umbraco.Forms.Integrations.Automation.Zapier.Controllers
 {
@@ -21,17 +15,9 @@ namespace Umbraco.Forms.Integrations.Automation.Zapier.Controllers
 
         private readonly IUserValidationService _userValidationService;
 
-#if NETCOREAPP
         public ZapierFormAuthorizedApiController(IOptions<ZapierSettings> options, IUserValidationService userValidationService)
-#else
-        public ZapierFormAuthorizedApiController(IUserValidationService userValidationService)
-#endif
         {
-#if NETCOREAPP
             Options = options.Value;
-#else
-            Options = new ZapierSettings(ConfigurationManager.AppSettings);
-#endif
 
             _userValidationService = userValidationService;
         }
@@ -42,7 +28,6 @@ namespace Umbraco.Forms.Integrations.Automation.Zapier.Controllers
             string password = string.Empty;
             string apiKey = string.Empty;
 
-#if NETCOREAPP
             if (Request.Headers.TryGetValue(Constants.ZapierAppConfiguration.UsernameHeaderKey,
                     out var usernameValues))
                 username = usernameValues.First();
@@ -52,17 +37,6 @@ namespace Umbraco.Forms.Integrations.Automation.Zapier.Controllers
             if (Request.Headers.TryGetValue(Constants.ZapierAppConfiguration.ApiKeyHeaderKey,
                     out var apiKeyValues))
                 apiKey = apiKeyValues.First();
-#else
-            if (Request.Headers.TryGetValues(Constants.ZapierAppConfiguration.UsernameHeaderKey,
-                    out var usernameValues))
-                username = usernameValues.First();
-            if (Request.Headers.TryGetValues(Constants.ZapierAppConfiguration.PasswordHeaderKey,
-                    out var passwordValues))
-                password = passwordValues.First();
-            if (Request.Headers.TryGetValues(Constants.ZapierAppConfiguration.ApiKeyHeaderKey,
-                    out var apiKeyValues))
-                apiKey = apiKeyValues.First();
-#endif
 
             if (string.IsNullOrEmpty(apiKey) && (string.IsNullOrEmpty(username) || string.IsNullOrEmpty(password))) return false;
 

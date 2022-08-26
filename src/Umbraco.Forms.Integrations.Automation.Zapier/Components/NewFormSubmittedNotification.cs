@@ -1,5 +1,4 @@
-﻿#if NETCOREAPP
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Logging;
 
 using Umbraco.Cms.Core.Events;
 using Umbraco.Cms.Core.Models.PublishedContent;
@@ -68,4 +67,3 @@ namespace Umbraco.Forms.Integrations.Automation.Zapier.Components
         }
     }
 }
-#endif

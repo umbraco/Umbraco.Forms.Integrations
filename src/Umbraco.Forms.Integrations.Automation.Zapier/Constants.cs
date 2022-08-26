@@ -3,10 +3,6 @@ namespace Umbraco.Forms.Integrations.Automation.Zapier
 {
     public class Constants
     {
-        public const string UmbracoFormsIntegrationsAutomationZapierUserGroupAlias = "Umbraco.Forms.Integrations.Automation.Zapier.UserGroupAlias";
-
-        public const string UmbracoFormsIntegrationsAutomationZapierApiKey = "Umbraco.Forms.Integrations.Automation.Zapier.ApiKey";
-
         public static class ZapierAppConfiguration
         {
             public const string UsernameHeaderKey = "X-USERNAME";

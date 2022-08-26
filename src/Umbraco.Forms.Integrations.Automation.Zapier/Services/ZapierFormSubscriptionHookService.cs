@@ -1,15 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using Microsoft.Extensions.Logging;
+
+using System.Collections.Generic;
 using System.Linq;
+
 using Umbraco.Forms.Integrations.Automation.Zapier.Models.Dtos;
-
-#if NETCOREAPP
-using Microsoft.Extensions.Logging;
-
-using Umbraco.Cms.Core.Scoping;
-#else
-using Umbraco.Core.Logging;
-using Umbraco.Core.Scoping;
-#endif
+using Umbraco.Cms.Infrastructure.Scoping;
 
 namespace Umbraco.Forms.Integrations.Automation.Zapier.Services
 {
@@ -17,7 +12,6 @@ namespace Umbraco.Forms.Integrations.Automation.Zapier.Services
     {
         private readonly IScopeProvider _scopeProvider;
 
-#if NETCOREAPP
         private readonly ILogger<ZapierFormSubscriptionHookService> _logger;
 
         public ZapierFormSubscriptionHookService(IScopeProvider scopeProvider, ILogger<ZapierFormSubscriptionHookService> logger)
@@ -26,16 +20,6 @@ namespace Umbraco.Forms.Integrations.Automation.Zapier.Services
 
             _logger = logger;
         }
-#else
-        private readonly ILogger _logger;
-
-         public ZapierFormSubscriptionHookService(IScopeProvider scopeProvider, ILogger logger)
-        {
-            _scopeProvider = scopeProvider;
-
-            _logger = logger;
-        }
-#endif
 
         public bool TryGetById(string id, out IEnumerable<SubscriptionDto> dto)
         {
