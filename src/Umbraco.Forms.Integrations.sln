@@ -1,11 +1,9 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.31402.337
+# Visual Studio Version 17
+VisualStudioVersion = 17.2.32616.157
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Umbraco.Forms.Integrations.Crm.Hubspot", "Umbraco.Forms.Integrations.Crm.Hubspot\Umbraco.Forms.Integrations.Crm.Hubspot.csproj", "{E7F3F2CC-DCB6-4158-AABA-D2EA9E1B9FA8}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Umbraco.Forms.Integrations.TestSite", "Umbraco.Forms.Integrations.TestSite\Umbraco.Forms.Integrations.TestSite.csproj", "{B34FD8A8-EA3E-4FD0-9A95-ACFE5F54CED4}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "CRM", "CRM", "{B068CD05-EA88-4457-B8D9-6DB899E7EBE1}"
 EndProject
@@ -29,13 +27,13 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Zapier", "Zapier", "{B05E7F
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Umbraco.Forms.Integrations.Automation.Zapier", "Umbraco.Forms.Integrations.Automation.Zapier\Umbraco.Forms.Integrations.Automation.Zapier.csproj", "{9602AB40-C74D-4067-814F-AF7EC33A5F8C}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Umbraco.Forms.Integrations.Testsite.V9", "Umbraco.Forms.Integrations.Testsite.V9\Umbraco.Forms.Integrations.Testsite.V9.csproj", "{35CBD238-126D-4A9C-93E4-D92F75960D3A}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Commerce", "Commerce", "{F436249E-0796-4FCC-85A5-180A0DCDB05F}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "eMerchantPay", "eMerchantPay", "{854D0DF1-AAEE-406A-82A8-B05992A0A74B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Umbraco.Forms.Integrations.Commerce.EMerchantPay", "Umbraco.Forms.Integrations.Commerce.EMerchantPay\Umbraco.Forms.Integrations.Commerce.EMerchantPay.csproj", "{FD1A8505-A19E-4281-8701-6BA708C03CBE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Umbraco.Forms.Integrations.Commerce.EMerchantPay", "Umbraco.Forms.Integrations.Commerce.EMerchantPay\Umbraco.Forms.Integrations.Commerce.EMerchantPay.csproj", "{FD1A8505-A19E-4281-8701-6BA708C03CBE}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Umbraco.Forms.Integrations.Testsite.V10", "Umbraco.Forms.Integrations.Testsite.V10\Umbraco.Forms.Integrations.Testsite.V10.csproj", "{4A475341-A17E-419F-B5A1-415FF1911046}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -47,10 +45,6 @@ Global
 		{E7F3F2CC-DCB6-4158-AABA-D2EA9E1B9FA8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E7F3F2CC-DCB6-4158-AABA-D2EA9E1B9FA8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E7F3F2CC-DCB6-4158-AABA-D2EA9E1B9FA8}.Release|Any CPU.Build.0 = Release|Any CPU
-		{B34FD8A8-EA3E-4FD0-9A95-ACFE5F54CED4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{B34FD8A8-EA3E-4FD0-9A95-ACFE5F54CED4}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{B34FD8A8-EA3E-4FD0-9A95-ACFE5F54CED4}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{B34FD8A8-EA3E-4FD0-9A95-ACFE5F54CED4}.Release|Any CPU.Build.0 = Release|Any CPU
 		{53742941-B77B-4A95-B247-F3ADD944C2FD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{53742941-B77B-4A95-B247-F3ADD944C2FD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{53742941-B77B-4A95-B247-F3ADD944C2FD}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -63,14 +57,14 @@ Global
 		{9602AB40-C74D-4067-814F-AF7EC33A5F8C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9602AB40-C74D-4067-814F-AF7EC33A5F8C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9602AB40-C74D-4067-814F-AF7EC33A5F8C}.Release|Any CPU.Build.0 = Release|Any CPU
-		{35CBD238-126D-4A9C-93E4-D92F75960D3A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{35CBD238-126D-4A9C-93E4-D92F75960D3A}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{35CBD238-126D-4A9C-93E4-D92F75960D3A}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{35CBD238-126D-4A9C-93E4-D92F75960D3A}.Release|Any CPU.Build.0 = Release|Any CPU
 		{FD1A8505-A19E-4281-8701-6BA708C03CBE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{FD1A8505-A19E-4281-8701-6BA708C03CBE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FD1A8505-A19E-4281-8701-6BA708C03CBE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FD1A8505-A19E-4281-8701-6BA708C03CBE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4A475341-A17E-419F-B5A1-415FF1911046}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4A475341-A17E-419F-B5A1-415FF1911046}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4A475341-A17E-419F-B5A1-415FF1911046}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4A475341-A17E-419F-B5A1-415FF1911046}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

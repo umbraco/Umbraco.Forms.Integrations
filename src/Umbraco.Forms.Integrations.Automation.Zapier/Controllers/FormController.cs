@@ -3,12 +3,9 @@ using System.Linq;
 
 using Umbraco.Forms.Integrations.Automation.Zapier.Models.Dtos;
 using Umbraco.Forms.Integrations.Automation.Zapier.Services;
-
-#if NETCOREAPP
-using Microsoft.Extensions.Options;
-
 using Umbraco.Forms.Integrations.Automation.Zapier.Configuration;
-#endif
+
+using Microsoft.Extensions.Options;
 
 namespace Umbraco.Forms.Integrations.Automation.Zapier.Controllers
 {
@@ -19,13 +16,8 @@ namespace Umbraco.Forms.Integrations.Automation.Zapier.Controllers
     {
         private readonly ZapierFormService _zapierFormService;
 
-#if NETCOREAPP
         public FormController(IOptions<ZapierSettings> options, IUserValidationService userValidationService, ZapierFormService zapierFormService)
             : base(options, userValidationService)
-#else
-        public FormController(ZapierFormService zapierFormService, IUserValidationService userValidationService)
-            : base(userValidationService)
-#endif
         {
             _zapierFormService = zapierFormService;
         }

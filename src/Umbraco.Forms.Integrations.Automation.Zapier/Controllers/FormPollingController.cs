@@ -1,15 +1,13 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+
+using Microsoft.Extensions.Options;
+
 using Umbraco.Forms.Core.Data.Storage;
 using Umbraco.Forms.Integrations.Automation.Zapier.Extensions;
 using Umbraco.Forms.Integrations.Automation.Zapier.Helpers;
 using Umbraco.Forms.Integrations.Automation.Zapier.Services;
-
-#if NETCOREAPP
-using Microsoft.Extensions.Options;
-
 using Umbraco.Forms.Integrations.Automation.Zapier.Configuration;
-#endif
 
 namespace Umbraco.Forms.Integrations.Automation.Zapier.Controllers
 {
@@ -25,17 +23,10 @@ namespace Umbraco.Forms.Integrations.Automation.Zapier.Controllers
 
         private readonly UmbUrlHelper _umbUrlHelper;
 
-#if NETCOREAPP
         public FormPollingController(IOptions<ZapierSettings> options, ZapierFormService zapierFormService, IRecordStorage recordStorage, 
             UmbUrlHelper umbUrlHelper,
             IUserValidationService userValidationService)
             : base(options, userValidationService)
-#else
-        public FormPollingController(ZapierFormService zapierFormService, IRecordStorage recordStorage,
-            UmbUrlHelper umbUrlHelper,
-            IUserValidationService userValidationService)
-            : base(userValidationService)
-#endif
         {
             _zapierFormService = zapierFormService;
 

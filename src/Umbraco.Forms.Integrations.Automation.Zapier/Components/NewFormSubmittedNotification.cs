@@ -1,11 +1,6 @@
-﻿#if NETCOREAPP
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Logging;
 
 using Umbraco.Cms.Core.Events;
-using Umbraco.Cms.Core.Models.PublishedContent;
-using Umbraco.Cms.Core.Routing;
-using Umbraco.Cms.Web.Common;
-using Umbraco.Extensions;
 using Umbraco.Forms.Core.Services;
 using Umbraco.Forms.Core.Services.Notifications;
 using Umbraco.Forms.Integrations.Automation.Zapier.Extensions;
@@ -54,13 +49,13 @@ namespace Umbraco.Forms.Integrations.Automation.Zapier.Components
                 if (_zapierFormSubscriptionHookService.TryGetById(form.Id.ToString(), out var subscriptionHooks))
                 {
                     var content = form.ToFormDictionary(notificationSavedEntity, _umbUrlHelper.GetPageUrl(notificationSavedEntity.UmbracoPageId));
-                    
+
                     foreach (var subscriptionHook in subscriptionHooks)
                     {
                         var result =
                             triggerHelper.FormExecute(subscriptionHook.HookUrl, content);
 
-                        if(!string.IsNullOrEmpty(result))
+                        if (!string.IsNullOrEmpty(result))
                             _logger.LogError(result);
                     }
                 }
@@ -68,4 +63,3 @@ namespace Umbraco.Forms.Integrations.Automation.Zapier.Components
         }
     }
 }
-#endif
