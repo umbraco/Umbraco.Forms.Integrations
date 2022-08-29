@@ -1,5 +1,4 @@
-﻿
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 
 namespace Umbraco.Forms.Integrations.Automation.Zapier.Models.Dtos
 {

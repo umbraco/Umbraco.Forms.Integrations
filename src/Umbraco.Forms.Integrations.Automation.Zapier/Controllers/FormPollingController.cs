@@ -1,12 +1,12 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+
+using Microsoft.Extensions.Options;
+
 using Umbraco.Forms.Core.Data.Storage;
 using Umbraco.Forms.Integrations.Automation.Zapier.Extensions;
 using Umbraco.Forms.Integrations.Automation.Zapier.Helpers;
 using Umbraco.Forms.Integrations.Automation.Zapier.Services;
-
-using Microsoft.Extensions.Options;
-
 using Umbraco.Forms.Integrations.Automation.Zapier.Configuration;
 
 namespace Umbraco.Forms.Integrations.Automation.Zapier.Controllers

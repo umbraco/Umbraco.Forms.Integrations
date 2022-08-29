@@ -1,10 +1,9 @@
 ﻿using System.Linq;
 
-using Umbraco.Forms.Integrations.Automation.Zapier.Configuration;
-using Umbraco.Forms.Integrations.Automation.Zapier.Services;
-
 using Microsoft.Extensions.Options;
 
+using Umbraco.Forms.Integrations.Automation.Zapier.Configuration;
+using Umbraco.Forms.Integrations.Automation.Zapier.Services;
 using Umbraco.Cms.Web.Common.Controllers;
 
 namespace Umbraco.Forms.Integrations.Automation.Zapier.Controllers

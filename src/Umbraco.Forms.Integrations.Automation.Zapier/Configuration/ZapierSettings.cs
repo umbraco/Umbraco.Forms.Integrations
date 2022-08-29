@@ -2,11 +2,6 @@
 {
     public class ZapierSettings
     {
-        public ZapierSettings()
-        {
-            
-        }
-
         public string UserGroupAlias { get; set; }
 
         public string ApiKey { get; set; }
