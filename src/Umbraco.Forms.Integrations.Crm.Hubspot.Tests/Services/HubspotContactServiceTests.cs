@@ -1,3 +1,5 @@
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 using Moq;
 using Moq.Protected;
 using NUnit.Framework;
@@ -8,12 +10,10 @@ using System.Net;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
-using Umbraco.Core.Cache;
-using Umbraco.Core.Logging;
-using Umbraco.Core.Services;
+using Umbraco.Cms.Core.Cache;
+using Umbraco.Cms.Core.Services;
 using Umbraco.Forms.Core;
 using Umbraco.Forms.Core.Persistence.Dtos;
-using Umbraco.Forms.Core.Providers.Models;
 using Umbraco.Forms.Integrations.Crm.Hubspot.Models;
 using Umbraco.Forms.Integrations.Crm.Hubspot.Services;
 
@@ -102,46 +102,59 @@ namespace Umbraco.Forms.Integrations.Crm.Hubspot.Tests
         [Test]
         public async Task GetContactProperties_WithoutApiKeyConfigured_ReturnsEmptyCollectionWithLoggedWarning()
         {
-            Mock<IFacadeConfiguration> mockedConfig = CreateMockedConfiguration(withApiKey: false);
-            var mockedLogger = new Mock<ILogger>();
-            var mockedAppCaches = new Mock<AppCaches>();
+            Mock<IConfiguration> mockedConfig = CreateMockedConfiguration(withApiKey: false);
+            var mockedLogger = new Mock<ILogger<HubspotContactService>>();
             var mockedKeyValueService = new Mock<IKeyValueService>();
-            var sut = new HubspotContactService(mockedConfig.Object, mockedLogger.Object, mockedAppCaches.Object, mockedKeyValueService.Object);
+            var sut = new HubspotContactService(mockedConfig.Object, mockedLogger.Object, AppCaches.NoCache, mockedKeyValueService.Object);
 
             var result = await sut.GetContactPropertiesAsync();
 
-            mockedLogger
-                .Verify(x => x.Info(It.Is<Type>(y => y == typeof(HubspotContactService)), It.IsAny<string>()), Times.Once);
+            mockedLogger.Verify(
+                m => m.Log(
+                    LogLevel.Information,
+                    It.IsAny<EventId>(),
+                    It.IsAny<It.IsAnyType>(),
+                    It.IsAny<Exception>(),
+                    It.IsAny<Func<It.IsAnyType, Exception?, string>>()),
+                Times.Once,
+                It.IsAny<string>());
+
             Assert.IsEmpty(result);
         }
 
         [Test]
         public async Task GetContactProperties_WithFailedRequest_ReturnsEmptyCollectionWithLoggedError()
         {
-            Mock<IFacadeConfiguration> mockedConfig = CreateMockedConfiguration();
-            var mockedLogger = new Mock<ILogger>();
-            var mockedAppCaches = new Mock<AppCaches>();
+            Mock<IConfiguration> mockedConfig = CreateMockedConfiguration();
+            var mockedLogger = new Mock<ILogger<HubspotContactService>>();
             var mockedKeyValueService = new Mock<IKeyValueService>();
-            var sut = new HubspotContactService(mockedConfig.Object, mockedLogger.Object, mockedAppCaches.Object, mockedKeyValueService.Object);
+            var sut = new HubspotContactService(mockedConfig.Object, mockedLogger.Object, AppCaches.NoCache, mockedKeyValueService.Object);
 
             var httpClient = CreateMockedHttpClient(HttpStatusCode.InternalServerError);
             HubspotContactService.ClientFactory = () => httpClient;
 
             var result = await sut.GetContactPropertiesAsync();
 
-            mockedLogger
-                .Verify(x => x.Error(It.Is<Type>(y => y == typeof(HubspotContactService)), It.IsAny<string>(), It.IsAny<object[]>()), Times.Once);
+            mockedLogger.Verify(
+                m => m.Log(
+                    LogLevel.Error,
+                    It.IsAny<EventId>(),
+                    It.IsAny<It.IsAnyType>(),
+                    It.IsAny<Exception>(),
+                    It.IsAny<Func<It.IsAnyType, Exception?, string>>()),
+                Times.Once,
+                It.IsAny<string>());
+
             Assert.IsEmpty(result);
         }
 
         [Test]
         public async Task GetContactProperties_WithSuccessfulRequest_ReturnsMappedAndOrderedPropertyCollection()
         {
-            Mock<IFacadeConfiguration> mockedConfig = CreateMockedConfiguration();
-            var mockedLogger = new Mock<ILogger>();
-            var mockedAppCaches = new Mock<AppCaches>();
+            Mock<IConfiguration> mockedConfig = CreateMockedConfiguration();
+            var mockedLogger = new Mock<ILogger<HubspotContactService>>();
             var mockedKeyValueService = new Mock<IKeyValueService>();
-            var sut = new HubspotContactService(mockedConfig.Object, mockedLogger.Object, mockedAppCaches.Object, mockedKeyValueService.Object);
+            var sut = new HubspotContactService(mockedConfig.Object, mockedLogger.Object, AppCaches.NoCache, mockedKeyValueService.Object);
 
             var httpClient = CreateMockedHttpClient(HttpStatusCode.OK, s_contactPropertiesResponse);
             HubspotContactService.ClientFactory = () => httpClient;
@@ -156,29 +169,35 @@ namespace Umbraco.Forms.Integrations.Crm.Hubspot.Tests
         [Test]
         public async Task PostContact_WithoutApiKeyConfigured_ReturnsNotConfiguredWithLoggedWarning()
         {
-            Mock<IFacadeConfiguration> mockedConfig = CreateMockedConfiguration(withApiKey: false);
-            var mockedLogger = new Mock<ILogger>();
-            var mockedAppCaches = new Mock<AppCaches>();
+            Mock<IConfiguration> mockedConfig = CreateMockedConfiguration(withApiKey: false);
+            var mockedLogger = new Mock<ILogger<HubspotContactService>>();
             var mockedKeyValueService = new Mock<IKeyValueService>();
-            var sut = new HubspotContactService(mockedConfig.Object, mockedLogger.Object, mockedAppCaches.Object, mockedKeyValueService.Object);
+            var sut = new HubspotContactService(mockedConfig.Object, mockedLogger.Object, AppCaches.NoCache, mockedKeyValueService.Object);
 
             var record = new Record();
             var fieldMappings = new List<MappedProperty>();
             var result = await sut.PostContactAsync(record, fieldMappings);
 
-            mockedLogger
-                .Verify(x => x.Warn(It.Is<Type>(y => y == typeof(HubspotContactService)), It.IsAny<string>()), Times.Once);
+            mockedLogger.Verify(
+                m => m.Log(
+                    LogLevel.Warning,
+                    It.IsAny<EventId>(),
+                    It.IsAny<It.IsAnyType>(),
+                    It.IsAny<Exception>(),
+                    It.IsAny<Func<It.IsAnyType, Exception?, string>>()),
+                Times.Once,
+                It.IsAny<string>());
+
             Assert.AreEqual(CommandResult.NotConfigured, result);
         }
 
         [Test]
         public async Task PostContact_WithFailedRequest_ReturnsFailedWithLoggedError()
         {
-            Mock<IFacadeConfiguration> mockedConfig = CreateMockedConfiguration();
-            var mockedLogger = new Mock<ILogger>();
-            var mockedAppCaches = new Mock<AppCaches>();
+            Mock<IConfiguration> mockedConfig = CreateMockedConfiguration();
+            var mockedLogger = new Mock<ILogger<HubspotContactService>>();
             var mockedKeyValueService = new Mock<IKeyValueService>();
-            var sut = new HubspotContactService(mockedConfig.Object, mockedLogger.Object, mockedAppCaches.Object, mockedKeyValueService.Object);
+            var sut = new HubspotContactService(mockedConfig.Object, mockedLogger.Object, AppCaches.NoCache, mockedKeyValueService.Object);
 
             var httpClient = CreateMockedHttpClient(HttpStatusCode.InternalServerError);
             HubspotContactService.ClientFactory = () => httpClient;
@@ -187,8 +206,15 @@ namespace Umbraco.Forms.Integrations.Crm.Hubspot.Tests
             var fieldMappings = new List<MappedProperty>();
             var result = await sut.PostContactAsync(record, fieldMappings);
 
-            mockedLogger
-                .Verify(x => x.Error(It.Is<Type>(y => y == typeof(HubspotContactService)), It.IsAny<string>()), Times.Once);
+            mockedLogger.Verify(
+            m => m.Log(
+                LogLevel.Error,
+                It.IsAny<EventId>(),
+                It.IsAny<It.IsAnyType>(),
+                It.IsAny<Exception>(),
+                It.IsAny<Func<It.IsAnyType, Exception?, string>>()),
+            Times.Once,
+            It.IsAny<string>());
 
             Assert.AreEqual(CommandResult.Failed, result);
         }
@@ -196,11 +222,10 @@ namespace Umbraco.Forms.Integrations.Crm.Hubspot.Tests
         [Test]
         public async Task PostContact_WithSuccessfulRequest_ReturnSuccess()
         {
-            Mock<IFacadeConfiguration> mockedConfig = CreateMockedConfiguration();
-            var mockedLogger = new Mock<ILogger>();
-            var mockedAppCaches = new Mock<AppCaches>();
+            Mock<IConfiguration> mockedConfig = CreateMockedConfiguration();
+            var mockedLogger = new Mock<ILogger<HubspotContactService>>();
             var mockedKeyValueService = new Mock<IKeyValueService>();
-            var sut = new HubspotContactService(mockedConfig.Object, mockedLogger.Object, mockedAppCaches.Object, mockedKeyValueService.Object);
+            var sut = new HubspotContactService(mockedConfig.Object, mockedLogger.Object, AppCaches.NoCache, mockedKeyValueService.Object);
 
             var httpClient = CreateMockedHttpClient(HttpStatusCode.OK);
             HubspotContactService.ClientFactory = () => httpClient;
@@ -222,8 +247,15 @@ namespace Umbraco.Forms.Integrations.Crm.Hubspot.Tests
             };
             var result = await sut.PostContactAsync(record, fieldMappings);
 
-            mockedLogger
-                .Verify(x => x.Warn(It.Is<Type>(y => y == typeof(HubspotContactService)), It.IsAny<string>(), It.IsAny<object[]>()), Times.Never);
+            mockedLogger.Verify(
+               m => m.Log(
+                   LogLevel.Warning,
+                   It.IsAny<EventId>(),
+                   It.IsAny<It.IsAnyType>(),
+                   It.IsAny<Exception>(),
+                   It.IsAny<Func<It.IsAnyType, Exception?, string>>()),
+               Times.Never,
+               It.IsAny<string>());
 
             Assert.AreEqual(CommandResult.Success, result);
         }
@@ -231,11 +263,10 @@ namespace Umbraco.Forms.Integrations.Crm.Hubspot.Tests
         [Test]
         public async Task PostContact_WithSuccessfulRequestAndUnmappedField_ReturnSuccessWithLoggedWarning()
         {
-            Mock<IFacadeConfiguration> mockedConfig = CreateMockedConfiguration();
-            var mockedLogger = new Mock<ILogger>();
-            var mockedAppCaches = new Mock<AppCaches>();
+            Mock<IConfiguration> mockedConfig = CreateMockedConfiguration();
+            var mockedLogger = new Mock<ILogger<HubspotContactService>>();
             var mockedKeyValueService = new Mock<IKeyValueService>();
-            var sut = new HubspotContactService(mockedConfig.Object, mockedLogger.Object, mockedAppCaches.Object, mockedKeyValueService.Object);
+            var sut = new HubspotContactService(mockedConfig.Object, mockedLogger.Object, AppCaches.NoCache, mockedKeyValueService.Object);
 
             var httpClient = CreateMockedHttpClient(HttpStatusCode.OK);
             HubspotContactService.ClientFactory = () => httpClient;
@@ -252,19 +283,26 @@ namespace Umbraco.Forms.Integrations.Crm.Hubspot.Tests
             };
             var result = await sut.PostContactAsync(record, fieldMappings);
 
-            mockedLogger
-                .Verify(x => x.Warn(It.Is<Type>(y => y == typeof(HubspotContactService)), It.IsAny<string>(), It.IsAny<object[]>()), Times.Once);
+            mockedLogger.Verify(
+               m => m.Log(
+                   LogLevel.Warning,
+                   It.IsAny<EventId>(),
+                   It.IsAny<It.IsAnyType>(),
+                   It.IsAny<Exception>(),
+                   It.IsAny<Func<It.IsAnyType, Exception?, string>>()),
+               Times.Once,
+               It.IsAny<string>());
 
             Assert.AreEqual(CommandResult.Success, result);
         }
 
-        private static Mock<IFacadeConfiguration> CreateMockedConfiguration(bool withApiKey = true)
+        private static Mock<IConfiguration> CreateMockedConfiguration(bool withApiKey = true)
         {
-            var mockedConfiguration = new Mock<IFacadeConfiguration>();
+            var mockedConfiguration = new Mock<IConfiguration>();
             if (withApiKey)
             {
                 mockedConfiguration
-                    .Setup(x => x.GetSetting(It.Is<string>(y => y == "HubSpotApiKey")))
+                    .Setup(x => x[It.Is<string>(y => y == HubspotWorkflow.HubspotApiKey)])
                     .Returns(ApiKey);
             }
 

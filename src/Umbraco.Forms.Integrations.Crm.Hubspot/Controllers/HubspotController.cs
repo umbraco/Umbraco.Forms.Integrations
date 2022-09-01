@@ -1,11 +1,13 @@
-﻿using System.Collections.Generic;
+﻿using Microsoft.AspNetCore.Mvc;
+
+using System.Collections.Generic;
 using System.Threading.Tasks;
-using System.Web.Http;
+
+using Umbraco.Cms.Web.BackOffice.Controllers;
+using Umbraco.Cms.Web.Common.Attributes;
 using Umbraco.Forms.Integrations.Crm.Hubspot.Models.Dtos;
 using Umbraco.Forms.Integrations.Crm.Hubspot.Models.Responses;
 using Umbraco.Forms.Integrations.Crm.Hubspot.Services;
-using Umbraco.Web.Editors;
-using Umbraco.Web.Mvc;
 
 namespace Umbraco.Forms.Integrations.Crm.Hubspot.Controllers
 {

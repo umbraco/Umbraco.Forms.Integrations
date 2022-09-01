@@ -1,4 +1,6 @@
-﻿using Newtonsoft.Json;
+﻿using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,10 +9,9 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
-using Umbraco.Core.Cache;
-using Umbraco.Core.Logging;
-using Umbraco.Core.Services;
-using Umbraco.Forms.Core;
+
+using Umbraco.Cms.Core.Cache;
+using Umbraco.Cms.Core.Services;
 using Umbraco.Forms.Core.Persistence.Dtos;
 using Umbraco.Forms.Integrations.Crm.Hubspot.Extensions;
 using Umbraco.Forms.Integrations.Crm.Hubspot.Models;
@@ -21,14 +22,14 @@ namespace Umbraco.Forms.Integrations.Crm.Hubspot.Services
 {
     public class HubspotContactService : IContactService
     {
-        // Using a static HttpClient (see: https://www.aspnetmonsters.com/2016/08/2016-08-27-httpclientwrong/).
+        //Using a static HttpClient(see: https://www.aspnetmonsters.com/2016/08/2016-08-27-httpclientwrong/).
         private static readonly HttpClient s_client = new HttpClient();
 
-        // Access to the client within the class is via ClientFactory(), allowing us to mock the responses in tests.
-        internal static Func<HttpClient> ClientFactory = () => s_client;
+        //Access to the client within the class is via ClientFactory(), allowing us to mock the responses in tests.
+        public static Func<HttpClient> ClientFactory = () => s_client;
 
-        private readonly IFacadeConfiguration _configuration;
-        private readonly ILogger _logger;
+        private readonly IConfiguration _configuration;
+        private readonly ILogger<HubspotContactService> _logger;
         private readonly AppCaches _appCaches;
         private readonly IKeyValueService _keyValueService;
 
@@ -47,7 +48,7 @@ namespace Umbraco.Forms.Integrations.Crm.Hubspot.Services
 
         private const string RefreshTokenDatabaseKey = "Umbraco.Forms.Integrations.Crm.Hubspot+RefreshToken";
 
-        public HubspotContactService(IFacadeConfiguration configuration, ILogger logger, AppCaches appCaches, IKeyValueService keyValueService)
+        public HubspotContactService(IConfiguration configuration, ILogger<HubspotContactService> logger, AppCaches appCaches, IKeyValueService keyValueService)
         {
             _configuration = configuration;
             _logger = logger;
@@ -70,10 +71,11 @@ namespace Umbraco.Forms.Integrations.Crm.Hubspot.Services
             var response = await GetResponse(OAuthTokenProxyUrl, HttpMethod.Post, content: tokenRequest, contentType: "application/x-www-form-urlencoded").ConfigureAwait(false);
             if (response.IsSuccessStatusCode)
             {
-                var tokenResponse = await response.Content.ReadAsAsync<TokenResponse>();
+                var responseContent = await response.Content.ReadAsStringAsync();
+                var tokenResponse = JsonConvert.DeserializeObject<TokenResponse>(responseContent);
 
                 // Add the access token details to the cache.
-                _appCaches.RuntimeCache.InsertCacheItem(AccessTokenCacheKey, () => tokenResponse.AccessToken);
+                _appCaches.RuntimeCache.Insert(AccessTokenCacheKey, () => tokenResponse.AccessToken);
 
                 // Save the refresh token into the database.
                 _keyValueService.SetValue(RefreshTokenDatabaseKey, tokenResponse.RefreshToken);
@@ -83,7 +85,7 @@ namespace Umbraco.Forms.Integrations.Crm.Hubspot.Services
             else
             {
                 var responseContent = await response.Content.ReadAsStringAsync();
-                _logger.Error<HubspotContactService>($"Could not retrieve authenticate with HubSpot API. Status code: {response.StatusCode}, reason: {response.ReasonPhrase}, content: {responseContent}");
+                _logger.LogError($"Could not retrieve authenticate with HubSpot API. Status code: {response.StatusCode}, reason: {response.ReasonPhrase}, content: {responseContent}");
                 return AuthorizationResult.AsError("Could not retrieve OAuth token from HubSpot API, see log for details.");
             }
         }
@@ -100,7 +102,7 @@ namespace Umbraco.Forms.Integrations.Crm.Hubspot.Services
             var authenticationDetails = GetConfiguredAuthenticationDetails();
             if (authenticationDetails.Mode == AuthenticationMode.Unauthenticated)
             {
-                _logger.Info<HubspotContactService>("Cannot access HubSpot API via API key or OAuth, as neither a key has been configured nor a refresh token stored.");
+                _logger.LogInformation("Cannot access HubSpot API via API key or OAuth, as neither a key has been configured nor a refresh token stored.");
                 return Enumerable.Empty<Property>();
             }
 
@@ -116,7 +118,7 @@ namespace Umbraco.Forms.Integrations.Crm.Hubspot.Services
                 }
                 else
                 {
-                    _logger.Error<HubspotContactService>("Failed to fetch contact properties from HubSpot API for mapping. {StatusCode} {ReasonPhrase}", response.StatusCode, response.ReasonPhrase);
+                    _logger.LogError("Failed to fetch contact properties from HubSpot API for mapping. {StatusCode} {ReasonPhrase}", response.StatusCode, response.ReasonPhrase);
                     return Enumerable.Empty<Property>();
                 }
             }
@@ -137,7 +139,7 @@ namespace Umbraco.Forms.Integrations.Crm.Hubspot.Services
             var authenticationDetails = GetConfiguredAuthenticationDetails();
             if (authenticationDetails.Mode == AuthenticationMode.Unauthenticated)
             {
-                _logger.Warn<HubspotContactService>("Cannot access HubSpot API via API key or OAuth, as neither a key has been configured nor a refresh token stored.");
+                _logger.LogWarning("Cannot access HubSpot API via API key or OAuth, as neither a key has been configured nor a refresh token stored.");
                 return CommandResult.NotConfigured;
             }
 
@@ -168,7 +170,7 @@ namespace Umbraco.Forms.Integrations.Crm.Hubspot.Services
                 else
                 {
                     // The field mapping value could not be found so write a warning in the log.
-                    _logger.Warn<HubspotContactService>("The field mapping with Id, {FieldMappingId}, did not match any record fields. This is probably caused by the record field being marked as sensitive and the workflow has been set not to include sensitive data", mapping.FormField);
+                    _logger.LogWarning("The field mapping with Id, {FieldMappingId}, did not match any record fields. This is probably caused by the record field being marked as sensitive and the workflow has been set not to include sensitive data", mapping.FormField);
                 }
             }
 
@@ -201,19 +203,19 @@ namespace Umbraco.Forms.Integrations.Crm.Hubspot.Services
                     var retryResult = await HandleFailedRequest(response.StatusCode, requestUrl, httpMethod, authenticationDetails, propertiesRequestV3, JsonContentType);
                     if (retryResult.Success)
                     {
-                        _logger.Info<HubspotContactService>($"Hubspot contact record created from record {record.UniqueId}.");
+                        _logger.LogInformation($"Hubspot contact record created from record {record.UniqueId}.");
                         return CommandResult.Success;
                     }
                     else
                     {
-                        _logger.Error<HubspotContactService>("Error creating a HubSpot contact.");
+                        _logger.LogError("Error creating a HubSpot contact.");
                         return CommandResult.Failed;
                     }
                 }
             }
             else
             {
-                _logger.Info<HubspotContactService>($"Hubspot contact record created from record {record.UniqueId}.");
+                _logger.LogInformation($"Hubspot contact record created from record {record.UniqueId}.");
                 return CommandResult.Success;
             }
         }
@@ -232,24 +234,24 @@ namespace Umbraco.Forms.Integrations.Crm.Hubspot.Services
                     var retryResult = await HandleFailedRequest(response.StatusCode, requestUrl, HttpMethod.Post, authenticationDetails, postData, JsonContentType);
                     if (retryResult.Success)
                     {
-                        _logger.Info<HubspotContactService>($"Hubspot contact record updated from record {record.UniqueId}.");
+                        _logger.LogInformation($"Hubspot contact record updated from record {record.UniqueId}.");
                         return CommandResult.Success;
                     }
                     else
                     {
-                        _logger.Error<HubspotContactService>("Error updating a HubSpot contact.");
+                        _logger.LogError("Error updating a HubSpot contact.");
                         return CommandResult.Failed;
                     }
                 }
                 else
                 {
-                    _logger.Info<HubspotContactService>($"Hubspot contact record updated from record {record.UniqueId}.");
+                    _logger.LogInformation($"Hubspot contact record updated from record {record.UniqueId}.");
                     return CommandResult.Success;
                 }
             }
             else
             {
-                _logger.Warn<HubspotContactService>("Could not add a new HubSpot contact due to 409/Conflict response, but no email field was provided to carry out an update.");
+                _logger.LogWarning("Could not add a new HubSpot contact due to 409/Conflict response, but no email field was provided to carry out an update.");
                 return CommandResult.Failed;
             }
         }
@@ -271,7 +273,8 @@ namespace Umbraco.Forms.Integrations.Crm.Hubspot.Services
 
         private bool TryGetApiKey(out string apiKey)
         {
-            apiKey = _configuration.GetSetting("HubSpotApiKey");
+            apiKey = _configuration[HubspotWorkflow.HubspotApiKey];
+
             return !string.IsNullOrEmpty(apiKey);
         }
 
@@ -283,12 +286,12 @@ namespace Umbraco.Forms.Integrations.Crm.Hubspot.Services
 
         private async Task<string> GetOAuthAccessTokenFromCacheOrRefreshToken(string refreshToken)
         {
-            var accessToken = _appCaches.RuntimeCache.GetCacheItem<string>(AccessTokenCacheKey);
+            var accessToken = _appCaches.RuntimeCache.Get(AccessTokenCacheKey).ToString();
             if (string.IsNullOrEmpty(accessToken))
             {
                 // No access token in the cache, so get a new one from the refresh token.
                 await RefreshOAuthAccessToken(refreshToken);
-                accessToken = _appCaches.RuntimeCache.GetCacheItem<string>(AccessTokenCacheKey);
+                accessToken = _appCaches.RuntimeCache.Get(AccessTokenCacheKey).ToString();
             }
 
             return accessToken;
@@ -305,10 +308,11 @@ namespace Umbraco.Forms.Integrations.Crm.Hubspot.Services
             var response = await GetResponse(OAuthTokenProxyUrl, HttpMethod.Post, content: tokenRequest, contentType: "application/x-www-form-urlencoded").ConfigureAwait(false);
             if (response.IsSuccessStatusCode)
             {
-                var tokenResponse = await response.Content.ReadAsAsync<TokenResponse>();
+                var responseContent = await response.Content.ReadAsStringAsync();
+                var tokenResponse = JsonConvert.DeserializeObject<TokenResponse>(responseContent);
 
                 // Update the token details in the cache.
-                _appCaches.RuntimeCache.InsertCacheItem(AccessTokenCacheKey, () => tokenResponse.AccessToken);
+                _appCaches.RuntimeCache.Insert(AccessTokenCacheKey, () => tokenResponse.AccessToken);
 
                 // Update the saved refresh token if we've got a different one.
                 if (tokenResponse.RefreshToken != refreshToken)
