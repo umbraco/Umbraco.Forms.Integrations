@@ -1,5 +1,6 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using Moq;
 using Moq.Protected;
 using NUnit.Framework;
@@ -14,6 +15,7 @@ using Umbraco.Cms.Core.Cache;
 using Umbraco.Cms.Core.Services;
 using Umbraco.Forms.Core;
 using Umbraco.Forms.Core.Persistence.Dtos;
+using Umbraco.Forms.Integrations.Crm.Hubspot.Configuration;
 using Umbraco.Forms.Integrations.Crm.Hubspot.Models;
 using Umbraco.Forms.Integrations.Crm.Hubspot.Services;
 
@@ -102,10 +104,11 @@ namespace Umbraco.Forms.Integrations.Crm.Hubspot.Tests
         [Test]
         public async Task GetContactProperties_WithoutApiKeyConfigured_ReturnsEmptyCollectionWithLoggedWarning()
         {
-            Mock<IConfiguration> mockedConfig = CreateMockedConfiguration(withApiKey: false);
+            Mock<IOptions<HubspotSettings>> mockedConfig = CreateMockedConfiguration(withApiKey: false);
+            var mockedHttpClientFactory = new Mock<IHttpClientFactory>();
             var mockedLogger = new Mock<ILogger<HubspotContactService>>();
             var mockedKeyValueService = new Mock<IKeyValueService>();
-            var sut = new HubspotContactService(mockedConfig.Object, mockedLogger.Object, AppCaches.NoCache, mockedKeyValueService.Object);
+            var sut = new HubspotContactService(mockedHttpClientFactory.Object, mockedConfig.Object, mockedLogger.Object, AppCaches.NoCache, mockedKeyValueService.Object);
 
             var result = await sut.GetContactPropertiesAsync();
 
@@ -125,13 +128,16 @@ namespace Umbraco.Forms.Integrations.Crm.Hubspot.Tests
         [Test]
         public async Task GetContactProperties_WithFailedRequest_ReturnsEmptyCollectionWithLoggedError()
         {
-            Mock<IConfiguration> mockedConfig = CreateMockedConfiguration();
+            Mock<IOptions<HubspotSettings>> mockedConfig = CreateMockedConfiguration();
+
+            var mockedHttpClientFactory = new Mock<IHttpClientFactory>();
+            mockedHttpClientFactory
+                .Setup<HttpClient>(x => x.CreateClient(It.IsAny<string>()))
+                .Returns(CreateMockedHttpClient(HttpStatusCode.InternalServerError));
+            
             var mockedLogger = new Mock<ILogger<HubspotContactService>>();
             var mockedKeyValueService = new Mock<IKeyValueService>();
-            var sut = new HubspotContactService(mockedConfig.Object, mockedLogger.Object, AppCaches.NoCache, mockedKeyValueService.Object);
-
-            var httpClient = CreateMockedHttpClient(HttpStatusCode.InternalServerError);
-            HubspotContactService.ClientFactory = () => httpClient;
+            var sut = new HubspotContactService(mockedHttpClientFactory.Object, mockedConfig.Object, mockedLogger.Object, AppCaches.NoCache, mockedKeyValueService.Object);
 
             var result = await sut.GetContactPropertiesAsync();
 
@@ -151,13 +157,16 @@ namespace Umbraco.Forms.Integrations.Crm.Hubspot.Tests
         [Test]
         public async Task GetContactProperties_WithSuccessfulRequest_ReturnsMappedAndOrderedPropertyCollection()
         {
-            Mock<IConfiguration> mockedConfig = CreateMockedConfiguration();
+            Mock<IOptions<HubspotSettings>> mockedConfig = CreateMockedConfiguration();
+
+            var mockedHttpClientFactory = new Mock<IHttpClientFactory>();
+            mockedHttpClientFactory
+                .Setup<HttpClient>(x => x.CreateClient(It.IsAny<string>()))
+                .Returns(CreateMockedHttpClient(HttpStatusCode.OK, s_contactPropertiesResponse));
+
             var mockedLogger = new Mock<ILogger<HubspotContactService>>();
             var mockedKeyValueService = new Mock<IKeyValueService>();
-            var sut = new HubspotContactService(mockedConfig.Object, mockedLogger.Object, AppCaches.NoCache, mockedKeyValueService.Object);
-
-            var httpClient = CreateMockedHttpClient(HttpStatusCode.OK, s_contactPropertiesResponse);
-            HubspotContactService.ClientFactory = () => httpClient;
+            var sut = new HubspotContactService(mockedHttpClientFactory.Object, mockedConfig.Object, mockedLogger.Object, AppCaches.NoCache, mockedKeyValueService.Object);
 
             var result = await sut.GetContactPropertiesAsync();
 
@@ -169,10 +178,11 @@ namespace Umbraco.Forms.Integrations.Crm.Hubspot.Tests
         [Test]
         public async Task PostContact_WithoutApiKeyConfigured_ReturnsNotConfiguredWithLoggedWarning()
         {
-            Mock<IConfiguration> mockedConfig = CreateMockedConfiguration(withApiKey: false);
+            Mock<IOptions<HubspotSettings>> mockedConfig = CreateMockedConfiguration(withApiKey: false);
+            var mockedHttpClientFactory = new Mock<IHttpClientFactory>();
             var mockedLogger = new Mock<ILogger<HubspotContactService>>();
             var mockedKeyValueService = new Mock<IKeyValueService>();
-            var sut = new HubspotContactService(mockedConfig.Object, mockedLogger.Object, AppCaches.NoCache, mockedKeyValueService.Object);
+            var sut = new HubspotContactService( mockedHttpClientFactory.Object, mockedConfig.Object, mockedLogger.Object, AppCaches.NoCache, mockedKeyValueService.Object);
 
             var record = new Record();
             var fieldMappings = new List<MappedProperty>();
@@ -194,13 +204,16 @@ namespace Umbraco.Forms.Integrations.Crm.Hubspot.Tests
         [Test]
         public async Task PostContact_WithFailedRequest_ReturnsFailedWithLoggedError()
         {
-            Mock<IConfiguration> mockedConfig = CreateMockedConfiguration();
+            Mock<IOptions<HubspotSettings>> mockedConfig = CreateMockedConfiguration();
+
+            var mockedHttpClientFactory = new Mock<IHttpClientFactory>();
+            mockedHttpClientFactory
+                .Setup<HttpClient>(x => x.CreateClient(It.IsAny<string>()))
+                .Returns(CreateMockedHttpClient(HttpStatusCode.InternalServerError));
+
             var mockedLogger = new Mock<ILogger<HubspotContactService>>();
             var mockedKeyValueService = new Mock<IKeyValueService>();
-            var sut = new HubspotContactService(mockedConfig.Object, mockedLogger.Object, AppCaches.NoCache, mockedKeyValueService.Object);
-
-            var httpClient = CreateMockedHttpClient(HttpStatusCode.InternalServerError);
-            HubspotContactService.ClientFactory = () => httpClient;
+            var sut = new HubspotContactService(mockedHttpClientFactory.Object, mockedConfig.Object, mockedLogger.Object, AppCaches.NoCache, mockedKeyValueService.Object);
 
             var record = new Record();
             var fieldMappings = new List<MappedProperty>();
@@ -222,13 +235,16 @@ namespace Umbraco.Forms.Integrations.Crm.Hubspot.Tests
         [Test]
         public async Task PostContact_WithSuccessfulRequest_ReturnSuccess()
         {
-            Mock<IConfiguration> mockedConfig = CreateMockedConfiguration();
+            Mock<IOptions<HubspotSettings>> mockedConfig = CreateMockedConfiguration();
+
+            var mockedHttpClientFactory = new Mock<IHttpClientFactory>();
+            mockedHttpClientFactory
+                .Setup<HttpClient>(x => x.CreateClient(It.IsAny<string>()))
+                .Returns(CreateMockedHttpClient(HttpStatusCode.OK));
+
             var mockedLogger = new Mock<ILogger<HubspotContactService>>();
             var mockedKeyValueService = new Mock<IKeyValueService>();
-            var sut = new HubspotContactService(mockedConfig.Object, mockedLogger.Object, AppCaches.NoCache, mockedKeyValueService.Object);
-
-            var httpClient = CreateMockedHttpClient(HttpStatusCode.OK);
-            HubspotContactService.ClientFactory = () => httpClient;
+            var sut = new HubspotContactService(mockedHttpClientFactory.Object, mockedConfig.Object, mockedLogger.Object, AppCaches.NoCache, mockedKeyValueService.Object);
 
             var formFieldId = Guid.NewGuid();
             var record = new Record();
@@ -263,13 +279,16 @@ namespace Umbraco.Forms.Integrations.Crm.Hubspot.Tests
         [Test]
         public async Task PostContact_WithSuccessfulRequestAndUnmappedField_ReturnSuccessWithLoggedWarning()
         {
-            Mock<IConfiguration> mockedConfig = CreateMockedConfiguration();
+            Mock<IOptions<HubspotSettings>> mockedConfig = CreateMockedConfiguration();
+
+            var mockedHttpClientFactory = new Mock<IHttpClientFactory>();
+            mockedHttpClientFactory
+              .Setup<HttpClient>(x => x.CreateClient(It.IsAny<string>()))
+              .Returns(CreateMockedHttpClient(HttpStatusCode.OK));
+
             var mockedLogger = new Mock<ILogger<HubspotContactService>>();
             var mockedKeyValueService = new Mock<IKeyValueService>();
-            var sut = new HubspotContactService(mockedConfig.Object, mockedLogger.Object, AppCaches.NoCache, mockedKeyValueService.Object);
-
-            var httpClient = CreateMockedHttpClient(HttpStatusCode.OK);
-            HubspotContactService.ClientFactory = () => httpClient;
+            var sut = new HubspotContactService(mockedHttpClientFactory.Object, mockedConfig.Object, mockedLogger.Object, AppCaches.NoCache, mockedKeyValueService.Object);
 
             var formFieldId = Guid.NewGuid();
             var record = new Record();
@@ -296,16 +315,11 @@ namespace Umbraco.Forms.Integrations.Crm.Hubspot.Tests
             Assert.AreEqual(CommandResult.Success, result);
         }
 
-        private static Mock<IConfiguration> CreateMockedConfiguration(bool withApiKey = true)
+        private static Mock<IOptions<HubspotSettings>> CreateMockedConfiguration(bool withApiKey = true)
         {
-            var mockedConfiguration = new Mock<IConfiguration>();
-            if (withApiKey)
-            {
-                mockedConfiguration
-                    .Setup(x => x[It.Is<string>(y => y == HubspotWorkflow.HubspotApiKey)])
-                    .Returns(ApiKey);
-            }
-
+            var mockedConfiguration = new Mock<IOptions<HubspotSettings>>();
+            mockedConfiguration.Setup(x => x.Value).Returns(new HubspotSettings { ApiKey = withApiKey ? ApiKey : String.Empty });
+            
             return mockedConfiguration;
         }
 

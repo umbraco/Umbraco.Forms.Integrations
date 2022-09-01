@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -13,6 +14,7 @@ using System.Threading.Tasks;
 using Umbraco.Cms.Core.Cache;
 using Umbraco.Cms.Core.Services;
 using Umbraco.Forms.Core.Persistence.Dtos;
+using Umbraco.Forms.Integrations.Crm.Hubspot.Configuration;
 using Umbraco.Forms.Integrations.Crm.Hubspot.Extensions;
 using Umbraco.Forms.Integrations.Crm.Hubspot.Models;
 using Umbraco.Forms.Integrations.Crm.Hubspot.Models.Dtos;
@@ -22,16 +24,13 @@ namespace Umbraco.Forms.Integrations.Crm.Hubspot.Services
 {
     public class HubspotContactService : IContactService
     {
-        //Using a static HttpClient(see: https://www.aspnetmonsters.com/2016/08/2016-08-27-httpclientwrong/).
-        private static readonly HttpClient s_client = new HttpClient();
+        private readonly IHttpClientFactory _httpClientFactory;
 
-        //Access to the client within the class is via ClientFactory(), allowing us to mock the responses in tests.
-        public static Func<HttpClient> ClientFactory = () => s_client;
-
-        private readonly IConfiguration _configuration;
         private readonly ILogger<HubspotContactService> _logger;
         private readonly AppCaches _appCaches;
         private readonly IKeyValueService _keyValueService;
+
+        private readonly HubspotSettings _settings;
 
         private const string CrmApiHost = "https://api.hubapi.com";
         private static readonly string CrmV3ApiBaseUrl = $"{CrmApiHost}/crm/v3/";
@@ -48,9 +47,15 @@ namespace Umbraco.Forms.Integrations.Crm.Hubspot.Services
 
         private const string RefreshTokenDatabaseKey = "Umbraco.Forms.Integrations.Crm.Hubspot+RefreshToken";
 
-        public HubspotContactService(IConfiguration configuration, ILogger<HubspotContactService> logger, AppCaches appCaches, IKeyValueService keyValueService)
+        public HubspotContactService(
+            IHttpClientFactory httpClientFactory,
+            IOptions<HubspotSettings> options, 
+            ILogger<HubspotContactService> logger, 
+            AppCaches appCaches, 
+            IKeyValueService keyValueService)
         {
-            _configuration = configuration;
+            _httpClientFactory = httpClientFactory;
+            _settings = options.Value;
             _logger = logger;
             _appCaches = appCaches;
             _keyValueService = keyValueService;
@@ -68,7 +73,8 @@ namespace Umbraco.Forms.Integrations.Crm.Hubspot.Services
                 RedirectUrl = OAuthRedirectUrl,
                 AuthorizationCode = code,
             };
-            var response = await GetResponse(OAuthTokenProxyUrl, HttpMethod.Post, content: tokenRequest, contentType: "application/x-www-form-urlencoded").ConfigureAwait(false);
+            var response = await GetResponse(OAuthTokenProxyUrl, 
+                HttpMethod.Post, content: tokenRequest, contentType: "application/x-www-form-urlencoded").ConfigureAwait(false);
             if (response.IsSuccessStatusCode)
             {
                 var responseContent = await response.Content.ReadAsStringAsync();
@@ -273,7 +279,7 @@ namespace Umbraco.Forms.Integrations.Crm.Hubspot.Services
 
         private bool TryGetApiKey(out string apiKey)
         {
-            apiKey = _configuration[HubspotWorkflow.HubspotApiKey];
+            apiKey = _settings.ApiKey;
 
             return !string.IsNullOrEmpty(apiKey);
         }
@@ -340,6 +346,8 @@ namespace Umbraco.Forms.Integrations.Crm.Hubspot.Services
             object content = null,
             string contentType = null)
         {
+            var httpClient = _httpClientFactory.CreateClient();
+            
             var requestMessage = new HttpRequestMessage
             {
                 Method = httpMethod,
@@ -362,7 +370,7 @@ namespace Umbraco.Forms.Integrations.Crm.Hubspot.Services
                 }
             }
 
-            return await ClientFactory().SendAsync(requestMessage).ConfigureAwait(false);
+            return await httpClient.SendAsync(requestMessage).ConfigureAwait(false);
         }
 
         private static HttpContent CreateRequestContent(object data, string contentType)

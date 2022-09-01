@@ -17,7 +17,7 @@ namespace Umbraco.Forms.Integrations.Crm.Hubspot
     {
         public const string HubspotWorkflowId = "c47ef1ef-22b1-4b9d-acf6-f57cb8961550";
 
-        public const string HubspotApiKey = "Umbraco:Forms:Integrations:Crm:Hubspot:Settings:ApiKey";
+        public const string HubspotSettings = "Umbraco:Forms:Integrations:Crm:Hubspot:Settings";
 
         private readonly ILogger<HubspotWorkflow> _logger;
         private readonly IContactService _contactService;
