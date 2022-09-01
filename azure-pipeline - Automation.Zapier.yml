@@ -1,5 +1,6 @@
 trigger:
 - main
+- main-v10
 
 pool:
   vmImage: 'windows-latest'
@@ -36,6 +37,7 @@ steps:
     arguments: '--configuration $(buildConfiguration)'
     packagesToPack: '$(project)'
     versioningScheme: 'off'
+  condition: eq(variables['Build.SourceBranch'], 'main')
 
 - task: CmdLine@2
   displayName: 'Create Umbraco Package'
