@@ -15,8 +15,6 @@ variables:
 steps:
 - task: NuGetToolInstaller@1
   displayName: 'Install NuGet'
-  inputs:
-    script: 'echo test'
 
 - task: NuGetCommand@2
   displayName: 'NuGet Restore'
