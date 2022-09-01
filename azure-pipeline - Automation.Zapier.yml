@@ -37,7 +37,6 @@ steps:
     arguments: '--configuration $(buildConfiguration)'
     packagesToPack: '$(project)'
     versioningScheme: 'off'
-  condition: eq(variables['Build.SourceBranch'], 'main')
 
 - task: CmdLine@2
   displayName: 'Create Umbraco Package'
@@ -47,6 +46,7 @@ steps:
       cd src/$(projectName)/
       umbpack pack .\package.xml -o $(Build.ArtifactStagingDirectory)
       cd ../../
+  condition: eq(variables['Build.SourceBranch'], 'main')    
 - task: PublishBuildArtifacts@1
   displayName: 'Publish Build Artifacts'
   inputs:
