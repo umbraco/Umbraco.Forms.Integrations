@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net472</TargetFramework>
+    <TargetFramework>net6.0</TargetFramework>
   </PropertyGroup>
 
 	<PropertyGroup>
@@ -11,14 +11,14 @@
 		<PackageIconUrl></PackageIconUrl>
 		<PackageProjectUrl>https://github.com/umbraco/Umbraco.Forms.Integrations</PackageProjectUrl>
 		<RepositoryUrl>https://github.com/umbraco/Umbraco.Forms.Integrations</RepositoryUrl>
-		<Version>2.0.0</Version>
+		<Version>3.0.0</Version>
 		<Authors>Umbraco HQ</Authors>
 		<Company>Umbraco</Company>
 	</PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="UmbracoCms.Web" Version="8.1.0" />
-    <PackageReference Include="UmbracoForms.Core" Version="8.7.4" />
+    <PackageReference Include="Umbraco.Cms.Web.Website" Version="10.1.0" />
+    <PackageReference Include="Umbraco.Forms.Core" Version="10.1.0" />
   </ItemGroup>
 
   <ItemGroup>
@@ -27,16 +27,5 @@
       <PackagePath>content\App_Plugins\UmbracoForms.Integrations\Crm\Hubspot\</PackagePath>
     </Content>
   </ItemGroup>
-
-  <ItemGroup>
-    <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleToAttribute">
-      <_Parameter1>Umbraco.Forms.Integrations.Crm.Hubspot.Tests</_Parameter1>
-    </AssemblyAttribute>
-  </ItemGroup>
-
-  <!-- Copy App_Plugins files to test site when developing locally -->
-  <Target Name="PostBuild" AfterTargets="PostBuildEvent" Condition="'$(Configuration)' == 'Debug'">
-    <Exec Command="xcopy /E /Y /I &quot;$(ProjectDir)App_Plugins\UmbracoForms.Integrations\Crm\Hubspot&quot; &quot;$(SolutionDir)\Umbraco.Forms.Integrations.TestSite\App_Plugins\UmbracoForms.Integrations\Crm\Hubspot&quot;&#xD;&#xA;EXIT 0" />
-  </Target>
 
 </Project>
