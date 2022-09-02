@@ -8,8 +8,8 @@ A Zap is an automated workflow that connects various apps and services together.
 
 Requires minimum versions of Umbraco:
 
-- CMS: 8.1.0
-- Forms: 8.9.1
+- CMS: 10.1.0
+- Forms: 10.1.0
 
 ## How To Use
 
@@ -26,24 +26,36 @@ The trigger event to be used by this integration is _New Form Submission_.
 When creating the Zap trigger, you will be prompted to enter a username, password and the URL for your Umbraco website, or you can use instead an API key.
 If the following setting is present, then the API key based authentication will take precendence and will be the main method of authorization.
 ```
-<appSettings>
+"Umbraco": {
 ...
-  <add key="Umbraco.Forms.Integrations.Automation.Zapier.ApiKey" value="[your_api_key]" />
+  "Forms": {
+    "Integrations": {
+      "Automation": {
+        "Zapier": {
+          "Settings": {
+            "ApiKey": "[your_api_key]"
+          }
+        }
+      }
+    }
+  }
 ...
-</appSettings>
+}
 ```
 
 If no API key is present, then the Umbraco application will validate the credentials entered and return a message in case the validation fails.
 
 If you want to extend the security layer, you can also specify a user group that the user trying to connect needs to be a part of, by adding the following 
-setting in `Web.config`:
+setting in `appsettings.json`:
 
 ```
-<appSettings>
+"Umbraco": {
 ...
-  <add key="Umbraco.Forms.Integrations.Automation.Zapier.UserGroup" value="[your_user_group]" />
+  "Settings": {
+    "UserGroup": "[your_user_group]"
+  }
 ...
-</appSettings>
+}
 ```
 
 ### Working With the Zapier Forms Integration
