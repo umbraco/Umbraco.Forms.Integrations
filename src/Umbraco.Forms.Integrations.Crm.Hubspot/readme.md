@@ -6,8 +6,8 @@ This integration provides a custom workflow, allowing form entries to be mapped 
 
 Requires minimum versions of Umbraco:
 
-- CMS: 8.1.0
-- Forms: 8.7.4
+- CMS: 10.1.0
+- Forms: 10.1.0
 
 ## How To Use
 
