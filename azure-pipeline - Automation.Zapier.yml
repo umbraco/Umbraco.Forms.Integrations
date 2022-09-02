@@ -1,5 +1,6 @@
 trigger:
 - main
+- main-v10
 
 pool:
   vmImage: 'windows-latest'
@@ -45,6 +46,7 @@ steps:
       cd src/$(projectName)/
       umbpack pack .\package.xml -o $(Build.ArtifactStagingDirectory)
       cd ../../
+  condition: eq(variables['Build.SourceBranch'], 'refs/heads/main')    
 - task: PublishBuildArtifacts@1
   displayName: 'Publish Build Artifacts'
   inputs:
