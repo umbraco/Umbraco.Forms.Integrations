@@ -9,7 +9,7 @@ variables:
   projectName: 'Umbraco.Forms.Integrations.Crm.Hubspot'
   solution: '**/*.sln'
   project: 'src/$(projectName)/$(projectName).csproj'
-  testPoject: 'src/$(projectName).Tests/$(projectName).Tests.csproj'
+  testProject: 'src/$(projectName).Tests/$(projectName).Tests.csproj'
   buildPlatform: 'Any CPU'
   buildConfiguration: 'Release'
 
@@ -33,16 +33,16 @@ steps:
 - task: VSBuild@1
   displayName: 'Build Tests'
   inputs:
-    solution: '$(testPoject)'
+    solution: '$(testProject)'
     msbuildArgs: '/p:DeployOnBuild=true /p:WebPublishMethod=Package /p:PackageAsSingleFile=true /p:SkipInvalidConfigurations=true /p:PackageLocation="$(build.artifactStagingDirectory)"'
     platform: '$(buildPlatform)'
     configuration: '$(buildConfiguration)'
 
-- task: VSTest@2
-  displayName: 'Run Tests'
+- task: DotNetCoreCLI@2
+  displayName: dotnet test
   inputs:
-    platform: '$(buildPlatform)'
-    configuration: '$(buildConfiguration)'
+    command: test
+    projects: '**/*.Tests.csproj'
 
 - task: DotNetCoreCLI@2
   displayName: 'Create NuGet Package'
