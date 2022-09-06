@@ -292,15 +292,15 @@ namespace Umbraco.Forms.Integrations.Crm.Hubspot.Services
 
         private async Task<string> GetOAuthAccessTokenFromCacheOrRefreshToken(string refreshToken)
         {
-            var accessToken = _appCaches.RuntimeCache.Get(AccessTokenCacheKey).ToString();
-            if (string.IsNullOrEmpty(accessToken))
+            var accessToken = _appCaches.RuntimeCache.Get(AccessTokenCacheKey);
+            if (accessToken != null)
             {
                 // No access token in the cache, so get a new one from the refresh token.
                 await RefreshOAuthAccessToken(refreshToken);
                 accessToken = _appCaches.RuntimeCache.Get(AccessTokenCacheKey).ToString();
             }
 
-            return accessToken;
+            return accessToken != null ? accessToken.ToString() : string.Empty;
         }
 
         private async Task RefreshOAuthAccessToken(string refreshToken)
