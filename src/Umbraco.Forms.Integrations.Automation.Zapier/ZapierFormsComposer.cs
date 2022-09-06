@@ -3,6 +3,8 @@ using Microsoft.Extensions.DependencyInjection;
 
 using Umbraco.Cms.Core.Composing;
 using Umbraco.Cms.Core.DependencyInjection;
+using Umbraco.Forms.Core.Services.Notifications;
+using Umbraco.Forms.Integrations.Automation.Zapier.Components;
 using Umbraco.Forms.Integrations.Automation.Zapier.Configuration;
 using Umbraco.Forms.Integrations.Automation.Zapier.Helpers;
 #else
@@ -24,6 +26,8 @@ namespace Umbraco.Forms.Integrations.Automation.Zapier
             var options = builder.Services
                 .AddOptions<ZapierSettings>()
                 .Bind(builder.Config.GetSection(Constants.Configuration.Settings));
+
+            builder.AddNotificationHandler<RecordCreatingNotification, NewFormSubmittedNotification>();
 
             builder.Services.AddSingleton<ZapierFormService>();
 
