@@ -31,5 +31,12 @@
 		<PackagePath>buildTransitive</PackagePath>
 	</None>
   </ItemGroup>
+	 
+	 <ItemGroup>
+		<Content Include="App_Plugins\**\*.*">
+			<ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+			<CopyToPublishDirectory>Always</CopyToPublishDirectory>
+		</Content>
+	</ItemGroup>
 
 </Project>
