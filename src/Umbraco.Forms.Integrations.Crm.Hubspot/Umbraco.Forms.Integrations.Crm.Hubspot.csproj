@@ -26,6 +26,10 @@
       <Pack>true</Pack>
       <PackagePath>content\App_Plugins\UmbracoForms.Integrations\Crm\Hubspot\</PackagePath>
     </Content>
+	<None Include="build\**\*.*">
+		<Pack>True</Pack>
+		<PackagePath>buildTransitive</PackagePath>
+	</None>
   </ItemGroup>
 
 </Project>
