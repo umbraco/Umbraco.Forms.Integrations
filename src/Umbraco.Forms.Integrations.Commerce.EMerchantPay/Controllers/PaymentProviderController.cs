@@ -55,7 +55,7 @@ namespace Umbraco.Forms.Integrations.Commerce.EMerchantPay.Controllers
             {
                 // reconcile
                 var reconcileTask =
-                    Task.Run(async () => await _paymentService.Reconcile(notificationDto.wpf_unique_id));
+                    Task.Run(async () => await _paymentService.Reconcile(notificationDto.UniqueId));
 
                 var reconcileResponse = reconcileTask.Result;
 
@@ -75,7 +75,7 @@ namespace Umbraco.Forms.Integrations.Commerce.EMerchantPay.Controllers
                 if (reconcileResponse.Status == Constants.ErrorCode.WorkflowError)
                     return new HttpResponseMessage(HttpStatusCode.BadRequest);
 
-                string notificationXml = $"<notification_echo><wpf_unique_id>{notificationDto.wpf_unique_id}</wpf_unique_id></notification_echo>";
+                string notificationXml = $"<notification_echo><wpf_unique_id>{notificationDto.UniqueId}</wpf_unique_id></notification_echo>";
                 return new HttpResponseMessage()
                 {
                     Content = new StringContent(notificationXml, Encoding.UTF8, "application/xml")

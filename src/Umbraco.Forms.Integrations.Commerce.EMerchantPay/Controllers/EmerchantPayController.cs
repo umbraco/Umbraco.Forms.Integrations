@@ -30,12 +30,18 @@ namespace Umbraco.Forms.Integrations.Commerce.EMerchantPay.Controllers
     {
         private readonly CurrencyHelper _currencyHelper;
 
-        public EmerchantPayController(CurrencyHelper currencyHelper)
+        private readonly MappingFieldHelper _mappingFieldHelper;
+
+        public EmerchantPayController(CurrencyHelper currencyHelper, MappingFieldHelper mappingFieldHelper)
         {
             _currencyHelper = currencyHelper;
+            _mappingFieldHelper = mappingFieldHelper;
         }
 
         [HttpGet]
         public IEnumerable<CurrencyDto> GetCurrencies() => _currencyHelper.GetCurrencies();
+
+        [HttpGet]
+        public IEnumerable<string> GetMappingFields() => _mappingFieldHelper.GetMappings();
     }
 }

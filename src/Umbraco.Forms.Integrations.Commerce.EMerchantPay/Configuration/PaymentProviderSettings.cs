@@ -23,6 +23,10 @@ namespace Umbraco.Forms.Integrations.Commerce.EMerchantPay.Configuration
 
             Usage = appSettings[Constants.Configuration.UsageKey];
 
+            TransactionTypes = appSettings[Constants.Configuration.TransactionTypesKey];
+
+            MappingFields = appSettings[Constants.Configuration.MappingFieldsKey];
+
             UmbracoBaseUrl = appSettings[Constants.Configuration.UmbracoBaseUrlKey];
         }
 
@@ -41,5 +45,9 @@ namespace Umbraco.Forms.Integrations.Commerce.EMerchantPay.Configuration
         public string UmbracoBaseUrl { get; set; }
 
         public string Currencies { get; set; }
+
+        public string TransactionTypes { get; set; }
+
+        public string MappingFields { get; set; }
     }
 }

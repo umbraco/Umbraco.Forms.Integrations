@@ -1,4 +1,4 @@
-﻿function CustomerDetailsMapperController($scope, notificationsService, emerchantpayService) {
+﻿function CustomerDetailsMapperController($scope, notificationsService, emerchantpayService, umbracoFormsIntegrationsCommerceEMerchantPayResource) {
 
     var vm = this;
 
@@ -31,7 +31,10 @@
 
 
     function init() {
-        vm.customerProperties = ["Email", "FirstName", "LastName", "Phone", "Address", "ZipCode", "City", "State", "Country"];
+
+        umbracoFormsIntegrationsCommerceEMerchantPayResource.getMappingFields().then(function (response) {
+            vm.customerProperties = response;
+        });
 
         vm.fields = [];
 

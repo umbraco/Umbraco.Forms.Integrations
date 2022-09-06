@@ -23,6 +23,10 @@ namespace Umbraco.Forms.Integrations.Commerce.EMerchantPay
 
             public const string CurrenciesKey = "Umbraco.Forms.Integrations.Commerce.eMerchantPay.Currencies";
 
+            public const string TransactionTypesKey = "Umbraco.Forms.Integrations.Commerce.eMerchantPay.TransactionTypes";
+
+            public const string MappingFieldsKey = "Umbraco.Forms.Integrations.Commerce.eMerchantPay.MappingFields";
+
             public const string UmbracoBaseUrlKey = "Umbraco.Forms.Integrations.Commerce.eMerchantPay.UmbracoBaseUrl";
         }
 
