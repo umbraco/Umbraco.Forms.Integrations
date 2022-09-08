@@ -38,7 +38,6 @@ namespace Umbraco.Forms.Integrations.Commerce.EMerchantPay.Services
 #else
             Options = new PaymentProviderSettings(ConfigurationManager.AppSettings);
 #endif
-
             var byteArray = Encoding.ASCII.GetBytes($"{Options.Username}:{Options.Password}");
 
             s_client.DefaultRequestHeaders.Authorization =

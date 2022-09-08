@@ -1,10 +1,4 @@
-﻿#if NETCOREAPP
-using Microsoft.Extensions.Options;
-#else
-using System.Configuration;
-#endif
-
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 
 using Umbraco.Forms.Integrations.Commerce.EMerchantPay.Configuration;
@@ -13,33 +7,20 @@ namespace Umbraco.Forms.Integrations.Commerce.EMerchantPay.Helpers
 {
     public class MappingFieldHelper
     {
-        private readonly PaymentProviderSettings _paymentProviderSettings;
+        private readonly ISettingsParser _settingsParser;
 
-#if NETCOREAPP
-        public MappingFieldHelper(IOptions<PaymentProviderSettings> options)
+        public MappingFieldHelper(ISettingsParser settingsParser)
         {
-            _paymentProviderSettings = options.Value;
+            _settingsParser = settingsParser;
         }
-#else
-        public MappingFieldHelper()
-        {
-            _paymentProviderSettings = new PaymentProviderSettings(ConfigurationManager.AppSettings);
-        }
-#endif
 
         public IEnumerable<string> GetMappings()
         {
-            if (string.IsNullOrEmpty(_paymentProviderSettings.MappingFields))
-                return Enumerable.Empty<string>();
+            var mappings = _settingsParser.AsEnumerable(nameof(PaymentProviderSettings.MappingFields));
 
-            try
-            {
-                return _paymentProviderSettings.MappingFields.Split(';');
-            }
-            catch
-            {
-                return Enumerable.Empty<string>();
-            }
+            if (mappings.Count() == 0) return Enumerable.Empty<string>();
+
+            return mappings;
 
         }
 

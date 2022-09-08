@@ -41,6 +41,8 @@ namespace Umbraco.Forms.Integrations.Commerce.EMerchantPay
 
         private readonly IMappingService<Mapping> _mappingService;
 
+        private readonly ISettingsParser _parser;
+
         #region WorkflowSettings
 
         [Core.Attributes.Setting("Amount",
@@ -89,10 +91,12 @@ namespace Umbraco.Forms.Integrations.Commerce.EMerchantPay
 
 #if NETCOREAPP
         public PaymentProviderWorkflow(IOptions<PaymentProviderSettings> paymentProviderSettings, IHttpContextAccessor httpContextAccessor,
-            ConsumerService consumerService, PaymentService paymentService, UrlHelper urlHelper, IMappingService<Mapping> mappingService)
+            ConsumerService consumerService, PaymentService paymentService, UrlHelper urlHelper, 
+            IMappingService<Mapping> mappingService, ISettingsParser parser)
 #else
         public PaymentProviderWorkflow(IHttpContextAccessor httpContextAccessor,
-                ConsumerService consumerService, PaymentService paymentService, UrlHelper urlHelper, IMappingService<Mapping> mappingService)
+                ConsumerService consumerService, PaymentService paymentService, UrlHelper urlHelper, 
+                IMappingService<Mapping> mappingService, ISettingsParser parser)
 #endif
         {
             Id = new Guid(Constants.WorkflowId);
@@ -107,8 +111,11 @@ namespace Umbraco.Forms.Integrations.Commerce.EMerchantPay
             _httpContextAccessor = httpContextAccessor;
 
             _urlHelper = urlHelper;
-            
+
             _mappingService = mappingService;
+
+            _parser = parser;
+
 
 #if NETCOREAPP
             _paymentProviderSettings = paymentProviderSettings.Value;
@@ -199,9 +206,9 @@ namespace Umbraco.Forms.Integrations.Commerce.EMerchantPay
                 BusinessAttribute = new BusinessAttribute { NameOfTheSupplier = _paymentProviderSettings.Supplier },
                 TransactionTypes = new TransactionTypeDto
                 {
-                    TransactionTypes = _paymentProviderSettings.TransactionTypes.Split(';')
-                                        .Select(p => new TransactionTypeRecordDto { TransactionType = p })
-                                        .ToList()
+                    TransactionTypes = _parser.AsEnumerable(nameof(PaymentProviderSettings.TransactionTypes))
+                                            .Select(p => new TransactionTypeRecordDto { TransactionType = p })
+                                            .ToList()
                 }
             };
 

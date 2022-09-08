@@ -4,8 +4,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Umbraco.Cms.Core.Composing;
 using Umbraco.Cms.Core.DependencyInjection;
 using Umbraco.Forms.Core.Providers;
-using Umbraco.Forms.Integrations.Commerce.EMerchantPay.Configuration;
-
 #else
 using Umbraco.Core;
 using Umbraco.Core.Composing;
@@ -14,6 +12,7 @@ using Umbraco.Core.Composing;
 using Umbraco.Forms.Integrations.Commerce.EMerchantPay.Models.Dtos;
 using Umbraco.Forms.Integrations.Commerce.EMerchantPay.Helpers;
 using Umbraco.Forms.Integrations.Commerce.EMerchantPay.Services;
+using Umbraco.Forms.Integrations.Commerce.EMerchantPay.Configuration;
 
 namespace Umbraco.Forms.Integrations.Commerce.EMerchantPay
 {
@@ -40,6 +39,8 @@ namespace Umbraco.Forms.Integrations.Commerce.EMerchantPay
             builder.Services.AddSingleton<MappingFieldHelper>();
 
             builder.Services.AddSingleton<IMappingService<Mapping>, MappingService>();
+
+            builder.Services.AddSingleton<ISettingsParser, ObjectParser>();
         }
 #else
         public void Compose(Composition composition)
@@ -55,6 +56,8 @@ namespace Umbraco.Forms.Integrations.Commerce.EMerchantPay
             composition.Register<MappingFieldHelper>(Lifetime.Singleton);
 
             composition.Register<IMappingService<Mapping>, MappingService>(Lifetime.Singleton);
+
+            composition.Register<ISettingsParser, StringParser>(Lifetime.Singleton);
         }
 #endif
     }

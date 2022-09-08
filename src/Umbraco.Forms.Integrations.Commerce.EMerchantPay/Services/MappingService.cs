@@ -35,7 +35,7 @@ namespace Umbraco.Forms.Integrations.Commerce.EMerchantPay.Services
 
             result = JsonConvert.DeserializeObject<List<Mapping>>(mappings);
 
-            return result.Count == configMappings.Count() && result.Any(p => p.CustomerProperty == nameof(MappingValues.Email));
+            return result.Count == configMappings.Count() + 1 && result.Any(p => p.CustomerProperty == nameof(MappingValues.Email));
         }
     }
 }

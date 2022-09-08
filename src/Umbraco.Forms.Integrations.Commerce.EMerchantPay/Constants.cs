@@ -51,5 +51,14 @@ namespace Umbraco.Forms.Integrations.Commerce.EMerchantPay
 
             public const string WpfReconcile = "wpf_reconcile";
         }
+
+        public static class NotificationProperty
+        {
+            public const string TransactionId = "wpf_transaction_id";
+
+            public const string UniqueId = "wpf_unique_id";
+
+            public const string Status = "wpf_status";
+        }
     }
 }

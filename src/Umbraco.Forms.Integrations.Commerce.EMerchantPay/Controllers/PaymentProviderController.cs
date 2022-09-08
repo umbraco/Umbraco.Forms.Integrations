@@ -49,7 +49,11 @@ namespace Umbraco.Forms.Integrations.Commerce.EMerchantPay.Controllers
         }
 
         [HttpPost]
+#if NETCOREAPP
+        public HttpResponseMessage NotifyPayment(string formId, string recordUniqueId, string statusFieldId, [FromForm] NotificationDto notificationDto)
+#else
         public HttpResponseMessage NotifyPayment(string formId, string recordUniqueId, string statusFieldId, [FromBody] NotificationDto notificationDto)
+#endif
         {
             try
             {
