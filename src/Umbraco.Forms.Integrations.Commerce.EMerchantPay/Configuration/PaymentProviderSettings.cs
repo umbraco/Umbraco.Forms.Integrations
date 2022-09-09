@@ -1,4 +1,5 @@
-﻿using System.Collections.Specialized;
+﻿using System.Collections.Generic;
+using System.Collections.Specialized;
 
 namespace Umbraco.Forms.Integrations.Commerce.EMerchantPay.Configuration
 {
@@ -6,7 +7,6 @@ namespace Umbraco.Forms.Integrations.Commerce.EMerchantPay.Configuration
     {
         public PaymentProviderSettings()
         {
-            
         }
 
         public PaymentProviderSettings(NameValueCollection appSettings)
@@ -22,6 +22,14 @@ namespace Umbraco.Forms.Integrations.Commerce.EMerchantPay.Configuration
             Supplier = appSettings[Constants.Configuration.SupplierKey];
 
             Usage = appSettings[Constants.Configuration.UsageKey];
+
+#if NETFRAMEWORK
+            Currencies = appSettings[Constants.Configuration.CurrenciesKey];
+
+            TransactionTypes = appSettings[Constants.Configuration.TransactionTypesKey];
+
+            MappingFields = appSettings[Constants.Configuration.MappingFieldsKey];
+#endif
 
             UmbracoBaseUrl = appSettings[Constants.Configuration.UmbracoBaseUrlKey];
         }
@@ -40,6 +48,20 @@ namespace Umbraco.Forms.Integrations.Commerce.EMerchantPay.Configuration
 
         public string UmbracoBaseUrl { get; set; }
 
+#if NETCOREAPP
+        public Dictionary<string, string> Currencies { get; set; }
+
+        public string[] TransactionTypes { get; set; }
+
+        public string[] MappingFields { get; set; }
+#else
         public string Currencies { get; set; }
+
+         public string TransactionTypes { get; set; }
+
+         public string MappingFields { get; set; }
+#endif
+
+
     }
 }

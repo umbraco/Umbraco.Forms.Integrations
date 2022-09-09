@@ -39,6 +39,10 @@ namespace Umbraco.Forms.Integrations.Commerce.EMerchantPay
 
         private readonly UrlHelper _urlHelper;
 
+        private readonly IMappingService<Mapping> _mappingService;
+
+        private readonly ISettingsParser _parser;
+
         #region WorkflowSettings
 
         [Core.Attributes.Setting("Amount",
@@ -87,10 +91,12 @@ namespace Umbraco.Forms.Integrations.Commerce.EMerchantPay
 
 #if NETCOREAPP
         public PaymentProviderWorkflow(IOptions<PaymentProviderSettings> paymentProviderSettings, IHttpContextAccessor httpContextAccessor,
-            ConsumerService consumerService, PaymentService paymentService, UrlHelper urlHelper)
+            ConsumerService consumerService, PaymentService paymentService, UrlHelper urlHelper, 
+            IMappingService<Mapping> mappingService, ISettingsParser parser)
 #else
         public PaymentProviderWorkflow(IHttpContextAccessor httpContextAccessor,
-                ConsumerService consumerService, PaymentService paymentService, UrlHelper urlHelper)
+                ConsumerService consumerService, PaymentService paymentService, UrlHelper urlHelper, 
+                IMappingService<Mapping> mappingService, ISettingsParser parser)
 #endif
         {
             Id = new Guid(Constants.WorkflowId);
@@ -106,6 +112,11 @@ namespace Umbraco.Forms.Integrations.Commerce.EMerchantPay
 
             _urlHelper = urlHelper;
 
+            _mappingService = mappingService;
+
+            _parser = parser;
+
+
 #if NETCOREAPP
             _paymentProviderSettings = paymentProviderSettings.Value;
 #else
@@ -119,7 +130,7 @@ namespace Umbraco.Forms.Integrations.Commerce.EMerchantPay
         public override WorkflowExecutionStatus Execute(Record record, RecordEventArgs e)
 #endif
         {
-            if (!CustomerDetailsMappings.TryParseMappings(out var mappings)) return WorkflowExecutionStatus.Failed;
+            if (!_mappingService.TryParse(CustomerDetailsMappings, out var mappings)) return WorkflowExecutionStatus.Failed;
 
             var mappingBuilder = new MappingBuilder()
 #if NETCOREAPP
@@ -144,7 +155,8 @@ namespace Umbraco.Forms.Integrations.Commerce.EMerchantPay
             }
 
             // step 2. Create Payment
-            var transactionId = Guid.NewGuid();
+            var random = new Random();
+            var transactionId = $"uc-{random.Next(1000000, 999999999)}";
 
 #if NETCOREAPP
             var formId = context.Record.Form;
@@ -164,12 +176,12 @@ namespace Umbraco.Forms.Integrations.Commerce.EMerchantPay
 #else
                 : int.Parse(record.RecordFields[Guid.Parse(NumberOfItems)].ValuesAsString());
 #endif
-
             var payment = new PaymentDto
             {
                 TransactionId = transactionId.ToString(),
                 Usage = _paymentProviderSettings.Usage,
-                NotificationUrl = $"{_paymentProviderSettings.UmbracoBaseUrl}umbraco/api/paymentprovider/notifypayment?formId={formId}&recordUniqueId={recordUniqueId}&statusFieldId={statusKey}",
+                NotificationUrl = $"{_paymentProviderSettings.UmbracoBaseUrl}umbraco/api/paymentprovider/notifypayment" +
+                    $"?formId={formId}&recordUniqueId={recordUniqueId}&statusFieldId={statusKey}",
                 ReturnSuccessUrl = _urlHelper.GetPageUrl(int.Parse(SuccessUrl)),
                 ReturnFailureUrl = _urlHelper.GetPageUrl(int.Parse(FailureUrl)),
                 ReturnCancelUrl = _urlHelper.GetPageUrl(int.Parse(CancelUrl)),
@@ -194,11 +206,9 @@ namespace Umbraco.Forms.Integrations.Commerce.EMerchantPay
                 BusinessAttribute = new BusinessAttribute { NameOfTheSupplier = _paymentProviderSettings.Supplier },
                 TransactionTypes = new TransactionTypeDto
                 {
-                    TransactionTypes = new List<TransactionTypeRecordDto>
-                    {
-                        new TransactionTypeRecordDto { TransactionType = "authorize" },
-                        new TransactionTypeRecordDto { TransactionType = "sale" }
-                    }
+                    TransactionTypes = _parser.AsEnumerable(nameof(PaymentProviderSettings.TransactionTypes))
+                                            .Select(p => new TransactionTypeRecordDto { TransactionType = p })
+                                            .ToList()
                 }
             };
 
@@ -244,8 +254,8 @@ namespace Umbraco.Forms.Integrations.Commerce.EMerchantPay
 
             if (string.IsNullOrEmpty(UniqueId)) list.Add(new Exception("Payment Unique ID field is required."));
 
-            if (!CustomerDetailsMappings.TryParseMappings(out _))
-                list.Add(new Exception("Customer email mapping is required."));
+            if (!_mappingService.TryParse(CustomerDetailsMappings, out _))
+                list.Add(new Exception("Invalid mappings. Email at least is required."));
 
             if (!SuccessUrl.IsContentValid(nameof(SuccessUrl), out var successError))
                 list.Add(new Exception(successError));
@@ -253,7 +263,8 @@ namespace Umbraco.Forms.Integrations.Commerce.EMerchantPay
             if (!FailureUrl.IsContentValid(nameof(FailureUrl), out var failureError))
                 list.Add(new Exception(failureError));
 
-            if (!CancelUrl.IsContentValid(nameof(CancelUrl), out var cancelError)) list.Add(new Exception(cancelError));
+            if (!CancelUrl.IsContentValid(nameof(CancelUrl), out var cancelError)) 
+                list.Add(new Exception(cancelError));
 
             return list;
         }

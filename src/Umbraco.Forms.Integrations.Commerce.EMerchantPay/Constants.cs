@@ -23,6 +23,10 @@ namespace Umbraco.Forms.Integrations.Commerce.EMerchantPay
 
             public const string CurrenciesKey = "Umbraco.Forms.Integrations.Commerce.eMerchantPay.Currencies";
 
+            public const string TransactionTypesKey = "Umbraco.Forms.Integrations.Commerce.eMerchantPay.TransactionTypes";
+
+            public const string MappingFieldsKey = "Umbraco.Forms.Integrations.Commerce.eMerchantPay.MappingFields";
+
             public const string UmbracoBaseUrlKey = "Umbraco.Forms.Integrations.Commerce.eMerchantPay.UmbracoBaseUrl";
         }
 
@@ -46,6 +50,15 @@ namespace Umbraco.Forms.Integrations.Commerce.EMerchantPay
             public const string WpfPayment = "wpf_payment";
 
             public const string WpfReconcile = "wpf_reconcile";
+        }
+
+        public static class NotificationProperty
+        {
+            public const string TransactionId = "wpf_transaction_id";
+
+            public const string UniqueId = "wpf_unique_id";
+
+            public const string Status = "wpf_status";
         }
     }
 }
