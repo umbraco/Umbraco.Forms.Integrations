@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 
 using Umbraco.Forms.Integrations.Commerce.EMerchantPay.Configuration;
@@ -18,7 +19,7 @@ namespace Umbraco.Forms.Integrations.Commerce.EMerchantPay.Helpers
         {
             var mappings = _settingsParser.AsEnumerable(nameof(PaymentProviderSettings.MappingFields));
 
-            if (mappings.Count() == 0) return Enumerable.Empty<string>();
+            if (mappings.Count() == 0) throw new ArgumentNullException(nameof(MappingFieldHelper));
 
             return mappings;
 
