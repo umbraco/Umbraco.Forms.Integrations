@@ -287,7 +287,7 @@ namespace Umbraco.Forms.Integrations.Crm.Hubspot.Services
             if (string.IsNullOrEmpty(accessToken))
             {
                 // No access token in the cache, so get a new one from the refresh token.
-                await RefreshOAuthAccessToken(refreshToken);
+                await RefreshOAuthAccessToken(refreshToken).ConfigureAwait(false);
                 accessToken = _appCaches.RuntimeCache.GetCacheItem<string>(AccessTokenCacheKey);
             }
 
@@ -353,7 +353,8 @@ namespace Umbraco.Forms.Integrations.Crm.Hubspot.Services
                         break;
                     case AuthenticationMode.OAuth:
                         requestMessage.Headers.Authorization =
-                            new AuthenticationHeaderValue("Bearer", await GetOAuthAccessTokenFromCacheOrRefreshToken(authenticationDetails.RefreshToken));
+                            new AuthenticationHeaderValue("Bearer", 
+                                await GetOAuthAccessTokenFromCacheOrRefreshToken(authenticationDetails.RefreshToken).ConfigureAwait(false));
                         break;
                 }
             }
