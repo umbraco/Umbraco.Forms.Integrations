@@ -10,13 +10,14 @@ namespace Umbraco.Cms.Integrations.OAuthProxy.Configuration
         /// <summary>
         /// Integrated services with their token URIs
         /// </summary>
-        public static Dictionary<string, string> ServiceProviders = new Dictionary<string, string>
+        public static Dictionary<string, string> ServiceProviders = new()
         {
             { "Hubspot", "oauth/v1/token" }, 
             { "HubspotForms", "oauth/v1/token" }, 
             { "Semrush", "oauth2/access_token" }, 
             { "Shopify", "oauth/access_token" },
-            { "Google", "token"}
+            { "Google", "token"},
+            { "Dynamics", "oauth2/v2.0/token" }
         };
 
         public static void AddServiceClients(this IServiceCollection services)
@@ -40,6 +41,10 @@ namespace Umbraco.Cms.Integrations.OAuthProxy.Configuration
             services.AddHttpClient("GoogleToken", c =>
             {
                 c.BaseAddress = new Uri("https://oauth2.googleapis.com/");
+            });
+            services.AddHttpClient("DynamicsToken", c =>
+            {
+                c.BaseAddress = new Uri("https://login.microsoftonline.com/common/");
             });
         }
     }

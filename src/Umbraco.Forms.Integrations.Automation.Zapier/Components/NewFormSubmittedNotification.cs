@@ -16,9 +16,7 @@ namespace Umbraco.Forms.Integrations.Automation.Zapier.Components
 {
     public class NewFormSubmittedNotification : INotificationHandler<RecordCreatingNotification>
     {
-        private readonly IUmbracoHelperAccessor _umbracoHelperAccessor;
-
-        private readonly IPublishedUrlProvider _publishedUrlProvider;
+        private readonly UmbUrlHelper _umbUrlHelper;
 
         private readonly IFormService _formService;
 
@@ -29,15 +27,12 @@ namespace Umbraco.Forms.Integrations.Automation.Zapier.Components
         private readonly ILogger<NewFormSubmittedNotification> _logger;
 
         public NewFormSubmittedNotification(
-            IUmbracoHelperAccessor umbracoHelperAccessor,
-            IPublishedUrlProvider publishedUrlProvider,
+            UmbUrlHelper umbUrlHelper,
             IFormService formService, 
             ZapierService zapierService, ZapierFormSubscriptionHookService zapierFormSubscriptionHookService,
             ILogger<NewFormSubmittedNotification> logger)
         {
-            _umbracoHelperAccessor = umbracoHelperAccessor;
-
-            _publishedUrlProvider = publishedUrlProvider;
+            _umbUrlHelper = umbUrlHelper;
 
             _formService = formService;
 
@@ -58,17 +53,7 @@ namespace Umbraco.Forms.Integrations.Automation.Zapier.Components
 
                 if (_zapierFormSubscriptionHookService.TryGetById(form.Id.ToString(), out var subscriptionHooks))
                 {
-                    string pageUrl = string.Empty;
-                    if (_umbracoHelperAccessor.TryGetUmbracoHelper(out UmbracoHelper umbracoHelper))
-                    {
-                        IPublishedContent publishedContent = umbracoHelper.Content(notificationSavedEntity.UmbracoPageId);
-                        if (publishedContent != null)
-                        {
-                            pageUrl = publishedContent.Url(_publishedUrlProvider, mode: UrlMode.Absolute);
-                        }
-                    }
-
-                    var content = form.ToFormDictionary(notificationSavedEntity, pageUrl);
+                    var content = form.ToFormDictionary(notificationSavedEntity, _umbUrlHelper.GetPageUrl(notificationSavedEntity.UmbracoPageId));
                     
                     foreach (var subscriptionHook in subscriptionHooks)
                     {

@@ -54,6 +54,11 @@ steps:
           "name": "AppSettings:GoogleClientSecret",
           "value": "$(googleAppSecretKey)",
           "slotSetting": false
+        },
+        {
+          "name": "AppSettings:DynamicsClientSecret",
+          "value": "$(dynamicsAppSecretKey)",
+          "slotSetting": false
         }
       ]
 - task: AzureWebApp@1
@@ -87,6 +92,11 @@ steps:
         {
           "name": "AppSettings:GoogleClientSecret",
           "value": "$(googleAppSecretKey)",
+          "slotSetting": false
+        },
+        {
+          "name": "AppSettings:DynamicsClientSecret",
+          "value": "$(dynamicsAppSecretKey)",
           "slotSetting": false
         }
       ]

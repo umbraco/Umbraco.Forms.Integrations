@@ -1,4 +1,4 @@
-﻿using Newtonsoft.Json;
+using Newtonsoft.Json;
 
 using System;
 using System.Collections.Generic;
@@ -19,7 +19,6 @@ namespace Umbraco.Forms.Integrations.Commerce.EMerchantPay.Services
         }
 
         /// <summary>
-        /// Validate mappings are valid and that they match with the ones from settings.
         /// </summary>
         /// <param name="mappings"></param>
         /// <param name="result"></param>
