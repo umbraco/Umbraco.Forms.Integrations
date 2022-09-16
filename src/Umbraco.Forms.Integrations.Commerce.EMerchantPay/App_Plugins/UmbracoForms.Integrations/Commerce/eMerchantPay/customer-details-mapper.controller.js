@@ -32,11 +32,15 @@
 
     function init() {
 
-        umbracoFormsIntegrationsCommerceEMerchantPayResource.getMappingFields().then(function (response) {
+        umbracoFormsIntegrationsCommerceEMerchantPayResource.getDefaultMappingFields().then(function (response) {
             vm.customerProperties = response;
         });
 
         vm.fields = [];
+
+        umbracoFormsIntegrationsCommerceEMerchantPayResource.getRequiredMappingFields().then(function (response) {
+            vm.requiredFields = response.join();
+        });
 
         emerchantpayService.getFormFields(function (response) {
             vm.fields = response;

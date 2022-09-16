@@ -8,9 +8,14 @@
                 $http.get(`${apiEndpoint}/GetCurrencies`),
                 "Failed to get resource");
         },
-        getMappingFields: function () {
+        getDefaultMappingFields: function () {
             return umbRequestHelper.resourcePromise(
-                $http.get(`${apiEndpoint}/GetMappingFields`),
+                $http.get(`${apiEndpoint}/GetDefaultMappingFields`),
+                "Failed to get resource");
+        },
+        getRequiredMappingFields: function () {
+            return umbRequestHelper.resourcePromise(
+                $http.get(`${apiEndpoint}/GetRequiredMappingFields`),
                 "Failed to get resource");
         }
     };

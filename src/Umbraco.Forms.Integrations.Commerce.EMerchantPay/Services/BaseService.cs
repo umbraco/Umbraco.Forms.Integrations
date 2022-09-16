@@ -4,6 +4,8 @@ using System.Text;
 using System.Xml;
 using System.Xml.Serialization;
 
+using Umbraco.Forms.Integrations.Commerce.EMerchantPay.Configuration;
+
 namespace Umbraco.Forms.Integrations.Commerce.EMerchantPay.Services
 {
     public abstract class BaseService<T> where T : class
@@ -12,7 +14,7 @@ namespace Umbraco.Forms.Integrations.Commerce.EMerchantPay.Services
         {
             var serializer = new XmlSerializer(typeof(T), new XmlRootAttribute(root));
 
-            using (var stringWriter = new StringWriter())
+            using (var stringWriter = new PaymentProviderStringWriter())
             {
                 using (XmlWriter writer = XmlWriter.Create(stringWriter))
                 {
@@ -32,5 +34,6 @@ namespace Umbraco.Forms.Integrations.Commerce.EMerchantPay.Services
                 return (T)serializer.Deserialize(stringReader);
             }
         }
+
     }
 }

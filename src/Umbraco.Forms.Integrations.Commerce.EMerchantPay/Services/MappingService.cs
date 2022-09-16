@@ -19,7 +19,7 @@ namespace Umbraco.Forms.Integrations.Commerce.EMerchantPay.Services
         }
 
         /// <summary>
-        /// Validate that mappings are valid and at least email property is mapped.
+        /// Validate mappings are valid and that they match with the ones from settings.
         /// </summary>
         /// <param name="mappings"></param>
         /// <param name="result"></param>
@@ -35,7 +35,14 @@ namespace Umbraco.Forms.Integrations.Commerce.EMerchantPay.Services
 
             result = JsonConvert.DeserializeObject<List<Mapping>>(mappings);
 
-            return result.Count == configMappings.Count() + 1 && result.Any(p => p.CustomerProperty == nameof(MappingValues.Email));
+            if(result.Count != configMappings.Count()) return false;
+
+            foreach(var configMapping in configMappings)
+            {
+                if (!result.Any(p => p.CustomerProperty == configMapping)) return false;
+            }
+
+            return true;
         }
     }
 }
