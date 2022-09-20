@@ -1,4 +1,4 @@
-﻿using Newtonsoft.Json;
+using Newtonsoft.Json;
 
 using System;
 using System.Collections.Generic;
@@ -19,7 +19,6 @@ namespace Umbraco.Forms.Integrations.Commerce.EMerchantPay.Services
         }
 
         /// <summary>
-        /// Validate that mappings are valid and at least email property is mapped.
         /// </summary>
         /// <param name="mappings"></param>
         /// <param name="result"></param>
@@ -35,7 +34,14 @@ namespace Umbraco.Forms.Integrations.Commerce.EMerchantPay.Services
 
             result = JsonConvert.DeserializeObject<List<Mapping>>(mappings);
 
-            return result.Count == configMappings.Count() && result.Any(p => p.CustomerProperty == nameof(MappingValues.Email));
+            if(result.Count != configMappings.Count()) return false;
+
+            foreach(var configMapping in configMappings)
+            {
+                if (!result.Any(p => p.CustomerProperty == configMapping)) return false;
+            }
+
+            return true;
         }
     }
 }

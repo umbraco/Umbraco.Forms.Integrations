@@ -60,5 +60,10 @@ namespace Umbraco.Forms.Integrations.Commerce.EMerchantPay
 
             public const string Status = "wpf_status";
         }
+
+        public static class PaymentStatus
+        {
+            public const string Approved = "approved";
+        }
     }
 }

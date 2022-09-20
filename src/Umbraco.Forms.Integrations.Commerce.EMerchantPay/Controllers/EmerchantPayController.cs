@@ -42,6 +42,21 @@ namespace Umbraco.Forms.Integrations.Commerce.EMerchantPay.Controllers
         public IEnumerable<CurrencyDto> GetCurrencies() => _currencyHelper.GetCurrencies();
 
         [HttpGet]
-        public IEnumerable<string> GetMappingFields() => _mappingFieldHelper.GetMappings();
+        public IEnumerable<string> GetAvailableMappingFields() => new[]
+        {
+            "Email",
+            "FirstName",
+            "LastName",
+            "Address1",
+            "Address2",
+            "ZipCode",
+            "City",
+            "State",
+            "Country",
+            "Phone"
+        };
+
+        [HttpGet]
+        public IEnumerable<string> GetRequiredMappingFields() => _mappingFieldHelper.GetMappings();
     }
 }
