@@ -77,14 +77,15 @@ namespace Umbraco.Forms.Integrations.Commerce.EMerchantPay.Controllers
                 var record = _recordStorage.GetRecordByUniqueId(Guid.Parse(recordUniqueId), form);
 
                 var paymentStatusField = record.GetRecordField(Guid.Parse(statusFieldId));
+                paymentStatusField.Values.Clear();
                 paymentStatusField.Values.Add(reconcileResponse.Status);
 
-                if(approve && notificationDto.Status == Constants.PaymentStatus.Approved)
+                _recordStorage.UpdateRecord(record, form);
+
+                if (approve && notificationDto.Status == Constants.PaymentStatus.Approved)
                 {
                     _recordService.Approve(record, form);
                 }
-
-                _recordStorage.UpdateRecord(record, form);
 
                 if (reconcileResponse.Status == Constants.ErrorCode.WorkflowError)
                     return new HttpResponseMessage(HttpStatusCode.BadRequest);
