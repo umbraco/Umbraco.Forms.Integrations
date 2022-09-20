@@ -32,7 +32,7 @@
 
     function init() {
 
-        umbracoFormsIntegrationsCommerceEMerchantPayResource.getDefaultMappingFields().then(function (response) {
+        umbracoFormsIntegrationsCommerceEMerchantPayResource.getAvailableMappingFields().then(function (response) {
             vm.customerProperties = response;
         });
 

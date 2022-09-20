@@ -79,7 +79,7 @@ namespace Umbraco.Forms.Integrations.Commerce.EMerchantPay.Controllers
                 var paymentStatusField = record.GetRecordField(Guid.Parse(statusFieldId));
                 paymentStatusField.Values.Add(reconcileResponse.Status);
 
-                if(approve)
+                if(approve && notificationDto.Status == Constants.PaymentStatus.Approved)
                 {
                     _recordService.Approve(record, form);
                 }
