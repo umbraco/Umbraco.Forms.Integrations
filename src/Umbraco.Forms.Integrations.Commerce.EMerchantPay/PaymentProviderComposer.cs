@@ -9,12 +9,12 @@ using Umbraco.Core;
 using Umbraco.Core.Composing;
 #endif
 
-using Umbraco.Forms.Integrations.Commerce.EMerchantPay.Models.Dtos;
-using Umbraco.Forms.Integrations.Commerce.EMerchantPay.Helpers;
-using Umbraco.Forms.Integrations.Commerce.EMerchantPay.Services;
-using Umbraco.Forms.Integrations.Commerce.EMerchantPay.Configuration;
+using Umbraco.Forms.Integrations.Commerce.Emerchantpay.Models.Dtos;
+using Umbraco.Forms.Integrations.Commerce.Emerchantpay.Helpers;
+using Umbraco.Forms.Integrations.Commerce.Emerchantpay.Services;
+using Umbraco.Forms.Integrations.Commerce.Emerchantpay.Configuration;
 
-namespace Umbraco.Forms.Integrations.Commerce.EMerchantPay
+namespace Umbraco.Forms.Integrations.Commerce.Emerchantpay
 {
     public class PaymentProviderComposer : IComposer
     {

@@ -1,4 +1,4 @@
-﻿function CustomerDetailsMapperController($scope, notificationsService, emerchantpayService, umbracoFormsIntegrationsCommerceEMerchantPayResource) {
+﻿function CustomerDetailsMapperController($scope, notificationsService, emerchantpayService, umbracoFormsIntegrationsCommerceEmerchantpayResource) {
 
     var vm = this;
 
@@ -32,13 +32,25 @@
 
     function init() {
 
-        umbracoFormsIntegrationsCommerceEMerchantPayResource.getAvailableMappingFields().then(function (response) {
+        umbracoFormsIntegrationsCommerceEmerchantpayResource.isAccountAvailable().then(function (response) {
+            if (response === "UNAVAILABLE") {
+                notificationsService.add({
+                    headline: "emerchantpay",
+                    message: "Account details are missing. Please create an account before continuing",
+                    type: "error",
+                    sticky: true,
+                    url: "https://www.emerchantpay.com/"
+                });
+            }
+        });
+
+        umbracoFormsIntegrationsCommerceEmerchantpayResource.getAvailableMappingFields().then(function (response) {
             vm.customerProperties = response;
         });
 
         vm.fields = [];
 
-        umbracoFormsIntegrationsCommerceEMerchantPayResource.getRequiredMappingFields().then(function (response) {
+        umbracoFormsIntegrationsCommerceEmerchantpayResource.getRequiredMappingFields().then(function (response) {
             vm.requiredFields = response.join();
         });
 
@@ -56,4 +68,4 @@
 }
 
 angular.module("umbraco")
-    .controller("UmbracoForms.Integrations.Commerce.eMerchantPay.CustomerDetailsMapperController", CustomerDetailsMapperController);
+    .controller("UmbracoForms.Integrations.Commerce.emerchantpay.CustomerDetailsMapperController", CustomerDetailsMapperController);

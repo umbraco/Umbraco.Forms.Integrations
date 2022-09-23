@@ -5,16 +5,16 @@
 	</PropertyGroup>
 
 	<PropertyGroup>
-		<PackageId>Umbraco.Forms.Integrations.Commerce.EMerchantPay</PackageId>
-		<Title>Umbraco Forms Integrations: Commerce - eMerchantPay</Title>
-		<Description>An extension for Umbraco Forms providing a custom workflow for handling payments through eMerchantPay gateway.</Description>
+		<PackageId>Umbraco.Forms.Integrations.Commerce.emerchantpay</PackageId>
+		<Title>Umbraco Forms Integrations: Commerce - emerchantpay</Title>
+		<Description>An extension for Umbraco Forms providing a custom workflow for handling payments through emerchantpay gateway.</Description>
 		<PackageIconUrl></PackageIconUrl>
 		<PackageProjectUrl>https://github.com/umbraco/Umbraco.Forms.Integrations</PackageProjectUrl>
 		<RepositoryUrl>https://github.com/umbraco/Umbraco.Forms.Integrations</RepositoryUrl>
 		<Version>1.0.0</Version>
 		<Authors>Umbraco HQ</Authors>
 		<Company>Umbraco</Company>
-		<ApplicationManifest>App_Plugins\UmbracoForms.Integrations\Commerce\eMerchantPay\package.manifest</ApplicationManifest>
+		<ApplicationManifest>App_Plugins\UmbracoForms.Integrations\Commerce\emerchantpay\package.manifest</ApplicationManifest>
 	</PropertyGroup>
 
 	<ItemGroup Condition="'$(TargetFramework)' == 'net472'">

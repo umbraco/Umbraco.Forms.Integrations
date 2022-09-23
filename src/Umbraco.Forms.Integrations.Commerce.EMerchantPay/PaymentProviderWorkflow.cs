@@ -5,12 +5,12 @@ using System.Threading.Tasks;
 
 using Umbraco.Forms.Core;
 using Umbraco.Forms.Core.Enums;
-using Umbraco.Forms.Integrations.Commerce.EMerchantPay.Builders;
-using Umbraco.Forms.Integrations.Commerce.EMerchantPay.Configuration;
-using Umbraco.Forms.Integrations.Commerce.EMerchantPay.ExtensionMethods;
-using Umbraco.Forms.Integrations.Commerce.EMerchantPay.Helpers;
-using Umbraco.Forms.Integrations.Commerce.EMerchantPay.Models.Dtos;
-using Umbraco.Forms.Integrations.Commerce.EMerchantPay.Services;
+using Umbraco.Forms.Integrations.Commerce.Emerchantpay.Builders;
+using Umbraco.Forms.Integrations.Commerce.Emerchantpay.Configuration;
+using Umbraco.Forms.Integrations.Commerce.Emerchantpay.ExtensionMethods;
+using Umbraco.Forms.Integrations.Commerce.Emerchantpay.Helpers;
+using Umbraco.Forms.Integrations.Commerce.Emerchantpay.Models.Dtos;
+using Umbraco.Forms.Integrations.Commerce.Emerchantpay.Services;
 
 #if NETCOREAPP
 using Microsoft.AspNetCore.Http;
@@ -24,7 +24,7 @@ using Umbraco.Web;
 using Umbraco.Forms.Core.Persistence.Dtos;
 #endif
 
-namespace Umbraco.Forms.Integrations.Commerce.EMerchantPay
+namespace Umbraco.Forms.Integrations.Commerce.Emerchantpay
 {
     public class PaymentProviderWorkflow : WorkflowType
     {

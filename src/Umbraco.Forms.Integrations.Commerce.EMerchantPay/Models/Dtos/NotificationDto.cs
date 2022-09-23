@@ -1,5 +1,5 @@
 ﻿
-using Umbraco.Forms.Integrations.Commerce.EMerchantPay.Configuration;
+using Umbraco.Forms.Integrations.Commerce.Emerchantpay.Configuration;
 
 #if NETCOREAPP
 using Microsoft.AspNetCore.Mvc;
@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using System.Web.Http.ModelBinding;
 #endif
 
-namespace Umbraco.Forms.Integrations.Commerce.EMerchantPay.Models.Dtos
+namespace Umbraco.Forms.Integrations.Commerce.Emerchantpay.Models.Dtos
 {
     [ModelBinder(typeof(NotificationModelBinder))]
     public class NotificationDto

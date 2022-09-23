@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Collections.Specialized;
 
-namespace Umbraco.Forms.Integrations.Commerce.EMerchantPay.Configuration
+namespace Umbraco.Forms.Integrations.Commerce.Emerchantpay.Configuration
 {
     public class PaymentProviderSettings
     {

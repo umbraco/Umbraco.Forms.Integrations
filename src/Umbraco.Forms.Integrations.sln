@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.31402.337
+# Visual Studio Version 17
+VisualStudioVersion = 17.3.32901.215
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Umbraco.Forms.Integrations.Crm.Hubspot", "Umbraco.Forms.Integrations.Crm.Hubspot\Umbraco.Forms.Integrations.Crm.Hubspot.csproj", "{E7F3F2CC-DCB6-4158-AABA-D2EA9E1B9FA8}"
 EndProject
@@ -35,7 +35,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Commerce", "Commerce", "{F4
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "eMerchantPay", "eMerchantPay", "{854D0DF1-AAEE-406A-82A8-B05992A0A74B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Umbraco.Forms.Integrations.Commerce.EMerchantPay", "Umbraco.Forms.Integrations.Commerce.EMerchantPay\Umbraco.Forms.Integrations.Commerce.EMerchantPay.csproj", "{FD1A8505-A19E-4281-8701-6BA708C03CBE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Umbraco.Forms.Integrations.Commerce.Emerchantpay", "Umbraco.Forms.Integrations.Commerce.EMerchantPay\Umbraco.Forms.Integrations.Commerce.Emerchantpay.csproj", "{FD1A8505-A19E-4281-8701-6BA708C03CBE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -8,9 +8,9 @@ using System.Web.Http.ModelBinding;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
-using Umbraco.Forms.Integrations.Commerce.EMerchantPay.Models.Dtos;
+using Umbraco.Forms.Integrations.Commerce.Emerchantpay.Models.Dtos;
 
-namespace Umbraco.Forms.Integrations.Commerce.EMerchantPay.Configuration
+namespace Umbraco.Forms.Integrations.Commerce.Emerchantpay.Configuration
 {
     public sealed class NotificationModelBinder : IModelBinder
     {

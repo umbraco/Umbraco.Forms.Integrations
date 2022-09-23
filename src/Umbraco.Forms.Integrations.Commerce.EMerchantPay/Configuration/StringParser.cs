@@ -3,9 +3,9 @@ using System;
 using System.Configuration;
 using System.Collections.Generic;
 
-using Umbraco.Forms.Integrations.Commerce.EMerchantPay.Configuration;
+using Umbraco.Forms.Integrations.Commerce.Emerchantpay.Configuration;
 
-namespace Umbraco.Forms.Integrations.Commerce.EMerchantPay.Services
+namespace Umbraco.Forms.Integrations.Commerce.Emerchantpay.Services
 {
     public class StringParser : ISettingsParser
     {

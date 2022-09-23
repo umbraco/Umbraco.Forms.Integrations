@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Umbraco.Forms.Integrations.Commerce.EMerchantPay.Services
+namespace Umbraco.Forms.Integrations.Commerce.Emerchantpay.Services
 {
     public interface IMappingService<Mapping>
     {

@@ -1,42 +1,53 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Threading;
-
-#if NETCOREAPP
-using Microsoft.AspNetCore.Hosting;
+﻿#if NETCOREAPP
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
 
 using Umbraco.Cms.Web.BackOffice.Controllers;
 using Umbraco.Cms.Web.Common.Attributes;
 #else
-using System.Web;
+using System.Configuration;
 using System.Web.Http;
 
 using Umbraco.Web.Mvc;
 using Umbraco.Web.WebApi;
 #endif
-using Newtonsoft.Json;
-using Umbraco.Forms.Integrations.Commerce.EMerchantPay.Helpers;
-using Umbraco.Forms.Integrations.Commerce.EMerchantPay.Models.Dtos;
 
+using System.Collections.Generic;
 
-namespace Umbraco.Forms.Integrations.Commerce.EMerchantPay.Controllers
+using Umbraco.Forms.Integrations.Commerce.Emerchantpay.Helpers;
+using Umbraco.Forms.Integrations.Commerce.Emerchantpay.Models.Dtos;
+using Umbraco.Forms.Integrations.Commerce.Emerchantpay.Configuration;
+
+namespace Umbraco.Forms.Integrations.Commerce.Emerchantpay.Controllers
 {
-    [PluginController("UmbracoFormsIntegrationsCommerceEmerchantPay")]
-    public class EmerchantPayController : UmbracoAuthorizedApiController
+    [PluginController("UmbracoFormsIntegrationsCommerceEmerchantpay")]
+    public class EmerchantpayController : UmbracoAuthorizedApiController
     {
+        private readonly PaymentProviderSettings _paymentProviderSettings;
+
         private readonly CurrencyHelper _currencyHelper;
 
         private readonly MappingFieldHelper _mappingFieldHelper;
 
-        public EmerchantPayController(CurrencyHelper currencyHelper, MappingFieldHelper mappingFieldHelper)
+#if NETCOREAPP
+        public EmerchantpayController(IOptions<PaymentProviderSettings> options, CurrencyHelper currencyHelper, MappingFieldHelper mappingFieldHelper)
+#else
+        public EmerchantpayController(CurrencyHelper currencyHelper, MappingFieldHelper mappingFieldHelper)
+#endif
         {
+#if NETCOREAPP
+            _paymentProviderSettings = options.Value;
+#else
+            _paymentProviderSettings = new PaymentProviderSettings(ConfigurationManager.AppSettings);
+#endif
+
             _currencyHelper = currencyHelper;
             _mappingFieldHelper = mappingFieldHelper;
         }
+        [HttpGet]
+        public string IsAccountAvailable() =>
+            string.IsNullOrEmpty(_paymentProviderSettings.Username) || string.IsNullOrEmpty(_paymentProviderSettings.Password)
+            ? "UNAVAILABLE" : "AVAILABLE";
 
         [HttpGet]
         public IEnumerable<CurrencyDto> GetCurrencies() => _currencyHelper.GetCurrencies();

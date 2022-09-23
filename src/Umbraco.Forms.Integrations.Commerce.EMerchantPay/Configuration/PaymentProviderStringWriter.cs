@@ -1,7 +1,7 @@
 ﻿using System.IO;
 using System.Text;
 
-namespace Umbraco.Forms.Integrations.Commerce.EMerchantPay.Configuration
+namespace Umbraco.Forms.Integrations.Commerce.Emerchantpay.Configuration
 {
     /// <summary>
     /// Override encoding to ensure request object is utf-8 encoded.

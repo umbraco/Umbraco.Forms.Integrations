@@ -8,7 +8,7 @@ using Umbraco.Core.Models.PublishedContent;
 using Umbraco.Web;
 #endif
 
-namespace Umbraco.Forms.Integrations.Commerce.EMerchantPay.Helpers
+namespace Umbraco.Forms.Integrations.Commerce.Emerchantpay.Helpers
 {
     public class UrlHelper
     {
