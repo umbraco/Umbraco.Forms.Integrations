@@ -1,6 +1,6 @@
 ﻿function emerchantpayResource($http, umbRequestHelper) {
 
-    const apiEndpoint = "backoffice/UmbracoFormsIntegrationsCommerceEmerchantpay/emerchantpay";
+    const apiEndpoint = "backoffice/UmbracoFormsIntegrationsCommerceEmerchantpay/Emerchantpay";
 
     return {
         isAccountAvailable: function () {

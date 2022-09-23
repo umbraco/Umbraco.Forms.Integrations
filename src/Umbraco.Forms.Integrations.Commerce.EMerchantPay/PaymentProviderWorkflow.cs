@@ -42,27 +42,27 @@ namespace Umbraco.Forms.Integrations.Commerce.Emerchantpay
 
         [Core.Attributes.Setting("Currency",
             Description = "Payment currency",
-            View = "~/App_Plugins/UmbracoForms.Integrations/Commerce/emerchantpay/currency.html")]
+            View = "~/App_Plugins/UmbracoForms.Integrations/Commerce/Emerchantpay/currency.html")]
         public string Currency { get; set; }
 
         [Core.Attributes.Setting("Number of Items",
            Description = "Map number of items with form field. If selected, final amount will be Amount x NumberOfItems.",
-           View = "~/App_Plugins/UmbracoForms.Integrations/Commerce/emerchantpay/field-picker.html")]
+           View = "~/App_Plugins/UmbracoForms.Integrations/Commerce/Emerchantpay/field-picker.html")]
         public string NumberOfItems { get; set; }
 
         [Core.Attributes.Setting("Record Status",
            Description = "Map payment record status with form field",
-           View = "~/App_Plugins/UmbracoForms.Integrations/Commerce/emerchantpay/field-picker.html")]
+           View = "~/App_Plugins/UmbracoForms.Integrations/Commerce/Emerchantpay/field-picker.html")]
         public string RecordStatus { get; set; }
 
         [Core.Attributes.Setting("Record Payment Unique ID",
            Description = "Map payment unique ID with form field",
-           View = "~/App_Plugins/UmbracoForms.Integrations/Commerce/emerchantpay/field-picker.html")]
+           View = "~/App_Plugins/UmbracoForms.Integrations/Commerce/Emerchantpay/field-picker.html")]
         public string UniqueId { get; set; }
 
         [Core.Attributes.Setting("Customer Details",
             Description = "Map customer details with form fields",
-            View = "~/App_Plugins/UmbracoForms.Integrations/Commerce/emerchantpay/customer-details-mapper.html")]
+            View = "~/App_Plugins/UmbracoForms.Integrations/Commerce/Emerchantpay/customer-details-mapper.html")]
         public string CustomerDetailsMappings { get; set; }
 
         [Core.Attributes.Setting("Success URL",

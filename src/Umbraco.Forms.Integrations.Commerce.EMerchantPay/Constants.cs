@@ -7,7 +7,7 @@ namespace Umbraco.Forms.Integrations.Commerce.Emerchantpay
 
         public static class Configuration
         {
-            public const string Settings = "Umbraco:Forms:Integrations:Commerce:emerchantpay:Settings";
+            public const string Settings = "Umbraco:Forms:Integrations:Commerce:Emerchantpay:Settings";
         }
 
         public static class ErrorCode
