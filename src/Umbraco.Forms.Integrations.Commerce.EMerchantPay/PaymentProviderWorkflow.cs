@@ -5,27 +5,17 @@ using System.Threading.Tasks;
 
 using Umbraco.Forms.Core;
 using Umbraco.Forms.Core.Enums;
-using Umbraco.Forms.Core.Models;
-using Umbraco.Forms.Integrations.Commerce.EMerchantPay.Builders;
-using Umbraco.Forms.Integrations.Commerce.EMerchantPay.Configuration;
-using Umbraco.Forms.Integrations.Commerce.EMerchantPay.ExtensionMethods;
-using Umbraco.Forms.Integrations.Commerce.EMerchantPay.Helpers;
-using Umbraco.Forms.Integrations.Commerce.EMerchantPay.Models.Dtos;
-using Umbraco.Forms.Integrations.Commerce.EMerchantPay.Services;
+using Umbraco.Forms.Integrations.Commerce.Emerchantpay.Builders;
+using Umbraco.Forms.Integrations.Commerce.Emerchantpay.Configuration;
+using Umbraco.Forms.Integrations.Commerce.Emerchantpay.ExtensionMethods;
+using Umbraco.Forms.Integrations.Commerce.Emerchantpay.Helpers;
+using Umbraco.Forms.Integrations.Commerce.Emerchantpay.Models.Dtos;
+using Umbraco.Forms.Integrations.Commerce.Emerchantpay.Services;
 
-#if NETCOREAPP
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Options;
 
-using Umbraco.Cms.Core.Web;
-#else
-using System.Configuration;
-
-using Umbraco.Web;
-using Umbraco.Forms.Core.Persistence.Dtos;
-#endif
-
-namespace Umbraco.Forms.Integrations.Commerce.EMerchantPay
+namespace Umbraco.Forms.Integrations.Commerce.Emerchantpay
 {
     public class PaymentProviderWorkflow : WorkflowType
     {
@@ -39,6 +29,10 @@ namespace Umbraco.Forms.Integrations.Commerce.EMerchantPay
 
         private readonly UrlHelper _urlHelper;
 
+        private readonly IMappingService<Mapping> _mappingService;
+
+        private readonly ISettingsParser _parser;
+
         #region WorkflowSettings
 
         [Core.Attributes.Setting("Amount",
@@ -48,27 +42,27 @@ namespace Umbraco.Forms.Integrations.Commerce.EMerchantPay
 
         [Core.Attributes.Setting("Currency",
             Description = "Payment currency",
-            View = "~/App_Plugins/UmbracoForms.Integrations/Commerce/eMerchantPay/currency.html")]
+            View = "~/App_Plugins/UmbracoForms.Integrations/Commerce/emerchantpay/currency.html")]
         public string Currency { get; set; }
 
         [Core.Attributes.Setting("Number of Items",
            Description = "Map number of items with form field. If selected, final amount will be Amount x NumberOfItems.",
-           View = "~/App_Plugins/UmbracoForms.Integrations/Commerce/eMerchantPay/field-picker.html")]
+           View = "~/App_Plugins/UmbracoForms.Integrations/Commerce/emerchantpay/field-picker.html")]
         public string NumberOfItems { get; set; }
 
         [Core.Attributes.Setting("Record Status",
            Description = "Map payment record status with form field",
-           View = "~/App_Plugins/UmbracoForms.Integrations/Commerce/eMerchantPay/field-picker.html")]
+           View = "~/App_Plugins/UmbracoForms.Integrations/Commerce/emerchantpay/field-picker.html")]
         public string RecordStatus { get; set; }
 
         [Core.Attributes.Setting("Record Payment Unique ID",
            Description = "Map payment unique ID with form field",
-           View = "~/App_Plugins/UmbracoForms.Integrations/Commerce/eMerchantPay/field-picker.html")]
+           View = "~/App_Plugins/UmbracoForms.Integrations/Commerce/emerchantpay/field-picker.html")]
         public string UniqueId { get; set; }
 
         [Core.Attributes.Setting("Customer Details",
             Description = "Map customer details with form fields",
-            View = "~/App_Plugins/UmbracoForms.Integrations/Commerce/eMerchantPay/customer-details-mapper.html")]
+            View = "~/App_Plugins/UmbracoForms.Integrations/Commerce/emerchantpay/customer-details-mapper.html")]
         public string CustomerDetailsMappings { get; set; }
 
         [Core.Attributes.Setting("Success URL",
@@ -83,19 +77,21 @@ namespace Umbraco.Forms.Integrations.Commerce.EMerchantPay
             View = "Pickers.Content")]
         public string CancelUrl { get; set; }
 
+        [Core.Attributes.Setting("Approve Record",
+            Description = "Approve record when payment is confirmed.",
+            View = "Checkbox")]
+        public string Approve { get; set; }
+
         #endregion
 
-#if NETCOREAPP
         public PaymentProviderWorkflow(IOptions<PaymentProviderSettings> paymentProviderSettings, IHttpContextAccessor httpContextAccessor,
-            ConsumerService consumerService, PaymentService paymentService, UrlHelper urlHelper)
-#else
-        public PaymentProviderWorkflow(IHttpContextAccessor httpContextAccessor,
-                ConsumerService consumerService, PaymentService paymentService, UrlHelper urlHelper)
-#endif
+            ConsumerService consumerService, PaymentService paymentService, UrlHelper urlHelper,
+            IMappingService<Mapping> mappingService, ISettingsParser parser)
+
         {
             Id = new Guid(Constants.WorkflowId);
-            Name = "eMerchantPay Gateway";
-            Description = "eMerchantPay provider handling form-based payments.";
+            Name = "emerchantpay Gateway";
+            Description = "emerchantpay provider handling form-based payments.";
             Icon = "icon-multiple-credit-cards";
 
             _consumerService = consumerService;
@@ -106,27 +102,19 @@ namespace Umbraco.Forms.Integrations.Commerce.EMerchantPay
 
             _urlHelper = urlHelper;
 
-#if NETCOREAPP
+            _mappingService = mappingService;
+
+            _parser = parser;
+
             _paymentProviderSettings = paymentProviderSettings.Value;
-#else
-            _paymentProviderSettings = new PaymentProviderSettings(ConfigurationManager.AppSettings);
-#endif
         }
 
-#if NETCOREAPP
         public override WorkflowExecutionStatus Execute(WorkflowExecutionContext context)
-#else
-        public override WorkflowExecutionStatus Execute(Record record, RecordEventArgs e)
-#endif
         {
-            if (!CustomerDetailsMappings.TryParseMappings(out var mappings)) return WorkflowExecutionStatus.Failed;
+            if (!_mappingService.TryParse(CustomerDetailsMappings, out var mappings)) return WorkflowExecutionStatus.Failed;
 
             var mappingBuilder = new MappingBuilder()
-#if NETCOREAPP
                 .SetValues(context.Record, mappings)
-#else
-                .SetValues(record, mappings)
-#endif
                 .Build();
 
             // step 1. Create or Retrieve Consumer
@@ -142,34 +130,33 @@ namespace Umbraco.Forms.Integrations.Commerce.EMerchantPay
                 var retrieveConsumerTask = Task.Run(async () => await _consumerService.Retrieve(consumer));
                 consumer = retrieveConsumerTask.Result;
             }
+            else
+            {
+                consumer.Id = result.Id;
+            }
 
             // step 2. Create Payment
-            var transactionId = Guid.NewGuid();
+            var random = new Random();
+            var transactionId = $"uc-{random.Next(1000000, 999999999)}";
 
-#if NETCOREAPP
-            var formId = context.Record.Form;
-            var recordUniqueId = context.Record.UniqueId;
-#else
-            var formId = record.Form;
-            var recordUniqueId = record.UniqueId;
-#endif
-            var uniqueIdKey = UniqueId;  
+            var formHelper = new FormHelper(context.Record);
+
+            var formId = formHelper.GetFormId();
+            var recordUniqueId = formHelper.GetRecordUniqueId();
+
+            var uniqueIdKey = UniqueId;
             var statusKey = RecordStatus;
-
 
             var numberOfItems = string.IsNullOrEmpty(NumberOfItems)
                 ? 0
-#if NETCOREAPP
-                : int.Parse(context.Record.RecordFields[Guid.Parse(NumberOfItems)].ValuesAsString());
-#else
-                : int.Parse(record.RecordFields[Guid.Parse(NumberOfItems)].ValuesAsString());
-#endif
+                : int.Parse(formHelper.GetRecordFieldValue(NumberOfItems));
 
             var payment = new PaymentDto
             {
                 TransactionId = transactionId.ToString(),
                 Usage = _paymentProviderSettings.Usage,
-                NotificationUrl = $"{_paymentProviderSettings.UmbracoBaseUrl}umbraco/api/paymentprovider/notifypayment?formId={formId}&recordUniqueId={recordUniqueId}&statusFieldId={statusKey}",
+                NotificationUrl = $"{_paymentProviderSettings.UmbracoBaseUrl}umbraco/api/paymentprovider/notifypayment" +
+                    $"?formId={formId}&recordUniqueId={recordUniqueId}&statusFieldId={statusKey}&approve={bool.Parse(Approve)}",
                 ReturnSuccessUrl = _urlHelper.GetPageUrl(int.Parse(SuccessUrl)),
                 ReturnFailureUrl = _urlHelper.GetPageUrl(int.Parse(FailureUrl)),
                 ReturnCancelUrl = _urlHelper.GetPageUrl(int.Parse(CancelUrl)),
@@ -194,11 +181,9 @@ namespace Umbraco.Forms.Integrations.Commerce.EMerchantPay
                 BusinessAttribute = new BusinessAttribute { NameOfTheSupplier = _paymentProviderSettings.Supplier },
                 TransactionTypes = new TransactionTypeDto
                 {
-                    TransactionTypes = new List<TransactionTypeRecordDto>
-                    {
-                        new TransactionTypeRecordDto { TransactionType = "authorize" },
-                        new TransactionTypeRecordDto { TransactionType = "sale" }
-                    }
+                    TransactionTypes = _parser.AsEnumerable(nameof(PaymentProviderSettings.TransactionTypes))
+                                            .Select(p => new TransactionTypeRecordDto { TransactionType = p })
+                                            .ToList()
                 }
             };
 
@@ -209,24 +194,15 @@ namespace Umbraco.Forms.Integrations.Commerce.EMerchantPay
             if (createPaymentResult.Status != "error")
             {
                 // add unique ID and status to record
-#if NETCOREAPP
-                context.Record.RecordFields[Guid.Parse(uniqueIdKey)].Values.Add(createPaymentResult.UniqueId);
-                context.Record.RecordFields[Guid.Parse(statusKey)].Values.Add(createPaymentResult.Status);
-#else
-                record.RecordFields[Guid.Parse(uniqueIdKey)].Values.Add(createPaymentResult.UniqueId);
-                record.RecordFields[Guid.Parse(statusKey)].Values.Add(createPaymentResult.Status);
-#endif
+                formHelper.UpdateRecordFieldValue(uniqueIdKey, createPaymentResult.UniqueId);
+                formHelper.UpdateRecordFieldValue(statusKey, createPaymentResult.Status);
 
                 _httpContextAccessor.HttpContext.Items[Core.Constants.ItemKeys.RedirectAfterFormSubmitUrl] = createPaymentResult.RedirectUrl;
 
                 return WorkflowExecutionStatus.Completed;
             }
 
-#if NETCOREAPP
-            context.Record.RecordFields[Guid.Parse(statusKey)].Values.Add("error");
-#else
-            record.RecordFields[Guid.Parse(statusKey)].Values.Add("error");
-#endif
+            formHelper.UpdateRecordFieldValue(statusKey, "error");
 
             return WorkflowExecutionStatus.Failed;
         }
@@ -244,8 +220,8 @@ namespace Umbraco.Forms.Integrations.Commerce.EMerchantPay
 
             if (string.IsNullOrEmpty(UniqueId)) list.Add(new Exception("Payment Unique ID field is required."));
 
-            if (!CustomerDetailsMappings.TryParseMappings(out _))
-                list.Add(new Exception("Customer email mapping is required."));
+            if (!_mappingService.TryParse(CustomerDetailsMappings, out _))
+                list.Add(new Exception("Invalid mappings. Please make sure that mandatory fields are mapped."));
 
             if (!SuccessUrl.IsContentValid(nameof(SuccessUrl), out var successError))
                 list.Add(new Exception(successError));
@@ -253,7 +229,8 @@ namespace Umbraco.Forms.Integrations.Commerce.EMerchantPay
             if (!FailureUrl.IsContentValid(nameof(FailureUrl), out var failureError))
                 list.Add(new Exception(failureError));
 
-            if (!CancelUrl.IsContentValid(nameof(CancelUrl), out var cancelError)) list.Add(new Exception(cancelError));
+            if (!CancelUrl.IsContentValid(nameof(CancelUrl), out var cancelError))
+                list.Add(new Exception(cancelError));
 
             return list;
         }

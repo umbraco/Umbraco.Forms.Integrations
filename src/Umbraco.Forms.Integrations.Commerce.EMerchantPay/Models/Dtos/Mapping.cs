@@ -1,6 +1,6 @@
 ﻿using Newtonsoft.Json;
 
-namespace Umbraco.Forms.Integrations.Commerce.EMerchantPay.Models.Dtos
+namespace Umbraco.Forms.Integrations.Commerce.Emerchantpay.Models.Dtos
 {
     public class Mapping
     {

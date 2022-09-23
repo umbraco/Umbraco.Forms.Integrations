@@ -1,27 +1,27 @@
 ﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 
 	<PropertyGroup>
-		<EMerchantPayPropertyEditorFiles>$(MSBuildThisFileDirectory)..\App_Plugins\UmbracoForms.Integrations\Commerce\eMerchantPay\**\*.*</EMerchantPayPropertyEditorFiles>
+		<emerchantpayPropertyEditorFiles>$(MSBuildThisFileDirectory)..\App_Plugins\UmbracoForms.Integrations\Commerce\emerchantpay\**\*.*</emerchantpayPropertyEditorFiles>
 	</PropertyGroup>
 
-	<Target Name="CopyEMerchantPayPropertyEditorAssets" BeforeTargets="Build">
+	<Target Name="CopyemerchantpayPropertyEditorAssets" BeforeTargets="Build">
 		<ItemGroup>
-			<EMerchantPayPropertyEditorFiles Include="$(EMerchantPayPropertyEditorFiles)" />
+			<emerchantpayPropertyEditorFiles Include="$(emerchantpayPropertyEditorFiles)" />
 		</ItemGroup>
-		<Message Text="Copying eMerchantPay Property Editor files: $(EMerchantPayPropertyEditorFiles) - #@(EMerchantPayPropertyEditorFiles->Count()) files" Importance="high" />
+		<Message Text="Copying emerchantpay Property Editor files: $(emerchantpayPropertyEditorFiles) - #@(emerchantpayPropertyEditorFiles->Count()) files" Importance="high" />
 		<Copy
-			SourceFiles="@(EMerchantPayPropertyEditorFiles)"
-			DestinationFiles="@(EMerchantPayPropertyEditorFiles->'$(MSBuildProjectDirectory)\App_Plugins\UmbracoForms.Integrations\Commerce\eMerchantPay\%(RecursiveDir)%(Filename)%(Extension)')"
+			SourceFiles="@(emerchantpayPropertyEditorFiles)"
+			DestinationFiles="@(emerchantpayPropertyEditorFiles->'$(MSBuildProjectDirectory)\App_Plugins\UmbracoForms.Integrations\Commerce\emerchantpay\%(RecursiveDir)%(Filename)%(Extension)')"
 			SkipUnchangedFiles="true" />
 
 	</Target>
 
-	<Target Name="ClearEMerchantPayPropertyEditorAssets" BeforeTargets="Clean">
+	<Target Name="ClearemerchantpayPropertyEditorAssets" BeforeTargets="Clean">
 		<ItemGroup>
-			<EMerchantPayPropertyEditorDir Include="$(MSBuildProjectDirectory)\App_Plugins\UmbracoForms.Integrations\Commerce\eMerchantPay\" />
+			<emerchantpayPropertyEditorDir Include="$(MSBuildProjectDirectory)\App_Plugins\UmbracoForms.Integrations\Commerce\emerchantpay\" />
 		</ItemGroup>
-		<Message Text="Clear eMerchantPay Property Editor data" Importance="high" />
-		<RemoveDir Directories="@(EMerchantPayPropertyEditorDir)"  />
+		<Message Text="Clear emerchantpay Property Editor data" Importance="high" />
+		<RemoveDir Directories="@(emerchantpayPropertyEditorDir)"  />
 	</Target>
 
 </Project>

@@ -1,31 +1,9 @@
-﻿using System.Collections.Specialized;
+﻿using System.Collections.Generic;
 
-namespace Umbraco.Forms.Integrations.Commerce.EMerchantPay.Configuration
+namespace Umbraco.Forms.Integrations.Commerce.Emerchantpay.Configuration
 {
     public class PaymentProviderSettings
     {
-        public PaymentProviderSettings()
-        {
-            
-        }
-
-        public PaymentProviderSettings(NameValueCollection appSettings)
-        {
-            GatewayBaseUrl = appSettings[Constants.Configuration.GatewayBaseUrlKey];
-
-            WpfUrl = appSettings[Constants.Configuration.WpfUrlKey];
-
-            Username = appSettings[Constants.Configuration.UsernameKey];
-
-            Password = appSettings[Constants.Configuration.PasswordKey];
-
-            Supplier = appSettings[Constants.Configuration.SupplierKey];
-
-            Usage = appSettings[Constants.Configuration.UsageKey];
-
-            UmbracoBaseUrl = appSettings[Constants.Configuration.UmbracoBaseUrlKey];
-        }
-
         public string GatewayBaseUrl { get; set; }
 
         public string WpfUrl { get; set; }
@@ -40,6 +18,10 @@ namespace Umbraco.Forms.Integrations.Commerce.EMerchantPay.Configuration
 
         public string UmbracoBaseUrl { get; set; }
 
-        public string Currencies { get; set; }
+        public Dictionary<string, string> Currencies { get; set; }
+
+        public string[] TransactionTypes { get; set; }
+
+        public string[] MappingFields { get; set; }
     }
 }

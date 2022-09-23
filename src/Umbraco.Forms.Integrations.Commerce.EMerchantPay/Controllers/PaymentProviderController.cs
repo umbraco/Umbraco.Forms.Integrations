@@ -1,25 +1,18 @@
-﻿#if NETCOREAPP
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 
-using Umbraco.Cms.Web.Common.Controllers;
-using Umbraco.Forms.Core.Services;
-#else
-using System.Web.Http;
-
-using Umbraco.Web.WebApi;
-#endif
-
-using System;
-using System.Net;
 using System.Net.Http;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
+using System;
 
+using Umbraco.Cms.Web.Common.Controllers;
 using Umbraco.Forms.Core.Data.Storage;
-using Umbraco.Forms.Integrations.Commerce.EMerchantPay.Models.Dtos;
-using Umbraco.Forms.Integrations.Commerce.EMerchantPay.Services;
+using Umbraco.Forms.Core.Services;
+using Umbraco.Forms.Integrations.Commerce.Emerchantpay.Models.Dtos;
+using Umbraco.Forms.Integrations.Commerce.Emerchantpay.Services;
 
-namespace Umbraco.Forms.Integrations.Commerce.EMerchantPay.Controllers
+namespace Umbraco.Forms.Integrations.Commerce.Emerchantpay.Controllers
 {
     public class PaymentProviderController : UmbracoApiController
     {
@@ -27,55 +20,52 @@ namespace Umbraco.Forms.Integrations.Commerce.EMerchantPay.Controllers
 
         private readonly IRecordStorage _recordStorage;
 
-#if NETCOREAPP
+        private readonly IRecordService _recordService;
+
         private readonly IFormService _formService;
-
-        public PaymentProviderController(PaymentService paymentService, IRecordStorage recordStorage, IFormService formService)
-#else
-        private readonly IFormStorage _formStorage;
-
-        public PaymentProviderController(PaymentService paymentService, IRecordStorage recordStorage, IFormStorage formStorage)
-#endif
+        
+        public PaymentProviderController(PaymentService paymentService, IRecordStorage recordStorage, IRecordService recordService, IFormService formService)
         {
             _paymentService = paymentService;
 
             _recordStorage = recordStorage;
 
-#if NETCOREAPP
+            _recordService = recordService;
+
             _formService = formService;
-#else
-            _formStorage = formStorage;
-#endif
         }
 
         [HttpPost]
-        public HttpResponseMessage NotifyPayment(string formId, string recordUniqueId, string statusFieldId, [FromBody] NotificationDto notificationDto)
+        public HttpResponseMessage NotifyPayment(string formId, string recordUniqueId, string statusFieldId, bool approve, [FromForm] NotificationDto notificationDto)
         {
             try
             {
                 // reconcile
                 var reconcileTask =
-                    Task.Run(async () => await _paymentService.Reconcile(notificationDto.wpf_unique_id));
+                    Task.Run(async () => await _paymentService.Reconcile(notificationDto.UniqueId));
 
                 var reconcileResponse = reconcileTask.Result;
 
                 // get record with uniqueId and update status
-#if NETCOREAPP
-            var form = _formService.Get(Guid.Parse(formId));
-#else
-                var form = _formStorage.GetForm(Guid.Parse(formId));
-#endif
+                var form = _formService.Get(Guid.Parse(formId));
 
                 var record = _recordStorage.GetRecordByUniqueId(Guid.Parse(recordUniqueId), form);
+
                 var paymentStatusField = record.GetRecordField(Guid.Parse(statusFieldId));
+                paymentStatusField.Values.Clear();
                 paymentStatusField.Values.Add(reconcileResponse.Status);
 
                 _recordStorage.UpdateRecord(record, form);
 
+                if (approve && notificationDto.Status == Constants.PaymentStatus.Approved)
+                {
+                    _recordService.Approve(record, form);
+                }
+
                 if (reconcileResponse.Status == Constants.ErrorCode.WorkflowError)
                     return new HttpResponseMessage(HttpStatusCode.BadRequest);
 
-                string notificationXml = $"<notification_echo><wpf_unique_id>{notificationDto.wpf_unique_id}</wpf_unique_id></notification_echo>";
+                string notificationXml = $"<notification_echo><wpf_unique_id>{notificationDto.UniqueId}</wpf_unique_id></notification_echo>";
                 return new HttpResponseMessage()
                 {
                     Content = new StringContent(notificationXml, Encoding.UTF8, "application/xml")

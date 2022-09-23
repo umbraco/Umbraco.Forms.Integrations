@@ -1,5 +1,5 @@
 ﻿
-namespace Umbraco.Forms.Integrations.Commerce.EMerchantPay
+namespace Umbraco.Forms.Integrations.Commerce.Emerchantpay
 {
     public class Constants
     {
@@ -7,23 +7,7 @@ namespace Umbraco.Forms.Integrations.Commerce.EMerchantPay
 
         public static class Configuration
         {
-            public const string Settings = "Umbraco:Forms:Integrations:Commerce:eMerchantPay:Settings";
-
-            public const string GatewayBaseUrlKey = "Umbraco.Forms.Integrations.Commerce.eMerchantPay.GatewayBaseurl";
-
-            public const string WpfUrlKey = "Umbraco.Forms.Integrations.Commerce.eMerchantPay.WpfUrl";
-
-            public const string UsernameKey = "Umbraco.Forms.Integrations.Commerce.eMerchantPay.Username";
-
-            public const string PasswordKey = "Umbraco.Forms.Integrations.Commerce.eMerchantPay.Password";
-
-            public const string SupplierKey = "Umbraco.Forms.Integrations.Commerce.eMerchantPay.Supplier";
-
-            public const string UsageKey = "Umbraco.Forms.Integrations.Commerce.eMerchantPay.Usage";
-
-            public const string CurrenciesKey = "Umbraco.Forms.Integrations.Commerce.eMerchantPay.Currencies";
-
-            public const string UmbracoBaseUrlKey = "Umbraco.Forms.Integrations.Commerce.eMerchantPay.UmbracoBaseUrl";
+            public const string Settings = "Umbraco:Forms:Integrations:Commerce:emerchantpay:Settings";
         }
 
         public static class ErrorCode
@@ -46,6 +30,27 @@ namespace Umbraco.Forms.Integrations.Commerce.EMerchantPay
             public const string WpfPayment = "wpf_payment";
 
             public const string WpfReconcile = "wpf_reconcile";
+        }
+
+        public static class NotificationProperty
+        {
+            public const string TransactionId = "wpf_transaction_id";
+
+            public const string UniqueId = "wpf_unique_id";
+
+            public const string Status = "wpf_status";
+        }
+
+        public static class PaymentStatus
+        {
+            public const string Approved = "approved";
+        }
+
+        public static class HttpClients
+        {
+            public const string GatewayClient = "GatewayClient";
+
+            public const string WpfClient = "WpfClient";
         }
     }
 }

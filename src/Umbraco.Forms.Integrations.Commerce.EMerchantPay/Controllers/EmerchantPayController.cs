@@ -1,41 +1,57 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Threading;
+﻿using System.Collections.Generic;
 
-#if NETCOREAPP
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
 
 using Umbraco.Cms.Web.BackOffice.Controllers;
 using Umbraco.Cms.Web.Common.Attributes;
-#else
-using System.Web;
-using System.Web.Http;
+using Umbraco.Forms.Integrations.Commerce.Emerchantpay.Configuration;
+using Umbraco.Forms.Integrations.Commerce.Emerchantpay.Helpers;
+using Umbraco.Forms.Integrations.Commerce.Emerchantpay.Models.Dtos;
 
-using Umbraco.Web.Mvc;
-using Umbraco.Web.WebApi;
-#endif
-using Newtonsoft.Json;
-using Umbraco.Forms.Integrations.Commerce.EMerchantPay.Helpers;
-using Umbraco.Forms.Integrations.Commerce.EMerchantPay.Models.Dtos;
-
-
-namespace Umbraco.Forms.Integrations.Commerce.EMerchantPay.Controllers
+namespace Umbraco.Forms.Integrations.Commerce.emerchantpay.Controllers
 {
-    [PluginController("UmbracoFormsIntegrationsCommerceEmerchantPay")]
-    public class EmerchantPayController : UmbracoAuthorizedApiController
+    [PluginController("UmbracoFormsIntegrationsCommerceEmerchantpay")]
+    public class EmerchantpayController : UmbracoAuthorizedApiController
     {
+        private readonly PaymentProviderSettings _paymentProviderSettings;
+
         private readonly CurrencyHelper _currencyHelper;
 
-        public EmerchantPayController(CurrencyHelper currencyHelper)
+        private readonly MappingFieldHelper _mappingFieldHelper;
+
+        public EmerchantpayController(IOptions<PaymentProviderSettings> options, CurrencyHelper currencyHelper, MappingFieldHelper mappingFieldHelper)
         {
+            _paymentProviderSettings = options.Value;
+
             _currencyHelper = currencyHelper;
+            _mappingFieldHelper = mappingFieldHelper;
         }
 
         [HttpGet]
+        public string IsAccountAvailable() =>
+            string.IsNullOrEmpty(_paymentProviderSettings.Username) || string.IsNullOrEmpty(_paymentProviderSettings.Password)
+            ? "UNAVAILABLE" : "AVAILABLE";
+
+        [HttpGet]
         public IEnumerable<CurrencyDto> GetCurrencies() => _currencyHelper.GetCurrencies();
+
+        [HttpGet]
+        public IEnumerable<string> GetAvailableMappingFields() => new[]
+        {
+            "Email",
+            "FirstName",
+            "LastName",
+            "Address1",
+            "Address2",
+            "ZipCode",
+            "City",
+            "State",
+            "Country",
+            "Phone"
+        };
+
+        [HttpGet]
+        public IEnumerable<string> GetRequiredMappingFields() => _mappingFieldHelper.GetMappings();
     }
 }

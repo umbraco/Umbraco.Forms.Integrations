@@ -1,4 +1,4 @@
-﻿<div ng-controller="UmbracoForms.Integrations.Commerce.eMerchantPay.CustomerDetailsMapperController as vm">
+﻿﻿<div ng-controller="UmbracoForms.Integrations.Commerce.emerchantpay.CustomerDetailsMapperController as vm">
 
     <div>
         <select ng-model="vm.selectedCustomerProperty">
@@ -10,7 +10,11 @@
             <option ng-repeat="field in vm.fields" value="{{ field.id }}">{{ field.value }}</option>
         </select>
     </div>
-    
+
+    <div ng-if="vm.requiredFields.length > 0" class="alert alert-info mt2 mr3" role="alert">
+        <span>Mandatory fields: {{ vm.requiredFields }}</span>
+    </div>
+
     <div class="mt2">
         <umb-button type="button" class="mt2"
                     action="vm.addMapping()"
@@ -18,7 +22,7 @@
                     disabled="vm.selectedCustomerProperty.length === 0 || vm.selectedField.length === 0">
         </umb-button>
     </div>
-    
+
     <div class="umb-forms-mappings mt2" ng-if="vm.mappings.length > 0">
 
         <div class="umb-forms-mapping-header">
