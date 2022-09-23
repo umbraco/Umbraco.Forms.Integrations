@@ -4,17 +4,17 @@ using Microsoft.Extensions.DependencyInjection;
 using Umbraco.Cms.Core.Composing;
 using Umbraco.Cms.Core.DependencyInjection;
 using Umbraco.Forms.Core.Providers;
-using Umbraco.Forms.Integrations.Commerce.EMerchantPay.Configuration;
-using Umbraco.Forms.Integrations.Commerce.EMerchantPay.Helpers;
-using Umbraco.Forms.Integrations.Commerce.EMerchantPay.Services;
 #else
 using Umbraco.Core;
 using Umbraco.Core.Composing;
-using Umbraco.Forms.Integrations.Commerce.EMerchantPay.Helpers;
-using Umbraco.Forms.Integrations.Commerce.EMerchantPay.Services;
 #endif
 
-namespace Umbraco.Forms.Integrations.Commerce.EMerchantPay
+using Umbraco.Forms.Integrations.Commerce.Emerchantpay.Models.Dtos;
+using Umbraco.Forms.Integrations.Commerce.Emerchantpay.Helpers;
+using Umbraco.Forms.Integrations.Commerce.Emerchantpay.Services;
+using Umbraco.Forms.Integrations.Commerce.Emerchantpay.Configuration;
+
+namespace Umbraco.Forms.Integrations.Commerce.Emerchantpay
 {
     public class PaymentProviderComposer : IComposer
     {
@@ -35,6 +35,12 @@ namespace Umbraco.Forms.Integrations.Commerce.EMerchantPay
             builder.Services.AddSingleton<UrlHelper>();
 
             builder.Services.AddSingleton<CurrencyHelper>();
+
+            builder.Services.AddSingleton<MappingFieldHelper>();
+
+            builder.Services.AddSingleton<IMappingService<Mapping>, MappingService>();
+
+            builder.Services.AddSingleton<ISettingsParser, ObjectParser>();
         }
 #else
         public void Compose(Composition composition)
@@ -46,6 +52,12 @@ namespace Umbraco.Forms.Integrations.Commerce.EMerchantPay
             composition.Register<UrlHelper>(Lifetime.Singleton);
 
             composition.Register<CurrencyHelper>(Lifetime.Singleton);
+
+            composition.Register<MappingFieldHelper>(Lifetime.Singleton);
+
+            composition.Register<IMappingService<Mapping>, MappingService>(Lifetime.Singleton);
+
+            composition.Register<ISettingsParser, StringParser>(Lifetime.Singleton);
         }
 #endif
     }

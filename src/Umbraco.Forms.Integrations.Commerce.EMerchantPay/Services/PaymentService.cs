@@ -1,24 +1,19 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Configuration;
-using System.IO;
-using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
-using System.Xml;
-using System.Xml.Serialization;
 
 #if NETCOREAPP
 using Microsoft.Extensions.Options;
 #else
 #endif
 
-using Umbraco.Forms.Integrations.Commerce.EMerchantPay.Configuration;
-using Umbraco.Forms.Integrations.Commerce.EMerchantPay.Models.Dtos;
+using Umbraco.Forms.Integrations.Commerce.Emerchantpay.Configuration;
+using Umbraco.Forms.Integrations.Commerce.Emerchantpay.Models.Dtos;
 
-namespace Umbraco.Forms.Integrations.Commerce.EMerchantPay.Services
+namespace Umbraco.Forms.Integrations.Commerce.Emerchantpay.Services
 {
     public class PaymentService : BaseService<PaymentDto>
     {
