@@ -14,4 +14,4 @@
 }
 
 angular.module("umbraco")
-    .controller("UmbracoForms.Integrations.Commerce.emerchantpay.CurrencyController", CurrencyController);
+    .controller("UmbracoForms.Integrations.Commerce.Emerchantpay.CurrencyController", CurrencyController);

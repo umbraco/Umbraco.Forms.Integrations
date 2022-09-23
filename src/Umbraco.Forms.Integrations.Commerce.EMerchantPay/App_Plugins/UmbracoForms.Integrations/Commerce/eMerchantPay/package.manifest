@@ -1,10 +1,10 @@
 ﻿{
   "javascript": [
-    "~/App_Plugins/UmbracoForms.Integrations/Commerce/emerchantpay/customer-details-mapper.controller.js",
-    "~/App_Plugins/UmbracoForms.Integrations/Commerce/emerchantpay/currency.controller.js",
-    "~/App_Plugins/UmbracoForms.Integrations/Commerce/emerchantpay/emerchantpay.resource.js",
-    "~/App_Plugins/UmbracoForms.Integrations/Commerce/emerchantpay/emerchantpay.service.js",
-    "~/App_Plugins/UmbracoForms.Integrations/Commerce/emerchantpay/field-picker.controller.js"
+    "~/App_Plugins/UmbracoForms.Integrations/Commerce/Emerchantpay/customer-details-mapper.controller.js",
+    "~/App_Plugins/UmbracoForms.Integrations/Commerce/Emerchantpay/currency.controller.js",
+    "~/App_Plugins/UmbracoForms.Integrations/Commerce/Emerchantpay/emerchantpay.resource.js",
+    "~/App_Plugins/UmbracoForms.Integrations/Commerce/Emerchantpay/emerchantpay.service.js",
+    "~/App_Plugins/UmbracoForms.Integrations/Commerce/Emerchantpay/field-picker.controller.js"
   ],
 	"css": [ "" ]
 }

@@ -68,4 +68,4 @@
 }
 
 angular.module("umbraco")
-    .controller("UmbracoForms.Integrations.Commerce.emerchantpay.CustomerDetailsMapperController", CustomerDetailsMapperController);
+    .controller("UmbracoForms.Integrations.Commerce.Emerchantpay.CustomerDetailsMapperController", CustomerDetailsMapperController);
