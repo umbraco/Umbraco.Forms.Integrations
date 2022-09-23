@@ -21,4 +21,4 @@
 }
 
 angular.module("umbraco")
-    .controller("UmbracoForms.Integrations.Commerce.eMerchantPay.FieldPickerController", FieldPickerController);
+    .controller("UmbracoForms.Integrations.Commerce.Emerchantpay.FieldPickerController", FieldPickerController);

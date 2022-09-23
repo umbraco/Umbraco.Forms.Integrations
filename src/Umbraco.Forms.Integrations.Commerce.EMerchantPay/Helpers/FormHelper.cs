@@ -2,7 +2,7 @@
 
 using Umbraco.Forms.Core.Persistence.Dtos;
 
-namespace Umbraco.Forms.Integrations.Commerce.EMerchantPay.Helpers
+namespace Umbraco.Forms.Integrations.Commerce.Emerchantpay.Helpers
 {
     public class FormHelper
     {

@@ -10,10 +10,10 @@ using Microsoft.Extensions.Options;
 #else
 #endif
 
-using Umbraco.Forms.Integrations.Commerce.EMerchantPay.Configuration;
-using Umbraco.Forms.Integrations.Commerce.EMerchantPay.Models.Dtos;
+using Umbraco.Forms.Integrations.Commerce.Emerchantpay.Configuration;
+using Umbraco.Forms.Integrations.Commerce.Emerchantpay.Models.Dtos;
 
-namespace Umbraco.Forms.Integrations.Commerce.EMerchantPay.Services
+namespace Umbraco.Forms.Integrations.Commerce.Emerchantpay.Services
 {
     public class PaymentService : BaseService<PaymentDto>
     {

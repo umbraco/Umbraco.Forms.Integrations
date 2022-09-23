@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Xml.Serialization;
 
-namespace Umbraco.Forms.Integrations.Commerce.EMerchantPay.Models.Dtos
+namespace Umbraco.Forms.Integrations.Commerce.Emerchantpay.Models.Dtos
 {
     public class TransactionTypeDto
     {

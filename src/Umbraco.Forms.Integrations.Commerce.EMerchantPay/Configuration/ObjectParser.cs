@@ -5,7 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Umbraco.Forms.Integrations.Commerce.EMerchantPay.Configuration
+namespace Umbraco.Forms.Integrations.Commerce.Emerchantpay.Configuration
 {
     public class ObjectParser : ISettingsParser
     {

@@ -1,5 +1,5 @@
 ﻿
-namespace Umbraco.Forms.Integrations.Commerce.EMerchantPay.ExtensionMethods
+namespace Umbraco.Forms.Integrations.Commerce.Emerchantpay.ExtensionMethods
 {
     public static class StringExtensions
     {

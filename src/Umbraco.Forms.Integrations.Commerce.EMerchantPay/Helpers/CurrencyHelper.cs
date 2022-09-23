@@ -1,10 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 
-using Umbraco.Forms.Integrations.Commerce.EMerchantPay.Configuration;
-using Umbraco.Forms.Integrations.Commerce.EMerchantPay.Models.Dtos;
+using Umbraco.Forms.Integrations.Commerce.Emerchantpay.Configuration;
+using Umbraco.Forms.Integrations.Commerce.Emerchantpay.Models.Dtos;
 
-namespace Umbraco.Forms.Integrations.Commerce.EMerchantPay.Helpers
+namespace Umbraco.Forms.Integrations.Commerce.Emerchantpay.Helpers
 {
     public class CurrencyHelper
     {

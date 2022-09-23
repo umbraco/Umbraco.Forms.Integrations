@@ -1,5 +1,5 @@
 ﻿
-namespace Umbraco.Forms.Integrations.Commerce.EMerchantPay
+namespace Umbraco.Forms.Integrations.Commerce.Emerchantpay
 {
     public class Constants
     {
@@ -7,27 +7,27 @@ namespace Umbraco.Forms.Integrations.Commerce.EMerchantPay
 
         public static class Configuration
         {
-            public const string Settings = "Umbraco:Forms:Integrations:Commerce:eMerchantPay:Settings";
+            public const string Settings = "Umbraco:Forms:Integrations:Commerce:Emerchantpay:Settings";
 
-            public const string GatewayBaseUrlKey = "Umbraco.Forms.Integrations.Commerce.eMerchantPay.GatewayBaseurl";
+            public const string GatewayBaseUrlKey = "Umbraco.Forms.Integrations.Commerce.Emerchantpay.GatewayBaseurl";
 
-            public const string WpfUrlKey = "Umbraco.Forms.Integrations.Commerce.eMerchantPay.WpfUrl";
+            public const string WpfUrlKey = "Umbraco.Forms.Integrations.Commerce.Emerchantpay.WpfUrl";
 
-            public const string UsernameKey = "Umbraco.Forms.Integrations.Commerce.eMerchantPay.Username";
+            public const string UsernameKey = "Umbraco.Forms.Integrations.Commerce.Emerchantpay.Username";
 
-            public const string PasswordKey = "Umbraco.Forms.Integrations.Commerce.eMerchantPay.Password";
+            public const string PasswordKey = "Umbraco.Forms.Integrations.Commerce.Emerchantpay.Password";
 
-            public const string SupplierKey = "Umbraco.Forms.Integrations.Commerce.eMerchantPay.Supplier";
+            public const string SupplierKey = "Umbraco.Forms.Integrations.Commerce.Emerchantpay.Supplier";
 
-            public const string UsageKey = "Umbraco.Forms.Integrations.Commerce.eMerchantPay.Usage";
+            public const string UsageKey = "Umbraco.Forms.Integrations.Commerce.Emerchantpay.Usage";
 
-            public const string CurrenciesKey = "Umbraco.Forms.Integrations.Commerce.eMerchantPay.Currencies";
+            public const string CurrenciesKey = "Umbraco.Forms.Integrations.Commerce.Emerchantpay.Currencies";
 
-            public const string TransactionTypesKey = "Umbraco.Forms.Integrations.Commerce.eMerchantPay.TransactionTypes";
+            public const string TransactionTypesKey = "Umbraco.Forms.Integrations.Commerce.Emerchantpay.TransactionTypes";
 
-            public const string MappingFieldsKey = "Umbraco.Forms.Integrations.Commerce.eMerchantPay.MappingFields";
+            public const string MappingFieldsKey = "Umbraco.Forms.Integrations.Commerce.Emerchantpay.MappingFields";
 
-            public const string UmbracoBaseUrlKey = "Umbraco.Forms.Integrations.Commerce.eMerchantPay.UmbracoBaseUrl";
+            public const string UmbracoBaseUrlKey = "Umbraco.Forms.Integrations.Commerce.Emerchantpay.UmbracoBaseUrl";
         }
 
         public static class ErrorCode

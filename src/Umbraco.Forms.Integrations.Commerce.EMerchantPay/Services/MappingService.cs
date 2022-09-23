@@ -4,10 +4,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-using Umbraco.Forms.Integrations.Commerce.EMerchantPay.Helpers;
-using Umbraco.Forms.Integrations.Commerce.EMerchantPay.Models.Dtos;
+using Umbraco.Forms.Integrations.Commerce.Emerchantpay.Helpers;
+using Umbraco.Forms.Integrations.Commerce.Emerchantpay.Models.Dtos;
 
-namespace Umbraco.Forms.Integrations.Commerce.EMerchantPay.Services
+namespace Umbraco.Forms.Integrations.Commerce.Emerchantpay.Services
 {
     public class MappingService : IMappingService<Mapping>
     {

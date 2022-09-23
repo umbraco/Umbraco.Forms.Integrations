@@ -15,11 +15,11 @@ using System.Text;
 using System.Threading.Tasks;
 
 using Umbraco.Forms.Core.Data.Storage;
-using Umbraco.Forms.Integrations.Commerce.EMerchantPay.Models.Dtos;
-using Umbraco.Forms.Integrations.Commerce.EMerchantPay.Services;
+using Umbraco.Forms.Integrations.Commerce.Emerchantpay.Models.Dtos;
+using Umbraco.Forms.Integrations.Commerce.Emerchantpay.Services;
 using Umbraco.Forms.Core.Services;
 
-namespace Umbraco.Forms.Integrations.Commerce.EMerchantPay.Controllers
+namespace Umbraco.Forms.Integrations.Commerce.Emerchantpay.Controllers
 {
     public class PaymentProviderController : UmbracoApiController
     {

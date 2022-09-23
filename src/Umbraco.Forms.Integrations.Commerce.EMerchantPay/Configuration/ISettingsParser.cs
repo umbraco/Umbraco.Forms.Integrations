@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Umbraco.Forms.Integrations.Commerce.EMerchantPay.Configuration
+namespace Umbraco.Forms.Integrations.Commerce.Emerchantpay.Configuration
 {
     public interface ISettingsParser
     {
