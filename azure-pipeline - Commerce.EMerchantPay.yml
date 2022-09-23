@@ -5,7 +5,7 @@ pool:
   vmImage: 'windows-latest'
 
 variables:
-  projectName: 'Umbraco.Forms.Integrations.Commerce.EMerchantPay'
+  projectName: 'Umbraco.Forms.Integrations.Commerce.Emerchantpay'
   solution: '**/*.sln'
   project: 'src/$(projectName)/$(projectName).csproj'
   testPoject: 'src/$(projectName).Tests/$(projectName).Tests.csproj'
