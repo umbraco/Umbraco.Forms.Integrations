@@ -1,24 +1,15 @@
-﻿#if NETCOREAPP
+﻿using System.Collections.Generic;
+
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 
 using Umbraco.Cms.Web.BackOffice.Controllers;
 using Umbraco.Cms.Web.Common.Attributes;
-#else
-using System.Configuration;
-using System.Web.Http;
-
-using Umbraco.Web.Mvc;
-using Umbraco.Web.WebApi;
-#endif
-
-using System.Collections.Generic;
-
+using Umbraco.Forms.Integrations.Commerce.Emerchantpay.Configuration;
 using Umbraco.Forms.Integrations.Commerce.Emerchantpay.Helpers;
 using Umbraco.Forms.Integrations.Commerce.Emerchantpay.Models.Dtos;
-using Umbraco.Forms.Integrations.Commerce.Emerchantpay.Configuration;
 
-namespace Umbraco.Forms.Integrations.Commerce.Emerchantpay.Controllers
+namespace Umbraco.Forms.Integrations.Commerce.emerchantpay.Controllers
 {
     [PluginController("UmbracoFormsIntegrationsCommerceEmerchantpay")]
     public class EmerchantpayController : UmbracoAuthorizedApiController
@@ -29,21 +20,14 @@ namespace Umbraco.Forms.Integrations.Commerce.Emerchantpay.Controllers
 
         private readonly MappingFieldHelper _mappingFieldHelper;
 
-#if NETCOREAPP
         public EmerchantpayController(IOptions<PaymentProviderSettings> options, CurrencyHelper currencyHelper, MappingFieldHelper mappingFieldHelper)
-#else
-        public EmerchantpayController(CurrencyHelper currencyHelper, MappingFieldHelper mappingFieldHelper)
-#endif
         {
-#if NETCOREAPP
             _paymentProviderSettings = options.Value;
-#else
-            _paymentProviderSettings = new PaymentProviderSettings(ConfigurationManager.AppSettings);
-#endif
 
             _currencyHelper = currencyHelper;
             _mappingFieldHelper = mappingFieldHelper;
         }
+
         [HttpGet]
         public string IsAccountAvailable() =>
             string.IsNullOrEmpty(_paymentProviderSettings.Username) || string.IsNullOrEmpty(_paymentProviderSettings.Password)

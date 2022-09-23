@@ -27,4 +27,3 @@ namespace Umbraco.Forms.Integrations.Commerce.Emerchantpay.Helpers
 
     }
 }
-

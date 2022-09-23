@@ -1,11 +1,6 @@
-﻿
-using Umbraco.Forms.Integrations.Commerce.Emerchantpay.Configuration;
+﻿using Microsoft.AspNetCore.Mvc;
 
-#if NETCOREAPP
-using Microsoft.AspNetCore.Mvc;
-#else
-using System.Web.Http.ModelBinding;
-#endif
+using Umbraco.Forms.Integrations.Commerce.Emerchantpay.Configuration;
 
 namespace Umbraco.Forms.Integrations.Commerce.Emerchantpay.Models.Dtos
 {

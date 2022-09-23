@@ -25,7 +25,7 @@ namespace Umbraco.Forms.Integrations.Commerce.Emerchantpay.Helpers
             {
                 return currencies.Select(p => new CurrencyDto { Code = p.Key, Name = p.Value });
             }
-            catch 
+            catch
             {
                 return Enumerable.Empty<CurrencyDto>();
             }

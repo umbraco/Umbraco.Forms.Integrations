@@ -12,17 +12,8 @@ using Umbraco.Forms.Integrations.Commerce.Emerchantpay.Helpers;
 using Umbraco.Forms.Integrations.Commerce.Emerchantpay.Models.Dtos;
 using Umbraco.Forms.Integrations.Commerce.Emerchantpay.Services;
 
-#if NETCOREAPP
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Options;
-
-using Umbraco.Cms.Core.Web;
-#else
-using System.Configuration;
-
-using Umbraco.Web;
-using Umbraco.Forms.Core.Persistence.Dtos;
-#endif
 
 namespace Umbraco.Forms.Integrations.Commerce.Emerchantpay
 {
@@ -93,15 +84,10 @@ namespace Umbraco.Forms.Integrations.Commerce.Emerchantpay
 
         #endregion
 
-#if NETCOREAPP
         public PaymentProviderWorkflow(IOptions<PaymentProviderSettings> paymentProviderSettings, IHttpContextAccessor httpContextAccessor,
-            ConsumerService consumerService, PaymentService paymentService, UrlHelper urlHelper, 
+            ConsumerService consumerService, PaymentService paymentService, UrlHelper urlHelper,
             IMappingService<Mapping> mappingService, ISettingsParser parser)
-#else
-        public PaymentProviderWorkflow(IHttpContextAccessor httpContextAccessor,
-                ConsumerService consumerService, PaymentService paymentService, UrlHelper urlHelper, 
-                IMappingService<Mapping> mappingService, ISettingsParser parser)
-#endif
+
         {
             Id = new Guid(Constants.WorkflowId);
             Name = "emerchantpay Gateway";
@@ -120,28 +106,15 @@ namespace Umbraco.Forms.Integrations.Commerce.Emerchantpay
 
             _parser = parser;
 
-
-#if NETCOREAPP
             _paymentProviderSettings = paymentProviderSettings.Value;
-#else
-            _paymentProviderSettings = new PaymentProviderSettings(ConfigurationManager.AppSettings);
-#endif
         }
 
-#if NETCOREAPP
         public override WorkflowExecutionStatus Execute(WorkflowExecutionContext context)
-#else
-        public override WorkflowExecutionStatus Execute(Record record, RecordEventArgs e)
-#endif
         {
             if (!_mappingService.TryParse(CustomerDetailsMappings, out var mappings)) return WorkflowExecutionStatus.Failed;
 
             var mappingBuilder = new MappingBuilder()
-#if NETCOREAPP
                 .SetValues(context.Record, mappings)
-#else
-                .SetValues(record, mappings)
-#endif
                 .Build();
 
             // step 1. Create or Retrieve Consumer
@@ -166,16 +139,12 @@ namespace Umbraco.Forms.Integrations.Commerce.Emerchantpay
             var random = new Random();
             var transactionId = $"uc-{random.Next(1000000, 999999999)}";
 
-#if NETCOREAPP
             var formHelper = new FormHelper(context.Record);
-#else
-            var formHelper = new FormHelper(record);
-#endif
 
             var formId = formHelper.GetFormId();
             var recordUniqueId = formHelper.GetRecordUniqueId();
 
-            var uniqueIdKey = UniqueId;  
+            var uniqueIdKey = UniqueId;
             var statusKey = RecordStatus;
 
             var numberOfItems = string.IsNullOrEmpty(NumberOfItems)
@@ -260,7 +229,7 @@ namespace Umbraco.Forms.Integrations.Commerce.Emerchantpay
             if (!FailureUrl.IsContentValid(nameof(FailureUrl), out var failureError))
                 list.Add(new Exception(failureError));
 
-            if (!CancelUrl.IsContentValid(nameof(CancelUrl), out var cancelError)) 
+            if (!CancelUrl.IsContentValid(nameof(CancelUrl), out var cancelError))
                 list.Add(new Exception(cancelError));
 
             return list;

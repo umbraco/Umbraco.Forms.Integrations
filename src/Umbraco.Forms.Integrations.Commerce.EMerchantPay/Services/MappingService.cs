@@ -1,4 +1,4 @@
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 
 using System;
 using System.Collections.Generic;
@@ -34,9 +34,9 @@ namespace Umbraco.Forms.Integrations.Commerce.Emerchantpay.Services
 
             result = JsonConvert.DeserializeObject<List<Mapping>>(mappings);
 
-            if(result.Count != configMappings.Count()) return false;
+            if (result.Count != configMappings.Count()) return false;
 
-            foreach(var configMapping in configMappings)
+            foreach (var configMapping in configMappings)
             {
                 if (!result.Any(p => p.CustomerProperty == configMapping)) return false;
             }

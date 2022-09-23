@@ -8,26 +8,6 @@ namespace Umbraco.Forms.Integrations.Commerce.Emerchantpay
         public static class Configuration
         {
             public const string Settings = "Umbraco:Forms:Integrations:Commerce:Emerchantpay:Settings";
-
-            public const string GatewayBaseUrlKey = "Umbraco.Forms.Integrations.Commerce.Emerchantpay.GatewayBaseurl";
-
-            public const string WpfUrlKey = "Umbraco.Forms.Integrations.Commerce.Emerchantpay.WpfUrl";
-
-            public const string UsernameKey = "Umbraco.Forms.Integrations.Commerce.Emerchantpay.Username";
-
-            public const string PasswordKey = "Umbraco.Forms.Integrations.Commerce.Emerchantpay.Password";
-
-            public const string SupplierKey = "Umbraco.Forms.Integrations.Commerce.Emerchantpay.Supplier";
-
-            public const string UsageKey = "Umbraco.Forms.Integrations.Commerce.Emerchantpay.Usage";
-
-            public const string CurrenciesKey = "Umbraco.Forms.Integrations.Commerce.Emerchantpay.Currencies";
-
-            public const string TransactionTypesKey = "Umbraco.Forms.Integrations.Commerce.Emerchantpay.TransactionTypes";
-
-            public const string MappingFieldsKey = "Umbraco.Forms.Integrations.Commerce.Emerchantpay.MappingFields";
-
-            public const string UmbracoBaseUrlKey = "Umbraco.Forms.Integrations.Commerce.Emerchantpay.UmbracoBaseUrl";
         }
 
         public static class ErrorCode
@@ -64,6 +44,13 @@ namespace Umbraco.Forms.Integrations.Commerce.Emerchantpay
         public static class PaymentStatus
         {
             public const string Approved = "approved";
+        }
+
+        public static class HttpClients
+        {
+            public const string GatewayClient = "GatewayClient";
+
+            public const string WpfClient = "WpfClient";
         }
     }
 }

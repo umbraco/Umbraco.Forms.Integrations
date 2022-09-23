@@ -1,20 +1,14 @@
-﻿#if NETCOREAPP
-using Microsoft.AspNetCore.Mvc.ModelBinding;
-#else
-using System.Web.Http.Controllers;
-using System.Web.Http.ModelBinding;
-#endif
+﻿using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 using System;
-using System.Linq;
 using System.Threading.Tasks;
+
 using Umbraco.Forms.Integrations.Commerce.Emerchantpay.Models.Dtos;
 
 namespace Umbraco.Forms.Integrations.Commerce.Emerchantpay.Configuration
 {
     public sealed class NotificationModelBinder : IModelBinder
     {
-#if NETCOREAPP
         public Task BindModelAsync(ModelBindingContext bindingContext)
         {
             if (bindingContext == null)
@@ -39,44 +33,5 @@ namespace Umbraco.Forms.Integrations.Commerce.Emerchantpay.Configuration
 
             return Task.CompletedTask;
         }
-#else
-        public bool BindModel(HttpActionContext actionContext, ModelBindingContext bindingContext)
-        {
-            var notification = new NotificationDto();
-
-            var transactionIdValueResult = bindingContext.ValueProvider
-                .GetValue(CreateFullPropertyName(bindingContext, Constants.NotificationProperty.TransactionId));
-            if (transactionIdValueResult != null)
-            {
-                notification.TransactionId = transactionIdValueResult.AttemptedValue;
-            }
-
-            var uniqueIdValueResult = bindingContext.ValueProvider.GetValue(CreateFullPropertyName(bindingContext, Constants.NotificationProperty.UniqueId));
-            if (uniqueIdValueResult != null)
-                notification.UniqueId= uniqueIdValueResult.AttemptedValue;
-
-            var statusValueResult = bindingContext.ValueProvider.GetValue(CreateFullPropertyName(bindingContext, Constants.NotificationProperty.Status));
-            if (statusValueResult != null)
-            {
-                notification.Status = statusValueResult.AttemptedValue;
-            }
-
-            bindingContext.Model = notification;
-
-            bindingContext.ValidationNode.ValidateAllProperties = true;
-
-            return true;
-        }
-#endif
-
-        private string CreateFullPropertyName(ModelBindingContext bindingContext, string propertyName)
-        {
-            if (string.IsNullOrEmpty(bindingContext.ModelName))
-            {
-                return propertyName;
-            }
-            return bindingContext.ModelName + "." + propertyName;
-        }
-
     }
 }

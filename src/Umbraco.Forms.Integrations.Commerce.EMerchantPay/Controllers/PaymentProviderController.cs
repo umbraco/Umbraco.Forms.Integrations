@@ -1,23 +1,16 @@
-﻿#if NETCOREAPP
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 
-using Umbraco.Cms.Web.Common.Controllers;
-#else
-using System.Web.Http;
-
-using Umbraco.Web.WebApi;
-#endif
-
-using System;
-using System.Net;
 using System.Net.Http;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
+using System;
 
+using Umbraco.Cms.Web.Common.Controllers;
 using Umbraco.Forms.Core.Data.Storage;
+using Umbraco.Forms.Core.Services;
 using Umbraco.Forms.Integrations.Commerce.Emerchantpay.Models.Dtos;
 using Umbraco.Forms.Integrations.Commerce.Emerchantpay.Services;
-using Umbraco.Forms.Core.Services;
 
 namespace Umbraco.Forms.Integrations.Commerce.Emerchantpay.Controllers
 {
@@ -29,15 +22,9 @@ namespace Umbraco.Forms.Integrations.Commerce.Emerchantpay.Controllers
 
         private readonly IRecordService _recordService;
 
-#if NETCOREAPP
         private readonly IFormService _formService;
-
+        
         public PaymentProviderController(PaymentService paymentService, IRecordStorage recordStorage, IRecordService recordService, IFormService formService)
-#else
-        private readonly IFormStorage _formStorage;
-
-        public PaymentProviderController(PaymentService paymentService, IRecordStorage recordStorage, IRecordService recordService, IFormStorage formStorage)
-#endif
         {
             _paymentService = paymentService;
 
@@ -45,19 +32,11 @@ namespace Umbraco.Forms.Integrations.Commerce.Emerchantpay.Controllers
 
             _recordService = recordService;
 
-#if NETCOREAPP
             _formService = formService;
-#else
-            _formStorage = formStorage;
-#endif
         }
 
         [HttpPost]
-#if NETCOREAPP
         public HttpResponseMessage NotifyPayment(string formId, string recordUniqueId, string statusFieldId, bool approve, [FromForm] NotificationDto notificationDto)
-#else
-        public HttpResponseMessage NotifyPayment(string formId, string recordUniqueId, string statusFieldId, bool approve, [FromBody] NotificationDto notificationDto)
-#endif
         {
             try
             {
@@ -68,11 +47,7 @@ namespace Umbraco.Forms.Integrations.Commerce.Emerchantpay.Controllers
                 var reconcileResponse = reconcileTask.Result;
 
                 // get record with uniqueId and update status
-#if NETCOREAPP
-            var form = _formService.Get(Guid.Parse(formId));
-#else
-                var form = _formStorage.GetForm(Guid.Parse(formId));
-#endif
+                var form = _formService.Get(Guid.Parse(formId));
 
                 var record = _recordStorage.GetRecordByUniqueId(Guid.Parse(recordUniqueId), form);
 
