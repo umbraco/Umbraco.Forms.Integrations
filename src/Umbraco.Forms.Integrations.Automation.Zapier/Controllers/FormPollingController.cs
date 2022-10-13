@@ -1,6 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Umbraco.Forms.Core.Data.Storage;
+using Umbraco.Forms.Core.Services;
 using Umbraco.Forms.Integrations.Automation.Zapier.Extensions;
 using Umbraco.Forms.Integrations.Automation.Zapier.Helpers;
 using Umbraco.Forms.Integrations.Automation.Zapier.Services;
@@ -50,14 +52,9 @@ namespace Umbraco.Forms.Integrations.Automation.Zapier.Controllers
 
             var form = _zapierFormService.GetById(id);
 
-            var latestFormRecord = _recordStorage.GetAllRecords(form)
-                .OrderByDescending(p => p.Created)
-                .FirstOrDefault();
+            if(form == null) return new List<Dictionary<string, string>>();
 
-            return form != null && latestFormRecord != null
-                ? new List<Dictionary<string, string>>
-                    {form.ToFormDictionary(latestFormRecord, _umbUrlHelper.GetPageUrl(latestFormRecord.UmbracoPageId))}
-                : new List<Dictionary<string, string>>();
+            return new List<Dictionary<string, string>> { form.ToEmptyFormDictionary() };
         }
     }
 }
