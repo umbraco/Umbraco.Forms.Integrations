@@ -1,0 +1,8 @@
+﻿{
+  "javascript": [
+    "~/App_Plugins/UmbracoForms.Integrations/Crm/ActiveCampaign/contact-mapper.controller.js",
+    "~/App_Plugins/UmbracoForms.Integrations/Crm/ActiveCampaign/activecampaign.resource.js",
+    "~/App_Plugins/UmbracoForms.Integrations/Crm/ActiveCampaign/activecampaign.service.js"
+  ],
+	"css": [ "" ]
+}
