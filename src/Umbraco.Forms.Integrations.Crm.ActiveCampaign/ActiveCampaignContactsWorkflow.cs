@@ -43,12 +43,10 @@ namespace Umbraco.Forms.Integrations.Crm.ActiveCampaign
 
             var contacts = _contactService.Get(email).Result;
 
-            var result = _contactService.CreateOrUpdate(new ContactRequestDto
-            {
-                Contact = contacts.Contacts.Count > 0
-                                    ? contacts.Contacts.First() : Build(context.Record)
-            },
-                                contacts.Contacts.Count > 0).Result;
+            var requestDto = new ContactRequestDto { Contact = Build(context.Record) };
+            if (contacts.Contacts.Count > 0) requestDto.Contact.Id = contacts.Contacts.First().Id;
+
+            var result = _contactService.CreateOrUpdate(requestDto, contacts.Contacts.Count > 0).Result;
 
             if (!result) return WorkflowExecutionStatus.Failed;
 
