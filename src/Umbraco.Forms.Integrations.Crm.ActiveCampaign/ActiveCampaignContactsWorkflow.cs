@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.Options;
-using Polly;
+
 using System.Text.Json;
+
 using Umbraco.Forms.Core;
 using Umbraco.Forms.Core.Enums;
 using Umbraco.Forms.Core.Persistence.Dtos;
@@ -43,10 +44,10 @@ namespace Umbraco.Forms.Integrations.Crm.ActiveCampaign
             var contacts = _contactService.Get(email).Result;
 
             var result = _contactService.CreateOrUpdate(new ContactRequestDto
-                                {
-                                    Contact = contacts.Contacts.Count > 0
+            {
+                Contact = contacts.Contacts.Count > 0
                                     ? contacts.Contacts.First() : Build(context.Record)
-                                }, 
+            },
                                 contacts.Contacts.Count > 0).Result;
 
             if (!result) return WorkflowExecutionStatus.Failed;
@@ -76,18 +77,21 @@ namespace Umbraco.Forms.Integrations.Crm.ActiveCampaign
         /// </summary>
         /// <param name="record"></param>
         /// <returns></returns>
-        private ContactDto Build(Record record) => new ContactDto
-        {
-            Email = ReadMapping(record, "email"),
-            FirstName = ReadMapping(record, "firstName"),
-            LastName = ReadMapping(record, "lastName"),
-            Phone = ReadMapping(record, "phone")
-        };
-
-        private string ReadMapping(Record record, string name)
+        private ContactDto Build(Record record)
         {
             var mappings = JsonSerializer.Deserialize<List<ContactMappingDto>>(ContactMappings);
 
+            return new ContactDto
+            {
+                Email = ReadMappingValue(record, mappings, "email"),
+                FirstName = ReadMappingValue(record, mappings, "firstName"),
+                LastName = ReadMappingValue(record, mappings, "lastName"),
+                Phone = ReadMappingValue(record, mappings, "phone")
+            };
+        }
+
+        private string ReadMappingValue(Record record, List<ContactMappingDto> mappings, string name)
+        {
             var mappingItem = mappings.FirstOrDefault(p => p.ContactField == name);
 
             return mappingItem != null
