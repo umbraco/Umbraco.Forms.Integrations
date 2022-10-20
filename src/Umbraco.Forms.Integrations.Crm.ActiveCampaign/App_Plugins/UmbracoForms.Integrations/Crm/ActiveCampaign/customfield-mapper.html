@@ -1,0 +1,40 @@
+﻿﻿<div ng-controller="UmbracoForms.Integrations.Crm.ActiveCampaign.CustomFieldMapperController as vm">
+    <div>
+        <select ng-model="vm.selectedMapping.customField">
+            <option value="">Select custom field</option>
+            <option ng-repeat="field in vm.customFields" value="{{ field.id }}">{{ field.title }}</option>
+        </select>
+        <select ng-model="vm.selectedMapping.formField">
+            <option value="">Select form field</option>
+            <option ng-repeat="field in vm.formFields" value="{{ field.id }}">{{ field.value }}</option>
+        </select>
+    </div>
+
+    <div class="mt2">
+        <umb-button type="button" class="mt2"
+                    action="vm.addMapping()"
+                    label="Add mapping"
+                    disabled="vm.selectedMapping.customField.length === 0 || vm.selectedMapping.formField.length === 0">
+        </umb-button>
+    </div>
+
+    <div class="umb-forms-mappings mt2" ng-if="vm.customFieldMappings.length > 0">
+
+        <div class="umb-forms-mapping-header">
+            <div class="umb-forms-mapping-field -no-margin-left">Custom Field</div>
+            <div class="umb-forms-mapping-field">Form Field</div>
+            <div class="umb-forms-mapping-remove -no-margin-right"></div>
+        </div>
+
+        <div class="umb-forms-mapping" ng-repeat="mapping in vm.customFieldMappings">
+            <div class="umb-forms-mapping-field -no-margin-left">{{ mapping.customField.title }}</div>
+            <div class="umb-forms-mapping-field">{{ mapping.formField.value }}</div>
+            <div class="umb-forms-mapping-remove -no-margin-right">
+                <a href="" ng-click="vm.deleteMapping($index)">
+                    <i class="icon-trash"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+
+</div>

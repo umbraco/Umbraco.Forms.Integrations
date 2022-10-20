@@ -2,7 +2,7 @@
 
 namespace Umbraco.Forms.Integrations.Crm.ActiveCampaign.Models.Dtos
 {
-    public class ContactResponseDto
+    public class ContactDetailDto
     {
         [JsonPropertyName("contact")]
         public ContactDto Contact { get; set; }

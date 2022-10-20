@@ -15,14 +15,26 @@ namespace Umbraco.Forms.Integrations.Crm.ActiveCampaign
     {
         private readonly ActiveCampaignSettings _settings;
 
+        private readonly IAccountService _accountService;
+
         private readonly IContactService _contactService;
+
+        [Core.Attributes.Setting("Account",
+            Description = "Please select an account",
+            View = "~/App_Plugins/UmbracoForms.Integrations/Crm/ActiveCampaign/accountpicker.html")]
+        public string Account { get; set; }
 
         [Core.Attributes.Setting("Contact Mappings",
             Description = "Map contact details with form fields",
             View = "~/App_Plugins/UmbracoForms.Integrations/Crm/ActiveCampaign/contact-mapper.html")]
         public string ContactMappings { get; set; }
 
-        public ActiveCampaignContactsWorkflow(IOptions<ActiveCampaignSettings> options, IContactService contactService)
+        [Core.Attributes.Setting("Custom Field Mappings",
+            Description = "Map contact custom fields with form fields",
+            View = "~/App_Plugins/UmbracoForms.Integrations/Crm/ActiveCampaign/customfield-mapper.html")]
+        public string CustomFieldMappings { get; set; }
+
+        public ActiveCampaignContactsWorkflow(IOptions<ActiveCampaignSettings> options, IAccountService accountService, IContactService contactService)
         {
             Id = new Guid(Constants.WorkflowId);
             Name = "ActiveCampaign Contacts Workflow";
@@ -30,6 +42,8 @@ namespace Umbraco.Forms.Integrations.Crm.ActiveCampaign
             Icon = "icon-users";
 
             _settings = options.Value;
+
+            _accountService = accountService;
 
             _contactService = contactService;
         }
@@ -41,14 +55,34 @@ namespace Umbraco.Forms.Integrations.Crm.ActiveCampaign
             var email = context.Record.RecordFields[Guid.Parse(mappings.First(p => p.ContactField == "email").FormField.Id)]
                 .ValuesAsString();
 
+            // Check if contact exists.
             var contacts = _contactService.Get(email).Result;
 
-            var requestDto = new ContactRequestDto { Contact = Build(context.Record) };
+            var requestDto = new ContactDetailDto { Contact = Build(context.Record) };
+
             if (contacts.Contacts.Count > 0) requestDto.Contact.Id = contacts.Contacts.First().Id;
 
-            var result = _contactService.CreateOrUpdate(requestDto, contacts.Contacts.Count > 0).Result;
+            // Set contact custom fields.
+            if(!string.IsNullOrEmpty(CustomFieldMappings))
+            {
+                var customFieldMappings = JsonSerializer.Deserialize<List<CustomFieldMappingDto>>(CustomFieldMappings);
 
-            if (!result) return WorkflowExecutionStatus.Failed;
+                requestDto.Contact.FieldValues = customFieldMappings.Select(p => new CustomFieldValueDto
+                {
+                    Field = p.CustomField.Id,
+                    Value = context.Record.RecordFields[Guid.Parse(p.FormField.Id)].ValuesAsString()
+                }).ToList();
+            }
+
+            var contactId = _contactService.CreateOrUpdate(requestDto, contacts.Contacts.Count > 0).Result;
+
+            if (string.IsNullOrEmpty(contactId)) return WorkflowExecutionStatus.Failed;
+
+            // Associate contact with account if last one is specified.
+            if(!string.IsNullOrEmpty(Account))
+            {
+                var associationResponse = _accountService.CreateAssociation(int.Parse(Account), int.Parse(contactId)).Result;
+            }
 
             return WorkflowExecutionStatus.Completed;
         }
@@ -61,11 +95,14 @@ namespace Umbraco.Forms.Integrations.Crm.ActiveCampaign
                 list.Add(new Exception("Contact mappings are required."));
 
             var mappings = JsonSerializer.Deserialize<List<ContactMappingDto>>(ContactMappings);
-            bool validMappings = _settings.ContactFields
-                .Where(p => p.Required)
-                .Any(p => mappings.Select(q => q.ContactField).Contains(p.Name));
-            if (!validMappings)
-                list.Add(new Exception("Invalid contact mappings. Please make sure the mandatory fields are mapped."));
+            foreach(var contactField in _settings.ContactFields.Where(p => p.Required))
+            {
+                if(!mappings.Any(p => p.ContactField == contactField.Name))
+                {
+                    list.Add(new Exception("Invalid contact mappings. Please make sure the mandatory fields are mapped."));
+                    break;
+                }
+            }
 
             return list;
         }

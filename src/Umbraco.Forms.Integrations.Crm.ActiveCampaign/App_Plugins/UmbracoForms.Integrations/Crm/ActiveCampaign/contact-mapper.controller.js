@@ -25,17 +25,17 @@
 
         vm.contactMappings.splice(index, 1);
 
-        $scope.setting.value = JSON.stringify(vm.mappings);
+        $scope.setting.value = JSON.stringify(vm.contactMappings);
     }
 
 
     function init() {
 
         vm.selectedMapping = {
-            customerField: "",
+            contactField: "",
             formField: "",
             clear: function () {
-                this.customerField = "";
+                this.contactField = "";
                 this.formField = "";
             }
         };

@@ -1,4 +1,5 @@
 ﻿using System.Text.Json;
+using System.Text.Json.Nodes;
 
 using Umbraco.Forms.Integrations.Crm.ActiveCampaign.Models.Dtos;
 
@@ -13,40 +14,59 @@ namespace Umbraco.Forms.Integrations.Crm.ActiveCampaign.Services
             _httpClientFactory = httpClientFactory;
         }
 
-        public async Task<bool> CreateOrUpdate(ContactRequestDto contactRequestDto, bool update = false)
+        public async Task<string> CreateOrUpdate(ContactDetailDto contactRequestDto, bool update = false)
         {
-            var client = _httpClientFactory.CreateClient(Constants.ContactsHttpClient);
+            var client = _httpClientFactory.CreateClient(Constants.HttpClient);
 
             var request = new HttpRequestMessage
             {
                 Method = update ? HttpMethod.Put : HttpMethod.Post,
-                RequestUri = update
-                    ? new Uri($"{client.BaseAddress}/{contactRequestDto.Contact.Id}") 
-                    : client.BaseAddress,
+                RequestUri = new Uri($"{client.BaseAddress}/{(update ? "/contacts" + contactRequestDto.Contact.Id : "/contacts")}"),
                 Content = new StringContent(JsonSerializer.Serialize(contactRequestDto))
             };
 
             var response = await client.SendAsync(request);
 
-            var result = await response.Content.ReadAsStringAsync();
+            if(response.IsSuccessStatusCode)
+            {
+                var result = await response.Content.ReadAsStringAsync();
 
-            return response.IsSuccessStatusCode;
+                return JsonObject.Parse(result)["contact"]["id"].ToString();
+            }
+
+            return string.Empty;
         }
 
         public async Task<ContactCollectionResponseDto> Get(string email)
         {
-            var client = _httpClientFactory.CreateClient(Constants.ContactsHttpClient);
+            var client = _httpClientFactory.CreateClient(Constants.HttpClient);
 
             var response = await client.SendAsync(
                 new HttpRequestMessage
                 {
                     Method = HttpMethod.Get,
-                    RequestUri = new Uri($"{client.BaseAddress}?email={email}")
+                    RequestUri = new Uri($"{client.BaseAddress}/contacts?email={email}")
                 });
 
             var content = await response.Content.ReadAsStringAsync();
 
             return JsonSerializer.Deserialize<ContactCollectionResponseDto>(content);
+        }
+
+        public async Task<CustomFieldCollectionResponseDto> GetCustomFields()
+        {
+            var client = _httpClientFactory.CreateClient(Constants.HttpClient);
+
+            var response = await client.SendAsync(
+                new HttpRequestMessage
+                {
+                    Method = HttpMethod.Get,
+                    RequestUri = new Uri($"{client.BaseAddress}/fields")
+                });
+
+            var content = await response.Content.ReadAsStringAsync();
+
+            return JsonSerializer.Deserialize<CustomFieldCollectionResponseDto>(content);
         }
     }
 }

@@ -19,5 +19,8 @@ namespace Umbraco.Forms.Integrations.Crm.ActiveCampaign.Models.Dtos
 
         [JsonPropertyName("phone")]
         public string Phone { get; set; }
+
+        [JsonPropertyName("fieldValues")]
+        public List<CustomFieldValueDto> FieldValues { get; set; }
     }
 }

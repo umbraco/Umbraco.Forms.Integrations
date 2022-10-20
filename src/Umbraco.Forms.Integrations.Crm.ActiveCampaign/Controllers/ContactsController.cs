@@ -5,6 +5,7 @@ using Umbraco.Cms.Web.BackOffice.Controllers;
 using Umbraco.Cms.Web.Common.Attributes;
 using Umbraco.Forms.Integrations.Crm.ActiveCampaign.Configuration;
 using Umbraco.Forms.Integrations.Crm.ActiveCampaign.Models.Dtos;
+using Umbraco.Forms.Integrations.Crm.ActiveCampaign.Services;
 
 namespace Umbraco.Forms.Integrations.Crm.ActiveCampaign.Controllers
 {
@@ -13,9 +14,13 @@ namespace Umbraco.Forms.Integrations.Crm.ActiveCampaign.Controllers
     {
         private readonly ActiveCampaignSettings _settings;
 
-        public ContactsController(IOptions<ActiveCampaignSettings> options)
+        private readonly IContactService _contactService;
+
+        public ContactsController(IOptions<ActiveCampaignSettings> options, IContactService contactService)
         {
             _settings = options.Value;
+
+            _contactService = contactService;
         }
 
         [HttpGet]
@@ -23,5 +28,9 @@ namespace Umbraco.Forms.Integrations.Crm.ActiveCampaign.Controllers
 
         [HttpGet]
         public IActionResult GetContactFields() => new JsonResult(_settings.ContactFields);
+
+        [HttpGet]
+        public IActionResult GetCustomFields() =>  
+            new JsonResult(_contactService.GetCustomFields().ConfigureAwait(false).GetAwaiter().GetResult());
     }
 }

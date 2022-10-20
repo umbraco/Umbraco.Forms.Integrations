@@ -41,14 +41,6 @@
 		</Content>
 	</ItemGroup>
 
-	<ItemGroup>
-	  <Content Remove="App_Plugins\UmbracoForms.Integrations\Crm\ActiveCampaign\activecampaign.resource.js" />
-	  <Content Remove="App_Plugins\UmbracoForms.Integrations\Crm\ActiveCampaign\activecampaign.service.js" />
-	  <Content Remove="App_Plugins\UmbracoForms.Integrations\Crm\ActiveCampaign\contact-mapper.controller.js" />
-	  <Content Remove="App_Plugins\UmbracoForms.Integrations\Crm\ActiveCampaign\contact-mapper.html" />
-	  <Content Remove="App_Plugins\UmbracoForms.Integrations\Crm\ActiveCampaign\package.manifest" />
-	</ItemGroup>
-
 	<Target Name="PostBuild" AfterTargets="PostBuildEvent">
 	  <Exec Command="set UmbracoFormsIntegrationsTestsiteV10Path=$(SolutionDir)\Umbraco.Forms.Integrations.Testsite.V10&#xD;&#xA;set ACDir=%25UmbracoFormsIntegrationsTestsiteV10Path%25\App_Plugins\UmbracoForms.Integrations\Crm\ActiveCampaign&#xD;&#xA;if not exist %25ACDir%25 mkdir -p %25ACDir%25&#xD;&#xA;xcopy &quot;$(ProjectDir)App_Plugins\UmbracoForms.Integrations\Crm\ActiveCampaign&quot; &quot;%25ACDir%25&quot; /e /y" />
 	</Target>

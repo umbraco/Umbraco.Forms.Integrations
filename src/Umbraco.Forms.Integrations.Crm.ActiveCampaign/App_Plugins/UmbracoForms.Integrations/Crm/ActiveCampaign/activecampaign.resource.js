@@ -1,31 +1,27 @@
 ﻿function activeCampaignResource($http, umbRequestHelper) {
 
-    const apiEndpoint = "backoffice/UmbracoFormsIntegrationsCrmActiveCampaign/Contacts";
+    const accountsApiEndpoint = "backoffice/UmbracoFormsIntegrationsCrmActiveCampaign/Accounts";
+    const contactsApiEndpoint = "backoffice/UmbracoFormsIntegrationsCrmActiveCampaign/Contacts";
 
     return {
         checkApiAccess: function () {
             return umbRequestHelper.resourcePromise(
-                $http.get(`${apiEndpoint}/CheckApiAccess`),
+                $http.get(`${contactsApiEndpoint}/CheckApiAccess`),
+                "Failed to get resource");
+        },
+        getAccounts: function () {
+            return umbRequestHelper.resourcePromise(
+                $http.get(`${accountsApiEndpoint}/GetAccounts`),
                 "Failed to get resource");
         },
         getContactFields: function () {
             return umbRequestHelper.resourcePromise(
-                $http.get(`${apiEndpoint}/GetContactFields`),
+                $http.get(`${contactsApiEndpoint}/GetContactFields`),
                 "Failed to get resource");
         },
-        getCurrencies: function () {
+        getCustomFields: function () {
             return umbRequestHelper.resourcePromise(
-                $http.get(`${apiEndpoint}/GetCurrencies`),
-                "Failed to get resource");
-        },
-        getAvailableMappingFields: function () {
-            return umbRequestHelper.resourcePromise(
-                $http.get(`${apiEndpoint}/GetAvailableMappingFields`),
-                "Failed to get resource");
-        },
-        getRequiredMappingFields: function () {
-            return umbRequestHelper.resourcePromise(
-                $http.get(`${apiEndpoint}/GetRequiredMappingFields`),
+                $http.get(`${contactsApiEndpoint}/GetCustomFields`),
                 "Failed to get resource");
         }
     };
