@@ -1,0 +1,41 @@
+﻿﻿<div ng-controller="UmbracoForms.Integrations.Crm.ActiveCampaign.AccountPickerController as vm">
+    <div>
+        <select ng-model="vm.selectedAccount" ng-change="vm.save()">
+            <option value="">Select an account</option>
+            <option ng-repeat="account in vm.accounts" value="{{ account.id }}">{{ account.name }}</option>
+        </select>
+    </div>
+
+    <!--
+    <div ng-if="vm.contactFields.length > 0" class="alert alert-info mt2 mr3" role="alert">
+        <span>Mandatory fields: {{ vm.requiredContactFields }}</span>
+    </div>
+
+    <div class="mt2">
+        <umb-button type="button" class="mt2"
+                    action="vm.addMapping()"
+                    label="Add mapping"
+                    disabled="vm.selectedMapping.contactField.length === 0 || vm.selectedMapping.formField.length === 0">
+        </umb-button>
+    </div>
+
+    <div class="umb-forms-mappings mt2" ng-if="vm.contactMappings.length > 0">
+
+        <div class="umb-forms-mapping-header">
+            <div class="umb-forms-mapping-field -no-margin-left">Contact Field</div>
+            <div class="umb-forms-mapping-field">Form Field</div>
+            <div class="umb-forms-mapping-remove -no-margin-right"></div>
+        </div>
+
+        <div class="umb-forms-mapping" ng-repeat="mapping in vm.contactMappings">
+            <div class="umb-forms-mapping-field -no-margin-left">{{ mapping.contactField }}</div>
+            <div class="umb-forms-mapping-field">{{ mapping.formField.value }}</div>
+            <div class="umb-forms-mapping-remove -no-margin-right">
+                <a href="" ng-click="vm.deleteMapping($index)">
+                    <i class="icon-trash"></i>
+                </a>
+            </div>
+        </div>
+    </div>-->
+
+</div>
