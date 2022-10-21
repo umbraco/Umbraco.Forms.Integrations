@@ -23,7 +23,7 @@ namespace Umbraco.Forms.Integrations.Crm.ActiveCampaign
                 .AddHttpClient(Constants.HttpClient, client =>
                 {
                     client.BaseAddress = new Uri(
-                        $"{builder.Config.GetSection(Constants.SettingsPath)[nameof(ActiveCampaignSettings.BaseUrl)]}/api/3");
+                        $"{builder.Config.GetSection(Constants.SettingsPath)[nameof(ActiveCampaignSettings.BaseUrl)]}/api/3/");
                     client.DefaultRequestHeaders
                         .Add("Api-Token", builder.Config.GetSection(Constants.SettingsPath)[nameof(ActiveCampaignSettings.ApiKey)]);
                 });

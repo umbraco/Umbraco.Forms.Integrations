@@ -17,12 +17,7 @@ namespace Umbraco.Forms.Integrations.Crm.ActiveCampaign.Services
         {
             var client = _httpClientFactory.CreateClient(Constants.HttpClient);
 
-            var response = await client.SendAsync(
-                new HttpRequestMessage
-                {
-                    Method = HttpMethod.Get,
-                    RequestUri = new Uri($"{client.BaseAddress}/accounts")
-                });
+            var response = await client.GetAsync("accounts");
 
             var content = await response.Content.ReadAsStringAsync();
 
@@ -42,13 +37,7 @@ namespace Umbraco.Forms.Integrations.Crm.ActiveCampaign.Services
                 }
             };
 
-            var response = await client.SendAsync(
-                new HttpRequestMessage
-                {
-                    Method = HttpMethod.Post,
-                    RequestUri = new Uri($"{client.BaseAddress}/accountContacts"),
-                    Content = new StringContent(JsonSerializer.Serialize(accountContact))
-                });
+            var response = await client.PostAsync("accountContacts", new StringContent(JsonSerializer.Serialize(accountContact)));
 
             var content = await response.Content.ReadAsStringAsync();
 

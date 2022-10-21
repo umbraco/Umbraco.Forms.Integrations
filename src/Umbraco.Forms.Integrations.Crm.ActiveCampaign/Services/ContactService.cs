@@ -18,14 +18,11 @@ namespace Umbraco.Forms.Integrations.Crm.ActiveCampaign.Services
         {
             var client = _httpClientFactory.CreateClient(Constants.HttpClient);
 
-            var request = new HttpRequestMessage
-            {
-                Method = update ? HttpMethod.Put : HttpMethod.Post,
-                RequestUri = new Uri($"{client.BaseAddress}/{(update ? "/contacts" + contactRequestDto.Contact.Id : "/contacts")}"),
-                Content = new StringContent(JsonSerializer.Serialize(contactRequestDto))
-            };
+            var requestContent = new StringContent(JsonSerializer.Serialize(contactRequestDto));
 
-            var response = await client.SendAsync(request);
+            var response = update
+               ? await client.PutAsync($"contacts/{contactRequestDto.Contact.Id}", requestContent)
+               : await client.PostAsync("contacts", requestContent);
 
             if(response.IsSuccessStatusCode)
             {
@@ -41,12 +38,7 @@ namespace Umbraco.Forms.Integrations.Crm.ActiveCampaign.Services
         {
             var client = _httpClientFactory.CreateClient(Constants.HttpClient);
 
-            var response = await client.SendAsync(
-                new HttpRequestMessage
-                {
-                    Method = HttpMethod.Get,
-                    RequestUri = new Uri($"{client.BaseAddress}/contacts?email={email}")
-                });
+            var response = await client.GetAsync($"contacts?email={email}");
 
             var content = await response.Content.ReadAsStringAsync();
 
@@ -57,12 +49,7 @@ namespace Umbraco.Forms.Integrations.Crm.ActiveCampaign.Services
         {
             var client = _httpClientFactory.CreateClient(Constants.HttpClient);
 
-            var response = await client.SendAsync(
-                new HttpRequestMessage
-                {
-                    Method = HttpMethod.Get,
-                    RequestUri = new Uri($"{client.BaseAddress}/fields")
-                });
+            var response = await client.GetAsync("fields");
 
             var content = await response.Content.ReadAsStringAsync();
 

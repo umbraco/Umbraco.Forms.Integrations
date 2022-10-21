@@ -1,5 +1,5 @@
 trigger:
-- v10/feature/activecampaign-integration
+- main-v10
 
 pool:
   vmImage: 'windows-latest'
