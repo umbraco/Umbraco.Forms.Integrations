@@ -67,6 +67,13 @@ namespace Umbraco.Forms.Integrations.Crm.ActiveCampaign
                 // Check if contact exists.
                 var contacts = _contactService.Get(email).ConfigureAwait(false).GetAwaiter().GetResult();
 
+                if(contacts.Contacts.Count > 0 && !_settings.AllowContactUpdate)
+                {
+                    _logger.LogError("ActiveCampaign contact update is not allowed.");
+
+                    return WorkflowExecutionStatus.Cancelled;
+                }
+
                 var requestDto = new ContactDetailDto { Contact = Build(context.Record) };
 
                 if (contacts.Contacts.Count > 0) requestDto.Contact.Id = contacts.Contacts.First().Id;

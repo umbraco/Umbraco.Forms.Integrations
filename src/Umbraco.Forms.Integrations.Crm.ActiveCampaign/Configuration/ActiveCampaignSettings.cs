@@ -12,6 +12,8 @@ namespace Umbraco.Forms.Integrations.Crm.ActiveCampaign.Configuration
 
         public string ApiKey { get; set; }
 
+        public bool AllowContactUpdate { get; set; }
+
         public List<ContactFieldSettings> ContactFields { get; set; }
     }
 }
