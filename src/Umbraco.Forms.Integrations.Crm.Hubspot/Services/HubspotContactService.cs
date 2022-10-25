@@ -203,10 +203,10 @@ namespace Umbraco.Forms.Integrations.Crm.Hubspot.Services
                 if (response.StatusCode == HttpStatusCode.Conflict)
                 {
                     if (!_settings.AllowContactUpdate)
-                        _logger.LogError("Hubspot contact update is not allowed.");
+                        _logger.LogInformation("Contact already exists in HubSpot CRM and workflow is configured to not apply updates, so update of information was skipped.");
                     return _settings.AllowContactUpdate
                         ? await UpdateContactAsync(record, authenticationDetails, propertiesRequestV1, emailValue)
-                        : CommandResult.Failed;
+                        : CommandResult.Success;
                 }
                 else
                 {

@@ -69,9 +69,9 @@ namespace Umbraco.Forms.Integrations.Crm.ActiveCampaign
 
                 if(contacts.Contacts.Count > 0 && !_settings.AllowContactUpdate)
                 {
-                    _logger.LogError("ActiveCampaign contact update is not allowed.");
+                    _logger.LogInformation("Contact already exists in ActiveCampaign and workflow is configured to not apply updates, so update of information was skipped.");
 
-                    return WorkflowExecutionStatus.Cancelled;
+                    return WorkflowExecutionStatus.Completed;
                 }
 
                 var requestDto = new ContactDetailDto { Contact = Build(context.Record) };

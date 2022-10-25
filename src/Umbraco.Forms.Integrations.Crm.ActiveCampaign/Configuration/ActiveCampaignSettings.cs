@@ -8,11 +8,11 @@ namespace Umbraco.Forms.Integrations.Crm.ActiveCampaign.Configuration
             ContactFields = new List<ContactFieldSettings>();
         }
 
-        public string BaseUrl { get; set; }
+        public string BaseUrl { get; }
 
-        public string ApiKey { get; set; }
+        public string ApiKey { get; }
 
-        public bool AllowContactUpdate { get; set; }
+        public bool AllowContactUpdate { get; }
 
         public List<ContactFieldSettings> ContactFields { get; set; }
     }
