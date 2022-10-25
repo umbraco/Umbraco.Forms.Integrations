@@ -202,7 +202,11 @@ namespace Umbraco.Forms.Integrations.Crm.Hubspot.Services
                 // A 409 - Conflict response indicates that the contact (by email address) already exists.
                 if (response.StatusCode == HttpStatusCode.Conflict)
                 {
-                    return await UpdateContactAsync(record, authenticationDetails, propertiesRequestV1, emailValue);
+                    if (!_settings.AllowContactUpdate)
+                        _logger.LogInformation("Contact already exists in HubSpot CRM and workflow is configured to not apply updates, so update of information was skipped.");
+                    return _settings.AllowContactUpdate
+                        ? await UpdateContactAsync(record, authenticationDetails, propertiesRequestV1, emailValue)
+                        : CommandResult.Success;
                 }
                 else
                 {
