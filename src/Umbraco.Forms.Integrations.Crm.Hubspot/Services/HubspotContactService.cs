@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
@@ -12,6 +13,7 @@ using Umbraco.Core.Logging;
 using Umbraco.Core.Services;
 using Umbraco.Forms.Core;
 using Umbraco.Forms.Core.Persistence.Dtos;
+using Umbraco.Forms.Integrations.Crm.Hubspot.Configuration;
 using Umbraco.Forms.Integrations.Crm.Hubspot.Extensions;
 using Umbraco.Forms.Integrations.Crm.Hubspot.Models;
 using Umbraco.Forms.Integrations.Crm.Hubspot.Models.Dtos;
@@ -31,6 +33,7 @@ namespace Umbraco.Forms.Integrations.Crm.Hubspot.Services
         private readonly ILogger _logger;
         private readonly AppCaches _appCaches;
         private readonly IKeyValueService _keyValueService;
+        private readonly HubspotSettings _settings;
 
         private const string CrmApiHost = "https://api.hubapi.com";
         private static readonly string CrmV3ApiBaseUrl = $"{CrmApiHost}/crm/v3/";
@@ -53,6 +56,8 @@ namespace Umbraco.Forms.Integrations.Crm.Hubspot.Services
             _logger = logger;
             _appCaches = appCaches;
             _keyValueService = keyValueService;
+
+            _settings = new HubspotSettings(ConfigurationManager.AppSettings);
         }
 
         public AuthenticationMode IsAuthorizationConfigured() => GetConfiguredAuthenticationDetails().Mode;
@@ -194,7 +199,12 @@ namespace Umbraco.Forms.Integrations.Crm.Hubspot.Services
                 // A 409 - Conflict response indicates that the contact (by email address) already exists.
                 if (response.StatusCode == HttpStatusCode.Conflict)
                 {
-                    return await UpdateContactAsync(record, authenticationDetails, propertiesRequestV1, emailValue);
+                    if (!_settings.AllowContactUpdate)
+                        _logger.Info<HubspotContactService>("Contact already exists in HubSpot CRM and workflow is configured to not apply updates, so update of information was skipped.");
+
+                    return _settings.AllowContactUpdate 
+                        ? await UpdateContactAsync(record, authenticationDetails, propertiesRequestV1, emailValue)
+                        : CommandResult.Success;
                 }
                 else
                 {
