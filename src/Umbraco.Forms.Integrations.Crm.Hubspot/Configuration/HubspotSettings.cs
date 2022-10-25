@@ -12,6 +12,6 @@ namespace Umbraco.Forms.Integrations.Crm.Hubspot.Configuration
                 ? result : false;
         }
 
-        public bool AllowContactUpdate { get; set; }
+        public bool AllowContactUpdate { get; }
     }
 }
