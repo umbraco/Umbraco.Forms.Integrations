@@ -5,6 +5,6 @@ namespace Umbraco.Forms.Integrations.Crm.Hubspot.Configuration
     {
         public string ApiKey { get; set; }
 
-        public bool AllowContactUpdate { get; }
+        public bool AllowContactUpdate { get; set; }
     }
 }
