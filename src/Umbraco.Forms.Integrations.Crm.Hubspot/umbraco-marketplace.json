@@ -1,0 +1,31 @@
+{
+  "AuthorDetails": {
+    "Description": "Umbraco HQ",
+    "Url": "https://umbraco.com/",
+    "ImageUrl": "https://avatars.githubusercontent.com/u/1419552?s=200&v=4"
+  },
+  "Category": "Forms Extensions",
+  "LicenseType": "Free",
+  "PackageType": "Package",
+  "PackagesByAuthor": [ "UmbracoFormsIntegrationsAutomationZapier", "UmbracoFormsIntegrationsCommerceemerchantpay", "UmbracoFormsIntegrationsCrmActiveCampaign" ],
+  "RelatedPackages": [
+    {
+      "PackageId": "UmbracoFormsIntegrationsAutomationZapier",
+      "Description": "A dashboard interface that allows users to vizualize registered subscription hooks for their Umbraco Forms and to call Zapier triggers when a specific forms gets submitted."
+    },
+    {
+      "PackageId": "UmbracoFormsIntegrationsCommerceemerchantpay",
+      "Description": "An extension for Umbraco Forms containing a custom workflow for handling online payments using a hosted payment page provided by emerchantpay."
+    },
+    {
+      "PackageId": "UmbracoFormsIntegrationsCrmActiveCampaign",
+      "Description": "A custom workflow, allowing form entries to be mapped to an ActiveCampaign contact record, a contact's custom fields or to associate a contact with an existing CRM account."
+    }
+  ],
+  "Tags": [
+    "CRM",
+    "Contacts",
+    "Umbraco 10"
+  ],
+  "Umbraco8PackageId": "Umbraco.Forms.Integrations.Crm.Hubspot"
+}
