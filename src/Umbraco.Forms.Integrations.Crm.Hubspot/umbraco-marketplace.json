@@ -7,7 +7,7 @@
   "Category": "Forms Extensions",
   "LicenseType": "Free",
   "PackageType": "Package",
-  "PackagesByAuthor": [ "UmbracoFormsIntegrationsAutomationZapier, UmbracoFormsIntegrationsCommerceemerchantpay" ],
+  "PackagesByAuthor": [ "UmbracoFormsIntegrationsAutomationZapier", "UmbracoFormsIntegrationsCommerceemerchantpay" ],
   "RelatedPackages": [
     {
       "PackageId": "UmbracoFormsIntegrationsAutomationZapier",
