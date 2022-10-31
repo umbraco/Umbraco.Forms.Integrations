@@ -3,7 +3,7 @@
   <info>
     <package>
       <name>Umbraco.Forms.Integrations.Crm.Hubspot</name>
-      <version>2.0.1</version>
+      <version>2.0.2</version>
       <iconUrl></iconUrl>
       <licence url="https://opensource.org/licenses/MIT">MIT</licence>
       <url>https://github.com/umbraco/Umbraco.Forms.Integrations</url>
