@@ -1,29 +1,29 @@
 ﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 	<PropertyGroup>
-		<ActiveCampaignPropertyEditorFilesPath>
+		<ActiveCampaignWorkflowFilesPath>
 			$(MSBuildThisFileDirectory)..\App_Plugins\UmbracoForms.Integrations\Crm\ActiveCampaign\**\*.*
-		</ActiveCampaignPropertyEditorFilesPath>
+		</ActiveCampaignWorkflowFilesPath>
 	</PropertyGroup>
-	<Target Name="CopyActiveCampaignPropertyEditorAssets" BeforeTargets="Build">
+	<Target Name="CopyActiveCampaignWorkflowAssets" BeforeTargets="Build">
 		<ItemGroup>
-			<ActiveCampaignPropertyEditorFiles Include="$(ActiveCampaignPropertyEditorFilesPath)" />
+			<ActiveCampaignWorkflowFiles Include="$(ActiveCampaignWorkflowFilesPath)" />
 		</ItemGroup>
 		<Message
-			Text="Copying ActiveCampaign Property Editor files: $(ActiveCampaignPropertyEditorFilesPath) - #@(ActiveCampaignPropertyEditorFiles->Count()) files"
+			Text="Copying ActiveCampaign Property Editor files: $(ActiveCampaignWorkflowFilesPath) - #@(ActiveCampaignWorkflowFiles->Count()) files"
 			Importance="high" />
-		<Copy SourceFiles="@(ActiveCampaignPropertyEditorFiles)"
-		      DestinationFiles="@(ActiveCampaignPropertyEditorFiles->'$(MSBuildProjectDirectory)\App_Plugins\UmbracoForms.Integrations\Crm\ActiveCampaign\%(RecursiveDir)%(Filename)%(Extension)')"
+		<Copy SourceFiles="@(ActiveCampaignWorkflowFiles)"
+		      DestinationFiles="@(ActiveCampaignWorkflowFiles->'$(MSBuildProjectDirectory)\App_Plugins\UmbracoForms.Integrations\Crm\ActiveCampaign\%(RecursiveDir)%(Filename)%(Extension)')"
 		      SkipUnchangedFiles="true" />
 
 	</Target>
 
-	<Target Name="ClearActiveCampaignPropertyEditorAssets" BeforeTargets="Clean">
+	<Target Name="ClearActiveCampaignWorkflowAssets" BeforeTargets="Clean">
 		<ItemGroup>
-			<ActiveCampaignPropertyEditorDir
+			<ActiveCampaignWorkflowDir
 				Include="$(MSBuildProjectDirectory)\App_Plugins\UmbracoForms\Crm\ActiveCampaign\" />
 		</ItemGroup>
 		<Message Text="Clear old ActiveCampaign Property Editor data"  Importance="high" />
-		<RemoveDir Directories="@(ActiveCampaignPropertyEditorDir)"  />
+		<RemoveDir Directories="@(ActiveCampaignWorkflowDir)"  />
 	</Target>
 
 </Project>
