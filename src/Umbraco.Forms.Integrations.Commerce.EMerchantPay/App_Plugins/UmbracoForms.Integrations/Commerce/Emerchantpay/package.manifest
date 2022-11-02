@@ -1,4 +1,7 @@
 ﻿{
+  "name": "Umbraco.Forms.Integrations.Commerce.emerchantpay",
+  "version": "2.0.0",
+  "allowPackageTelemetry": true,
   "javascript": [
     "~/App_Plugins/UmbracoForms.Integrations/Commerce/Emerchantpay/customer-details-mapper.controller.js",
     "~/App_Plugins/UmbracoForms.Integrations/Commerce/Emerchantpay/currency.controller.js",
@@ -6,5 +9,5 @@
     "~/App_Plugins/UmbracoForms.Integrations/Commerce/Emerchantpay/emerchantpay.service.js",
     "~/App_Plugins/UmbracoForms.Integrations/Commerce/Emerchantpay/field-picker.controller.js"
   ],
-	"css": [ "" ]
+  "css": [ "" ]
 }

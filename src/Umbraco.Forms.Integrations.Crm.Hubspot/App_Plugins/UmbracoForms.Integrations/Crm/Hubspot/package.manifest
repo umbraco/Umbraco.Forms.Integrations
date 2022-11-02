@@ -1,4 +1,7 @@
 {
+  "name": "Umbraco.Forms.Integrations.Crm.Hubspot",
+  "version": "3.0.2",
+  "allowPackageTelemetry": true,
   "css": [ "" ],
   "javascript": [
     "~/App_Plugins/UmbracoForms.Integrations/Crm/Hubspot/hubspotfields.component.js",
