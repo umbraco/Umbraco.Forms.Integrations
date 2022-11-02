@@ -18,9 +18,5 @@
       "Description": "A custom workflow, allowing form entries to be mapped to an ActiveCampaign contact record, a contact's custom fields or to associate a contact with an existing CRM account."
     }
   ],
-  "Tags": [
-    "CRM",
-    "Contacts",
-    "Umbraco 10"
-  ]
+  "Tags": []
 }
