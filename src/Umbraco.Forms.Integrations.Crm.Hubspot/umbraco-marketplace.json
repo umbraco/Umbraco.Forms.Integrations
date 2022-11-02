@@ -7,20 +7,15 @@
   "Category": "Forms Extensions",
   "LicenseType": "Free",
   "PackageType": "Package",
-  "PackagesByAuthor": [ "UmbracoFormsIntegrationsAutomationZapier", "UmbracoFormsIntegrationsCommerceemerchantpay" ],
+  "PackagesByAuthor": [ "Umbraco.Forms.Integrations.Automation.Zapier" ],
   "RelatedPackages": [
     {
-      "PackageId": "UmbracoFormsIntegrationsAutomationZapier",
+      "PackageId": "Umbraco.Forms.Integrations.Automation.Zapier",
       "Description": "A dashboard interface that allows users to vizualize registered subscription hooks for their Umbraco Forms and to call Zapier triggers when a specific forms gets submitted."
-    },
-    {
-      "PackageId": "UmbracoFormsIntegrationsCommerceemerchantpay",
-      "Description": "An extension for Umbraco Forms containing a custom workflow for handling online payments using a hosted payment page provided by emerchantpay."
     }
   ],
   "Tags": [
     "CRM",
     "Contacts"
-  ],
-  "Umbraco8PackageId": "Umbraco.Forms.Integrations.Crm.Hubspot"
+  ]
 }
