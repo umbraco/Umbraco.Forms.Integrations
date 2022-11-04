@@ -9,11 +9,12 @@
 		<Title>Umbraco Forms Integrations: Automation - Zapier</Title>
 		<Description>An extension for Umbraco Forms to add support for triggering zaps.</Description>
 		<PackageIconUrl></PackageIconUrl>
-		<PackageProjectUrl>https://github.com/umbraco/Umbraco.Forms.Integrations</PackageProjectUrl>
+		<PackageProjectUrl>https://github.com/umbraco/Umbraco.Forms.Integrations/tree/main/src/Umbraco.Forms.Integrations.Automation.Zapier</PackageProjectUrl>
 		<RepositoryUrl>https://github.com/umbraco/Umbraco.Forms.Integrations</RepositoryUrl>
-		<Version>1.0.3</Version>
+		<Version>1.0.4</Version>
 		<Authors>Umbraco HQ</Authors>
 		<Company>Umbraco</Company>
+		<PackageTags>Umbraco;Umbraco-Marketplace</PackageTags>
 	</PropertyGroup>
 
 	<ItemGroup Condition="'$(TargetFramework)' == 'net472'">
