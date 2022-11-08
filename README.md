@@ -11,3 +11,6 @@ This repository houses open-source extensions, created for Umbraco Forms, that i
 ### Automation
 
 [Zapier](./src/Umbraco.Forms.Integrations.Automation.Zapier) - a dashboard interface that allows users to vizualize registered subscription hooks for their Umbraco Forms and to call Zapier triggers when a specific forms gets submitted.
+
+### Commerce
+[emerchantpay](./src/Umbraco.Forms.Integrations.Commerce.emerchantpay) -  a custom workflow for handling online payments using a hosted payment page provided by emerchantpay.
