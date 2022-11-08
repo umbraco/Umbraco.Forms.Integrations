@@ -23,12 +23,24 @@
 		<PackageReference Include="Umbraco.Forms" version="10.1.0" />
 		<PackageReference Include="Umbraco.Forms.Core" version="10.1.0" />
 	</ItemGroup>
-
+	
 	<ItemGroup>
 		<Content Include="App_Plugins\UmbracoForms.Integrations\Commerce\Emerchantpay\**\*.*">
 			<Pack>true</Pack>
-			<PackagePath>content\App_Plugins\UmbracoForms.Integrations\Commerce\Emerchantpay\</PackagePath>
+			<PackagePath>App_Plugins\UmbracoForms.Integrations\Commerce\Emerchantpay\</PackagePath>
+		</Content>
+		<None Include="build\**\*.*">
+			<Pack>True</Pack>
+			<PackagePath>buildTransitive</PackagePath>
+		</None>
+	</ItemGroup>
+
+	<ItemGroup>
+		<Content Include="App_Plugins\**\*.*">
+			<ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+			<CopyToPublishDirectory>Always</CopyToPublishDirectory>
 		</Content>
 	</ItemGroup>
-	
+
+
 </Project>
