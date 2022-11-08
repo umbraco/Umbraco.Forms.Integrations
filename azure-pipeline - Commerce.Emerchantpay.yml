@@ -8,7 +8,6 @@ variables:
   projectName: 'Umbraco.Forms.Integrations.Commerce.EMerchantPay'
   solution: '**/*.sln'
   project: 'src/$(projectName)/$(projectName).csproj'
-  testPoject: 'src/$(projectName).Tests/$(projectName).Tests.csproj'
   buildPlatform: 'Any CPU'
   buildConfiguration: 'Release'
 
@@ -37,14 +36,6 @@ steps:
     packagesToPack: '$(project)'
     versioningScheme: 'off'
 
-- task: CmdLine@2
-  displayName: 'Create Umbraco Package'
-  inputs:
-    script: |
-      dotnet tool install --global Umbraco.Tools.Packages
-      cd src/$(projectName)/
-      umbpack pack .\package.xml -o $(Build.ArtifactStagingDirectory)
-      cd ../../
 - task: PublishBuildArtifacts@1
   displayName: 'Publish Build Artifacts'
   inputs:
