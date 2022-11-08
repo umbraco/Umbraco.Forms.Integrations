@@ -30,6 +30,13 @@
 		<PackageReference Include="Umbraco.Forms.Core.Providers" version="9.5.0" />
 	</ItemGroup>
 
+	<ItemGroup>
+		<Content Include="App_Plugins\UmbracoForms.Integrations\Commerce\Emerchantpay\**\*.*">
+			<Pack>true</Pack>
+			<PackagePath>content\App_Plugins\UmbracoForms.Integrations\Commerce\Emerchantpay\</PackagePath>
+		</Content>
+	</ItemGroup>
+
 	<Target Name="RemoveLuceneAnalyzer" BeforeTargets="CoreCompile">
 		<ItemGroup>
 			<Analyzer Remove="@(Analyzer)" Condition="%(FileName) == 'Lucene.Net.CodeAnalysis.CSharp'" />
