@@ -1,5 +1,5 @@
 trigger:
-- main
+- main-v10
 
 pool:
   vmImage: 'windows-latest'
