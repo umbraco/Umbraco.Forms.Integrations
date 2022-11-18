@@ -6,7 +6,7 @@
   },
   "Category": "Forms Extensions",
   "LicenseType": "Free",
-  "PackageType": "Package",
+  "PackageType": "Integration",
   "PackagesByAuthor": [ "Umbraco.Forms.Integrations.Automation.Zapier", "Umbraco.Forms.Integrations.Crm.ActiveCampaign" ],
   "RelatedPackages": [
     {
