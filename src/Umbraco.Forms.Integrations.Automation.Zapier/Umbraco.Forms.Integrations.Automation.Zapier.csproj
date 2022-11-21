@@ -11,16 +11,24 @@
 		<PackageIconUrl></PackageIconUrl>
 		<PackageProjectUrl>https://github.com/umbraco/Umbraco.Forms.Integrations/tree/main-v10/src/Umbraco.Forms.Integrations.Automation.Zapier</PackageProjectUrl>
 		<RepositoryUrl>https://github.com/umbraco/Umbraco.Forms.Integrations</RepositoryUrl>
-		<Version>2.0.2</Version>
+		<Version>2.0.3</Version>
 		<Authors>Umbraco HQ</Authors>
 		<Company>Umbraco</Company>
 		<PackageTags>Umbraco;Umbraco-Marketplace</PackageTags>
+		<PackageIcon>zapier.png</PackageIcon>
 	</PropertyGroup>
 
 	<ItemGroup>
 		<PackageReference Include="Umbraco.Cms.Web.Website" version="10.1.0" />
 		<PackageReference Include="Umbraco.Cms.Core" version="10.1.0" />
 		<PackageReference Include="Umbraco.Forms.Core" version="10.1.0" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<Content Include="zapier.png">
+			<Pack>true</Pack>
+			<PackagePath>\</PackagePath>
+		</Content>
 	</ItemGroup>
 
 	<Target Name="RemoveLuceneAnalyzer" BeforeTargets="CoreCompile">
