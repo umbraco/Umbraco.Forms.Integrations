@@ -11,10 +11,11 @@
 		<PackageIconUrl></PackageIconUrl>
 		<PackageProjectUrl>https://github.com/umbraco/Umbraco.Forms.Integrations/tree/main/src/Umbraco.Forms.Integrations.Crm.Hubspot</PackageProjectUrl>
 		<RepositoryUrl>https://github.com/umbraco/Umbraco.Forms.Integrations</RepositoryUrl>
-		<Version>2.0.2</Version>
+		<Version>2.0.3</Version>
 		<Authors>Umbraco HQ</Authors>
 		<Company>Umbraco</Company>
 		<PackageTags>Umbraco;Umbraco-Marketplace</PackageTags>
+		<PackageIcon>hubspot.png</PackageIcon>
 	</PropertyGroup>
 
   <ItemGroup>
@@ -28,6 +29,13 @@
       <PackagePath>content\App_Plugins\UmbracoForms.Integrations\Crm\Hubspot\</PackagePath>
     </Content>
   </ItemGroup>
+
+	<ItemGroup>
+		<Content Include="hubspot.png">
+			<Pack>true</Pack>
+			<PackagePath>\</PackagePath>
+		</Content>
+	</ItemGroup>
 
   <ItemGroup>
     <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleToAttribute">
