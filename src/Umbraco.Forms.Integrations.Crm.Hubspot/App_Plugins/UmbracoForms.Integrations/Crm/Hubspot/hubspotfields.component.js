@@ -80,7 +80,7 @@ function HubSpotFieldsController($scope, $routeParams, umbracoFormsIntegrationsC
 
     // Setup the post message handler for automatic authentication without having to copy and paste the code from the proxy site.
     const receiveMessage = (event) => {
-        $scope.oauthCountWatcher = $scope.oauthCountWatcher + 1;
+        $scope.oauthCountWatcher += 1;
         if (event.data.type === "hubspot:oauth:success") {
             vm.oauthCode = event.data.code;
             $scope.$apply();
