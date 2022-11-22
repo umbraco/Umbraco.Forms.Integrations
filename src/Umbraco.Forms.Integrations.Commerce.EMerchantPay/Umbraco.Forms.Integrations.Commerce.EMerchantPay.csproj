@@ -11,10 +11,11 @@
 		<PackageIconUrl></PackageIconUrl>
 		<PackageProjectUrl>https://github.com/umbraco/Umbraco.Forms.Integrations/tree/main/src/Umbraco.Forms.Integrations.Commerce.EMerchantPay</PackageProjectUrl>
 		<RepositoryUrl>https://github.com/umbraco/Umbraco.Forms.Integrations</RepositoryUrl>
-		<Version>1.0.0</Version>
+		<Version>1.0.1</Version>
 		<Authors>Umbraco HQ</Authors>
 		<Company>Umbraco</Company>
 		<PackageTags>Umbraco;Umbraco-Marketplace</PackageTags>
+		<PackageIcon>emerchantpay.png</PackageIcon>
 	</PropertyGroup>
 
 	<ItemGroup Condition="'$(TargetFramework)' == 'net472'">
@@ -34,6 +35,13 @@
 		<Content Include="App_Plugins\UmbracoForms.Integrations\Commerce\Emerchantpay\**\*.*">
 			<Pack>true</Pack>
 			<PackagePath>content\App_Plugins\UmbracoForms.Integrations\Commerce\Emerchantpay\</PackagePath>
+		</Content>
+	</ItemGroup>
+
+	<ItemGroup>
+		<Content Include="emerchantpay.png">
+			<Pack>true</Pack>
+			<PackagePath>\</PackagePath>
 		</Content>
 	</ItemGroup>
 

@@ -14,5 +14,6 @@
       "Description": "A dashboard interface that allows users to vizualize registered subscription hooks for their Umbraco Forms and to call Zapier triggers when a specific forms gets submitted."
     }
   ],
-  "Tags": []
+  "Tags": [],
+  "Title": "HubSpot with Umbraco Forms"
 }
