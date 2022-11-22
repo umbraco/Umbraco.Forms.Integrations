@@ -10,13 +10,23 @@ angular
     }
     );
 
-function HubSpotFieldsController($routeParams, umbracoFormsIntegrationsCrmHubspotResource, pickerResource, overlayService, notificationsService) {
+function HubSpotFieldsController($scope, $routeParams, umbracoFormsIntegrationsCrmHubspotResource, pickerResource, overlayService, notificationsService) {
     var vm = this;
 
     vm.authorizationCode = "";
     vm.authenticationUrl = "";
     vm.loading = true;
     vm.authorizationStatus = "Unauthenticated";
+
+    vm.oauthCode = "";
+    $scope.oauthCountWatcher = 0;
+    $scope.$watch('oauthCountWatcher', function () {
+        if ($scope.oauthCountWatcher === 1) {
+            umbracoFormsIntegrationsCrmHubspotResource.authorize(vm.oauthCode).then(function (response) {
+                handleAuthorizationCallback(response);
+            });
+        }
+    });
 
     function getFieldsForMapping() {
 
@@ -69,12 +79,16 @@ function HubSpotFieldsController($routeParams, umbracoFormsIntegrationsCrmHubspo
     };
 
     // Setup the post message handler for automatic authentication without having to copy and paste the code from the proxy site.
-    window.addEventListener("message", function (event) {
+    const receiveMessage = (event) => {
+        $scope.oauthCountWatcher += 1;
         if (event.data.type === "hubspot:oauth:success") {
-            umbracoFormsIntegrationsCrmHubspotResource.authorize(event.data.code).then(function (response) {
-                handleAuthorizationCallback(response);
-            });
+            vm.oauthCode = event.data.code;
+            $scope.$apply();
         }
+    };
+
+    window.addEventListener("message", (event) => {
+        receiveMessage(event);
     }, false);
 
     function handleAuthorizationCallback(response) {
@@ -118,12 +132,18 @@ function HubSpotFieldsController($routeParams, umbracoFormsIntegrationsCrmHubspo
                 umbracoFormsIntegrationsCrmHubspotResource.deauthorize().then(function (response) {
                     if (response.success) {
                         vm.authorizationStatus = "Unauthenticated";
+                        umbracoFormsIntegrationsCrmHubspotResource.getAuthenticationUrl().then(function (response) {
+                            vm.authenticationUrl = response;
+                            vm.loading = false;
+                        });
                         notificationsService.showNotification({
                             type: 0,
                             header: "De-authorization succeeded",
                             message: "Your Umbraco Forms installation is no longer connected to your HubSpot account",
                         });
                         getFieldsForMapping();
+                        $scope.oauthCountWatcher = 0;
+                        vm.oauthCode = "";
                     } else {
                         notificationsService.showNotification({
                             type: 2,
