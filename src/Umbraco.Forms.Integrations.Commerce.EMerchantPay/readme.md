@@ -10,6 +10,19 @@ Required minimum versions of Umbraco CMS:
 
 ## How To Use
 
+To get started with _emerchantpay_ a merchant would need to be onboarded in order to get a merchant ID and obtain the keys 
+required by the integration.
+
+To begin the onboarding process an obtain the merchant account, you would need to fill out [this](https://www.emerchantpay.com/contact-us?utm_source__c=umbraco_referral&utm_medium__c=technical_blog&utm_campaign__c=Umbraco) form.
+Afterwards, a member of the _emerchantpay_ team will reach out to you.
+
+### Customer journey map
+A merchant getting started with emerchantpay and Umbraco will need to make sure that they have an emerchantpay merchant account enabled and then cover these steps:
+
+* Package Installation
+* Site Settings
+* Workflow Setup
+
 ### Authentication
 
 All requests to emerchantpay API are authenticated by providing the merchant's username and password.

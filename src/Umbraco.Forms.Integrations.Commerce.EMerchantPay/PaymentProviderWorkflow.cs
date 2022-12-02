@@ -156,7 +156,7 @@ namespace Umbraco.Forms.Integrations.Commerce.Emerchantpay
                 TransactionId = transactionId.ToString(),
                 Usage = _paymentProviderSettings.Usage,
                 NotificationUrl = $"{_paymentProviderSettings.UmbracoBaseUrl}umbraco/api/paymentprovider/notifypayment" +
-                    $"?formId={formId}&recordUniqueId={recordUniqueId}&statusFieldId={statusKey}&approve={bool.Parse(Approve)}",
+                    $"?formId={formId}&recordUniqueId={recordUniqueId}&statusFieldId={statusKey}&approve={(bool.TryParse(Approve, out bool approve) ? approve : false)}",
                 ReturnSuccessUrl = _urlHelper.GetPageUrl(int.Parse(SuccessUrl)),
                 ReturnFailureUrl = _urlHelper.GetPageUrl(int.Parse(FailureUrl)),
                 ReturnCancelUrl = _urlHelper.GetPageUrl(int.Parse(CancelUrl)),
