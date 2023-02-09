@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-
+using System.Linq;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Umbraco.Cms.Integrations.OAuthProxy.Configuration
@@ -17,11 +18,18 @@ namespace Umbraco.Cms.Integrations.OAuthProxy.Configuration
             { "Semrush", "oauth2/access_token" }, 
             { "Shopify", "oauth/access_token" },
             { "Google", "token"},
-            { "Dynamics", "oauth2/v2.0/token" }
+            { "Dynamics", "oauth2/v2.0/token" },
+            { "Aprimo", "login/connect/token" }
         };
 
         public static void AddServiceClients(this IServiceCollection services)
         {
+            services.AddHttpContextAccessor();
+
+            var serviceProvider = services.BuildServiceProvider();
+
+            var httpContextAccessor = serviceProvider.GetService<IHttpContextAccessor>();
+
             services.AddHttpClient("HubspotToken", c =>
             {
                 c.BaseAddress = new Uri("https://api.hubapi.com/");
@@ -36,7 +44,12 @@ namespace Umbraco.Cms.Integrations.OAuthProxy.Configuration
             });
             services.AddHttpClient("ShopifyToken", c =>
             {
-                c.BaseAddress = new Uri("https://shop-replace.myshopify.com/admin/");
+                const string prefix = "service_address_";
+
+                var serviceAddressReplaceHeader = httpContextAccessor.HttpContext.Request.Headers
+                    .First(p => p.Key.Contains(prefix));
+
+                c.BaseAddress = new Uri($"https://{serviceAddressReplaceHeader.Value}.myshopify.com/admin/");
             });
             services.AddHttpClient("GoogleToken", c =>
             {
@@ -45,6 +58,10 @@ namespace Umbraco.Cms.Integrations.OAuthProxy.Configuration
             services.AddHttpClient("DynamicsToken", c =>
             {
                 c.BaseAddress = new Uri("https://login.microsoftonline.com/common/");
+            });
+            services.AddHttpClient("AprimoToken", c =>
+            {
+                c.BaseAddress = new Uri($"https://{httpContextAccessor.HttpContext.Request.Headers["tenant"].First()}.aprimo.com/");
             });
         }
     }

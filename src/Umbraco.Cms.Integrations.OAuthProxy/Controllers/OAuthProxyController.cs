@@ -25,6 +25,7 @@ namespace Umbraco.Cms.Integrations.OAuthProxy.Controllers
         public OAuthProxyController(IHttpClientFactory httpClientFactory, IOptions<AppSettings> appSettings)
         {
             _httpClientFactory = httpClientFactory;
+            
             _appSettings = appSettings.Value;
         }
 
@@ -43,7 +44,9 @@ namespace Umbraco.Cms.Integrations.OAuthProxy.Controllers
                     new InvalidOperationException($"Provided {ServiceNameHeaderKey} header value of {serviceName} is not supported");
             }
 
-            var httpClient = GetClient(serviceName);
+            var httpClient = _httpClientFactory.CreateClient($"{serviceName}Token");
+
+            var x = GetContent(Request.Form, serviceName);
 
             var response =
                 await httpClient.PostAsync(ServiceConfiguration.ServiceProviders[serviceName], GetContent(Request.Form, serviceName));
@@ -55,24 +58,6 @@ namespace Umbraco.Cms.Integrations.OAuthProxy.Controllers
             Response.ContentLength = response.Content.Headers.ContentLength;
 
             await Response.WriteAsync(content);
-        }
-
-        private HttpClient GetClient(string serviceName)
-        {
-            var httpClient = _httpClientFactory.CreateClient($"{serviceName}Token");
-
-            // Shopify's endpoint (and potentially others in future) for retrieving the access token is directly coupled with the shop's name.
-            // As a result the address of the client needs to be updated with the request header value for the name of the shop.
-            var serviceAddressReplaceHeader = Request.Headers.FirstOrDefault(p => p.Key.Contains(ServiceAddressReplacePrefixHeaderKey));
-            if (!serviceAddressReplaceHeader.Equals(default(KeyValuePair<string, StringValues>)) && httpClient.BaseAddress != null)
-            {
-                var replaceKey = serviceAddressReplaceHeader.Key.Replace(ServiceAddressReplacePrefixHeaderKey, string.Empty);
-
-                var baseAddress = httpClient.BaseAddress.ToString().Replace($"{replaceKey}", serviceAddressReplaceHeader.Value);
-                httpClient.BaseAddress = new Uri(baseAddress);
-            }
-
-            return httpClient;
         }
 
         private HttpContent GetContent(IFormCollection form, string serviceName)

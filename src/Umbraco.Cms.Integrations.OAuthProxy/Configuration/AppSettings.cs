@@ -14,6 +14,8 @@
 
         public string DynamicsClientSecret { get; set; }
 
+        public string AprimoClientSecret { get; set; }
+
         public string this[string propertyName] => (string)GetType().GetProperty(propertyName)?.GetValue(this, null);
     }
 }
