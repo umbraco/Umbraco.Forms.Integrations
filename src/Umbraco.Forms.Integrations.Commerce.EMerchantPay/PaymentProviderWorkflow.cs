@@ -14,6 +14,7 @@ using Umbraco.Forms.Integrations.Commerce.Emerchantpay.Services;
 
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Options;
+using Microsoft.Extensions.Logging;
 
 namespace Umbraco.Forms.Integrations.Commerce.Emerchantpay
 {
@@ -32,6 +33,8 @@ namespace Umbraco.Forms.Integrations.Commerce.Emerchantpay
         private readonly IMappingService<Mapping> _mappingService;
 
         private readonly ISettingsParser _parser;
+
+        private readonly ILogger<PaymentProviderWorkflow> _logger;
 
         #region WorkflowSettings
 
@@ -84,9 +87,13 @@ namespace Umbraco.Forms.Integrations.Commerce.Emerchantpay
 
         #endregion
 
-        public PaymentProviderWorkflow(IOptions<PaymentProviderSettings> paymentProviderSettings, IHttpContextAccessor httpContextAccessor,
+        public PaymentProviderWorkflow(
+            IOptions<PaymentProviderSettings> paymentProviderSettings, 
+            IHttpContextAccessor httpContextAccessor,
             ConsumerService consumerService, PaymentService paymentService, UrlHelper urlHelper,
-            IMappingService<Mapping> mappingService, ISettingsParser parser)
+            IMappingService<Mapping> mappingService, 
+            ISettingsParser parser,
+            ILogger<PaymentProviderWorkflow> logger)
 
         {
             Id = new Guid(Constants.WorkflowId);
@@ -107,12 +114,14 @@ namespace Umbraco.Forms.Integrations.Commerce.Emerchantpay
             _parser = parser;
 
             _paymentProviderSettings = paymentProviderSettings.Value;
+
+            _logger = logger;
         }
 
         public override WorkflowExecutionStatus Execute(WorkflowExecutionContext context)
         {
             if (!_mappingService.TryParse(CustomerDetailsMappings, out var mappings)) return WorkflowExecutionStatus.Failed;
-
+            
             var mappingBuilder = new MappingBuilder()
                 .SetValues(context.Record, mappings)
                 .Build();
@@ -124,6 +133,13 @@ namespace Umbraco.Forms.Integrations.Commerce.Emerchantpay
             var createConsumerTask = Task.Run(async () => await _consumerService.Create(consumer));
 
             var result = createConsumerTask.Result;
+            if(result.Status.Contains("error") && result.Code != Constants.ErrorCode.ConsumerExists)
+            {
+                _logger.LogError($"Failed to create consumer: {result.TechnicalMessage}.");
+
+                return WorkflowExecutionStatus.Failed;
+            }
+
             if (result.Code == Constants.ErrorCode.ConsumerExists)
             {
                 // step 1.1. Get Consumer
@@ -203,6 +219,8 @@ namespace Umbraco.Forms.Integrations.Commerce.Emerchantpay
             }
 
             formHelper.UpdateRecordFieldValue(statusKey, "error");
+
+            _logger.LogError($"Failed to create payment: {createPaymentResult.TechnicalMessage}.");
 
             return WorkflowExecutionStatus.Failed;
         }
