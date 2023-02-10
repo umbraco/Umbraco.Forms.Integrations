@@ -121,108 +121,117 @@ namespace Umbraco.Forms.Integrations.Commerce.Emerchantpay
         public override WorkflowExecutionStatus Execute(WorkflowExecutionContext context)
         {
             if (!_mappingService.TryParse(CustomerDetailsMappings, out var mappings)) return WorkflowExecutionStatus.Failed;
-            
-            var mappingBuilder = new MappingBuilder()
-                .SetValues(context.Record, mappings)
-                .Build();
 
-            // step 1. Create or Retrieve Consumer
-            var consumer = new ConsumerDto { Email = mappingBuilder.Email };
-
-            // step 1. Create Consumer
-            var createConsumerTask = Task.Run(async () => await _consumerService.Create(consumer));
-
-            var result = createConsumerTask.Result;
-            if(result.Status.Contains("error") && result.Code != Constants.ErrorCode.ConsumerExists)
+            try
             {
-                _logger.LogError($"Failed to create consumer: {result.TechnicalMessage}.");
+                var mappingBuilder = new MappingBuilder()
+                    .SetValues(context.Record, mappings)
+                    .Build();
+
+                // step 1. Create or Retrieve Consumer
+                var consumer = new ConsumerDto { Email = mappingBuilder.Email };
+
+                // step 1. Create Consumer
+                var createConsumerTask = Task.Run(async () => await _consumerService.Create(consumer));
+
+                var result = createConsumerTask.Result;
+                if (result.Status.Contains("error") && result.Code != Constants.ErrorCode.ConsumerExists)
+                {
+                    _logger.LogError($"Failed to create consumer: {result.TechnicalMessage}.");
+
+                    return WorkflowExecutionStatus.Failed;
+                }
+
+                if (result.Code == Constants.ErrorCode.ConsumerExists)
+                {
+                    // step 1.1. Get Consumer
+                    var retrieveConsumerTask = Task.Run(async () => await _consumerService.Retrieve(consumer));
+                    consumer = retrieveConsumerTask.Result;
+                }
+                else
+                {
+                    consumer.Id = result.Id;
+                }
+
+                // step 2. Create Payment
+                var random = new Random();
+                var transactionId = $"uc-{random.Next(1000000, 999999999)}";
+
+                var formHelper = new FormHelper(context.Record);
+
+                var formId = formHelper.GetFormId();
+                var recordUniqueId = formHelper.GetRecordUniqueId();
+
+                var uniqueIdKey = UniqueId;
+                var statusKey = RecordStatus;
+
+                var numberOfItems = string.IsNullOrEmpty(NumberOfItems)
+                    ? 0
+                    : int.Parse(formHelper.GetRecordFieldValue(NumberOfItems));
+
+                var payment = new PaymentDto
+                {
+                    TransactionId = transactionId.ToString(),
+                    Usage = _paymentProviderSettings.Usage,
+                    NotificationUrl = $"{_paymentProviderSettings.UmbracoBaseUrl}umbraco/api/paymentprovider/notifypayment" +
+                        $"?formId={formId}&recordUniqueId={recordUniqueId}&statusFieldId={statusKey}&approve={(bool.TryParse(Approve, out bool approve) ? approve : false)}",
+                    ReturnSuccessUrl = _urlHelper.GetPageUrl(int.Parse(SuccessUrl)),
+                    ReturnFailureUrl = _urlHelper.GetPageUrl(int.Parse(FailureUrl)),
+                    ReturnCancelUrl = _urlHelper.GetPageUrl(int.Parse(CancelUrl)),
+                    Amount = numberOfItems != 0
+                        ? numberOfItems * int.Parse(Amount)
+                        : int.Parse(Amount),
+                    Currency = Currency,
+                    ConsumerId = consumer.Id,
+                    CustomerEmail = consumer.Email,
+                    CustomerPhone = mappingBuilder.Phone,
+                    BillingAddress = new AddressDto
+                    {
+                        FirstName = mappingBuilder.FirstName,
+                        LastName = mappingBuilder.LastName,
+                        Address1 = mappingBuilder.Address,
+                        Address2 = string.Empty,
+                        ZipCode = mappingBuilder.ZipCode,
+                        City = mappingBuilder.City,
+                        State = mappingBuilder.State,
+                        Country = mappingBuilder.Country
+                    },
+                    BusinessAttribute = new BusinessAttribute { NameOfTheSupplier = _paymentProviderSettings.Supplier },
+                    TransactionTypes = new TransactionTypeDto
+                    {
+                        TransactionTypes = _parser.AsEnumerable(nameof(PaymentProviderSettings.TransactionTypes))
+                                                .Select(p => new TransactionTypeRecordDto { TransactionType = p })
+                                                .ToList()
+                    }
+                };
+
+                var createPaymentTask = Task.Run(async () => await _paymentService.Create(payment));
+
+                var createPaymentResult = createPaymentTask.Result;
+
+                if (createPaymentResult.Status != "error")
+                {
+                    // add unique ID and status to record
+                    formHelper.UpdateRecordFieldValue(uniqueIdKey, createPaymentResult.UniqueId);
+                    formHelper.UpdateRecordFieldValue(statusKey, createPaymentResult.Status);
+
+                    _httpContextAccessor.HttpContext.Items[Core.Constants.ItemKeys.RedirectAfterFormSubmitUrl] = createPaymentResult.RedirectUrl;
+
+                    return WorkflowExecutionStatus.Completed;
+                }
+
+                formHelper.UpdateRecordFieldValue(statusKey, "error");
+
+                _logger.LogError($"Failed to create payment: {createPaymentResult.TechnicalMessage}.");
 
                 return WorkflowExecutionStatus.Failed;
             }
-
-            if (result.Code == Constants.ErrorCode.ConsumerExists)
+            catch(Exception ex)
             {
-                // step 1.1. Get Consumer
-                var retrieveConsumerTask = Task.Run(async () => await _consumerService.Retrieve(consumer));
-                consumer = retrieveConsumerTask.Result;
+                _logger.LogError($"Workflow failed: {ex.Message}.");
+
+                return WorkflowExecutionStatus.Failed;
             }
-            else
-            {
-                consumer.Id = result.Id;
-            }
-
-            // step 2. Create Payment
-            var random = new Random();
-            var transactionId = $"uc-{random.Next(1000000, 999999999)}";
-
-            var formHelper = new FormHelper(context.Record);
-
-            var formId = formHelper.GetFormId();
-            var recordUniqueId = formHelper.GetRecordUniqueId();
-
-            var uniqueIdKey = UniqueId;
-            var statusKey = RecordStatus;
-
-            var numberOfItems = string.IsNullOrEmpty(NumberOfItems)
-                ? 0
-                : int.Parse(formHelper.GetRecordFieldValue(NumberOfItems));
-
-            var payment = new PaymentDto
-            {
-                TransactionId = transactionId.ToString(),
-                Usage = _paymentProviderSettings.Usage,
-                NotificationUrl = $"{_paymentProviderSettings.UmbracoBaseUrl}umbraco/api/paymentprovider/notifypayment" +
-                    $"?formId={formId}&recordUniqueId={recordUniqueId}&statusFieldId={statusKey}&approve={(bool.TryParse(Approve, out bool approve) ? approve : false)}",
-                ReturnSuccessUrl = _urlHelper.GetPageUrl(int.Parse(SuccessUrl)),
-                ReturnFailureUrl = _urlHelper.GetPageUrl(int.Parse(FailureUrl)),
-                ReturnCancelUrl = _urlHelper.GetPageUrl(int.Parse(CancelUrl)),
-                Amount = numberOfItems != 0
-                    ? numberOfItems * int.Parse(Amount)
-                    : int.Parse(Amount),
-                Currency = Currency,
-                ConsumerId = consumer.Id,
-                CustomerEmail = consumer.Email,
-                CustomerPhone = mappingBuilder.Phone,
-                BillingAddress = new AddressDto
-                {
-                    FirstName = mappingBuilder.FirstName,
-                    LastName = mappingBuilder.LastName,
-                    Address1 = mappingBuilder.Address,
-                    Address2 = string.Empty,
-                    ZipCode = mappingBuilder.ZipCode,
-                    City = mappingBuilder.City,
-                    State = mappingBuilder.State,
-                    Country = mappingBuilder.Country
-                },
-                BusinessAttribute = new BusinessAttribute { NameOfTheSupplier = _paymentProviderSettings.Supplier },
-                TransactionTypes = new TransactionTypeDto
-                {
-                    TransactionTypes = _parser.AsEnumerable(nameof(PaymentProviderSettings.TransactionTypes))
-                                            .Select(p => new TransactionTypeRecordDto { TransactionType = p })
-                                            .ToList()
-                }
-            };
-
-            var createPaymentTask = Task.Run(async () => await _paymentService.Create(payment));
-
-            var createPaymentResult = createPaymentTask.Result;
-
-            if (createPaymentResult.Status != "error")
-            {
-                // add unique ID and status to record
-                formHelper.UpdateRecordFieldValue(uniqueIdKey, createPaymentResult.UniqueId);
-                formHelper.UpdateRecordFieldValue(statusKey, createPaymentResult.Status);
-
-                _httpContextAccessor.HttpContext.Items[Core.Constants.ItemKeys.RedirectAfterFormSubmitUrl] = createPaymentResult.RedirectUrl;
-
-                return WorkflowExecutionStatus.Completed;
-            }
-
-            formHelper.UpdateRecordFieldValue(statusKey, "error");
-
-            _logger.LogError($"Failed to create payment: {createPaymentResult.TechnicalMessage}.");
-
-            return WorkflowExecutionStatus.Failed;
         }
 
         public override List<Exception> ValidateSettings()
