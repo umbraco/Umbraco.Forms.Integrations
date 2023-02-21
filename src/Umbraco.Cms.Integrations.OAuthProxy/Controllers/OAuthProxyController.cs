@@ -46,8 +46,6 @@ namespace Umbraco.Cms.Integrations.OAuthProxy.Controllers
 
             var httpClient = _httpClientFactory.CreateClient($"{serviceName}Token");
 
-            var x = GetContent(Request.Form, serviceName);
-
             var response =
                 await httpClient.PostAsync(ServiceConfiguration.ServiceProviders[serviceName], GetContent(Request.Form, serviceName));
             var content = await response.Content.ReadAsStringAsync();
