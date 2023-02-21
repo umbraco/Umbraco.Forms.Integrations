@@ -15,11 +15,13 @@ using Umbraco.Forms.Integrations.Commerce.Emerchantpay.Services;
 #if NETCOREAPP
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Options;
+using Microsoft.Extensions.Logging;
 
 using Umbraco.Cms.Core.Web;
 #else
 using System.Configuration;
 
+using Umbraco.Core.Logging;
 using Umbraco.Web;
 using Umbraco.Forms.Core.Persistence.Dtos;
 #endif
@@ -42,7 +44,13 @@ namespace Umbraco.Forms.Integrations.Commerce.Emerchantpay
 
         private readonly ISettingsParser _parser;
 
-        #region WorkflowSettings
+#if NETCOREAPP
+        private readonly ILogger<PaymentProviderWorkflow> _logger;
+#else
+        private readonly ILogger _logger;
+#endif
+
+#region WorkflowSettings
 
         [Core.Attributes.Setting("Amount",
             Description = "Payment amount (without decimals)",
@@ -91,16 +99,23 @@ namespace Umbraco.Forms.Integrations.Commerce.Emerchantpay
             View = "Checkbox")]
         public string Approve { get; set; }
 
-        #endregion
+#endregion
 
 #if NETCOREAPP
-        public PaymentProviderWorkflow(IOptions<PaymentProviderSettings> paymentProviderSettings, IHttpContextAccessor httpContextAccessor,
+        public PaymentProviderWorkflow(
+            IOptions<PaymentProviderSettings> paymentProviderSettings, 
+            IHttpContextAccessor httpContextAccessor,
             ConsumerService consumerService, PaymentService paymentService, UrlHelper urlHelper, 
-            IMappingService<Mapping> mappingService, ISettingsParser parser)
+            IMappingService<Mapping> mappingService, 
+            ISettingsParser parser,
+            ILogger<PaymentProviderWorkflow> logger)
 #else
-        public PaymentProviderWorkflow(IHttpContextAccessor httpContextAccessor,
-                ConsumerService consumerService, PaymentService paymentService, UrlHelper urlHelper, 
-                IMappingService<Mapping> mappingService, ISettingsParser parser)
+        public PaymentProviderWorkflow(
+            IHttpContextAccessor httpContextAccessor,
+            ConsumerService consumerService, PaymentService paymentService, UrlHelper urlHelper, 
+            IMappingService<Mapping> mappingService, 
+            ISettingsParser parser,
+            ILogger logger)
 #endif
         {
             Id = new Guid(Constants.WorkflowId);
@@ -120,6 +135,7 @@ namespace Umbraco.Forms.Integrations.Commerce.Emerchantpay
 
             _parser = parser;
 
+            _logger = logger;
 
 #if NETCOREAPP
             _paymentProviderSettings = paymentProviderSettings.Value;
@@ -136,106 +152,137 @@ namespace Umbraco.Forms.Integrations.Commerce.Emerchantpay
         {
             if (!_mappingService.TryParse(CustomerDetailsMappings, out var mappings)) return WorkflowExecutionStatus.Failed;
 
-            var mappingBuilder = new MappingBuilder()
+            try
+            {
+                var mappingBuilder = new MappingBuilder()
 #if NETCOREAPP
-                .SetValues(context.Record, mappings)
+                    .SetValues(context.Record, mappings)
 #else
                 .SetValues(record, mappings)
 #endif
-                .Build();
+                    .Build();
 
-            // step 1. Create or Retrieve Consumer
-            var consumer = new ConsumerDto { Email = mappingBuilder.Email };
+                // step 1. Create or Retrieve Consumer
+                var consumer = new ConsumerDto { Email = mappingBuilder.Email };
 
-            // step 1. Create Consumer
-            var createConsumerTask = Task.Run(async () => await _consumerService.Create(consumer));
+                // step 1. Create Consumer
+                var createConsumerTask = Task.Run(async () => await _consumerService.Create(consumer));
 
-            var result = createConsumerTask.Result;
-            if (result.Code == Constants.ErrorCode.ConsumerExists)
-            {
-                // step 1.1. Get Consumer
-                var retrieveConsumerTask = Task.Run(async () => await _consumerService.Retrieve(consumer));
-                consumer = retrieveConsumerTask.Result;
-            }
-            else
-            {
-                consumer.Id = result.Id;
-            }
-
-            // step 2. Create Payment
-            var random = new Random();
-            var transactionId = $"uc-{random.Next(1000000, 999999999)}";
-
+                var result = createConsumerTask.Result;
+                if (result.Status.Contains("error") && result.Code != Constants.ErrorCode.ConsumerExists)
+                {
+                    var customerCreateFailedMessage = $"Failed to create consumer: {result.TechnicalMessage}.";
 #if NETCOREAPP
-            var formHelper = new FormHelper(context.Record);
+                    _logger.LogError(customerCreateFailedMessage);
 #else
-            var formHelper = new FormHelper(record);
+                    _logger.Error<PaymentProviderWorkflow>(customerCreateFailedMessage);
 #endif
 
-            var formId = formHelper.GetFormId();
-            var recordUniqueId = formHelper.GetRecordUniqueId();
-
-            var uniqueIdKey = UniqueId;  
-            var statusKey = RecordStatus;
-
-            var numberOfItems = string.IsNullOrEmpty(NumberOfItems)
-                ? 0
-                : int.Parse(formHelper.GetRecordFieldValue(NumberOfItems));
-
-            var payment = new PaymentDto
-            {
-                TransactionId = transactionId.ToString(),
-                Usage = _paymentProviderSettings.Usage,
-                NotificationUrl = $"{_paymentProviderSettings.UmbracoBaseUrl}umbraco/api/paymentprovider/notifypayment" +
-                    $"?formId={formId}&recordUniqueId={recordUniqueId}&statusFieldId={statusKey}&approve={(bool.TryParse(Approve, out bool approve) ? approve : false)}",
-                ReturnSuccessUrl = _urlHelper.GetPageUrl(int.Parse(SuccessUrl)),
-                ReturnFailureUrl = _urlHelper.GetPageUrl(int.Parse(FailureUrl)),
-                ReturnCancelUrl = _urlHelper.GetPageUrl(int.Parse(CancelUrl)),
-                Amount = numberOfItems != 0
-                    ? numberOfItems * int.Parse(Amount)
-                    : int.Parse(Amount),
-                Currency = Currency,
-                ConsumerId = consumer.Id,
-                CustomerEmail = consumer.Email,
-                CustomerPhone = mappingBuilder.Phone,
-                BillingAddress = new AddressDto
-                {
-                    FirstName = mappingBuilder.FirstName,
-                    LastName = mappingBuilder.LastName,
-                    Address1 = mappingBuilder.Address,
-                    Address2 = string.Empty,
-                    ZipCode = mappingBuilder.ZipCode,
-                    City = mappingBuilder.City,
-                    State = mappingBuilder.State,
-                    Country = mappingBuilder.Country
-                },
-                BusinessAttribute = new BusinessAttribute { NameOfTheSupplier = _paymentProviderSettings.Supplier },
-                TransactionTypes = new TransactionTypeDto
-                {
-                    TransactionTypes = _parser.AsEnumerable(nameof(PaymentProviderSettings.TransactionTypes))
-                                            .Select(p => new TransactionTypeRecordDto { TransactionType = p })
-                                            .ToList()
+                    return WorkflowExecutionStatus.Failed;
                 }
-            };
 
-            var createPaymentTask = Task.Run(async () => await _paymentService.Create(payment));
+                if (result.Code == Constants.ErrorCode.ConsumerExists)
+                {
+                    // step 1.1. Get Consumer
+                    var retrieveConsumerTask = Task.Run(async () => await _consumerService.Retrieve(consumer));
+                    consumer = retrieveConsumerTask.Result;
+                }
+                else
+                {
+                    consumer.Id = result.Id;
+                }
 
-            var createPaymentResult = createPaymentTask.Result;
+                // step 2. Create Payment
+                var random = new Random();
+                var transactionId = $"uc-{random.Next(1000000, 999999999)}";
 
-            if (createPaymentResult.Status != "error")
-            {
-                // add unique ID and status to record
-                formHelper.UpdateRecordFieldValue(uniqueIdKey, createPaymentResult.UniqueId);
-                formHelper.UpdateRecordFieldValue(statusKey, createPaymentResult.Status);
+#if NETCOREAPP
+                var formHelper = new FormHelper(context.Record);
+#else
+                var formHelper = new FormHelper(record);
+#endif
 
-                _httpContextAccessor.HttpContext.Items[Core.Constants.ItemKeys.RedirectAfterFormSubmitUrl] = createPaymentResult.RedirectUrl;
+                var formId = formHelper.GetFormId();
+                var recordUniqueId = formHelper.GetRecordUniqueId();
 
-                return WorkflowExecutionStatus.Completed;
+                var uniqueIdKey = UniqueId;
+                var statusKey = RecordStatus;
+
+                var numberOfItems = string.IsNullOrEmpty(NumberOfItems)
+                    ? 0
+                    : int.Parse(formHelper.GetRecordFieldValue(NumberOfItems));
+
+                var payment = new PaymentDto
+                {
+                    TransactionId = transactionId.ToString(),
+                    Usage = _paymentProviderSettings.Usage,
+                    NotificationUrl = $"{_paymentProviderSettings.UmbracoBaseUrl}umbraco/api/paymentprovider/notifypayment" +
+                        $"?formId={formId}&recordUniqueId={recordUniqueId}&statusFieldId={statusKey}&approve={(bool.TryParse(Approve, out bool approve) ? approve : false)}",
+                    ReturnSuccessUrl = _urlHelper.GetPageUrl(int.Parse(SuccessUrl)),
+                    ReturnFailureUrl = _urlHelper.GetPageUrl(int.Parse(FailureUrl)),
+                    ReturnCancelUrl = _urlHelper.GetPageUrl(int.Parse(CancelUrl)),
+                    Amount = numberOfItems != 0
+                        ? numberOfItems * int.Parse(Amount)
+                        : int.Parse(Amount),
+                    Currency = Currency,
+                    ConsumerId = consumer.Id,
+                    CustomerEmail = consumer.Email,
+                    CustomerPhone = mappingBuilder.Phone,
+                    BillingAddress = new AddressDto
+                    {
+                        FirstName = mappingBuilder.FirstName,
+                        LastName = mappingBuilder.LastName,
+                        Address1 = mappingBuilder.Address,
+                        Address2 = string.Empty,
+                        ZipCode = mappingBuilder.ZipCode,
+                        City = mappingBuilder.City,
+                        State = mappingBuilder.State,
+                        Country = mappingBuilder.Country
+                    },
+                    BusinessAttribute = new BusinessAttribute { NameOfTheSupplier = _paymentProviderSettings.Supplier },
+                    TransactionTypes = new TransactionTypeDto
+                    {
+                        TransactionTypes = _parser.AsEnumerable(nameof(PaymentProviderSettings.TransactionTypes))
+                                                .Select(p => new TransactionTypeRecordDto { TransactionType = p })
+                                                .ToList()
+                    }
+                };
+
+                var createPaymentTask = Task.Run(async () => await _paymentService.Create(payment));
+
+                var createPaymentResult = createPaymentTask.Result;
+
+                if (createPaymentResult.Status != "error")
+                {
+                    // add unique ID and status to record
+                    formHelper.UpdateRecordFieldValue(uniqueIdKey, createPaymentResult.UniqueId);
+                    formHelper.UpdateRecordFieldValue(statusKey, createPaymentResult.Status);
+
+                    _httpContextAccessor.HttpContext.Items[Core.Constants.ItemKeys.RedirectAfterFormSubmitUrl] = createPaymentResult.RedirectUrl;
+
+                    return WorkflowExecutionStatus.Completed;
+                }
+
+                formHelper.UpdateRecordFieldValue(statusKey, "error");
+
+                var paymentCreateFailedMessage = $"Failed to create payment: {createPaymentResult.TechnicalMessage}.";
+#if NETCOREAPP
+                _logger.LogError(paymentCreateFailedMessage);
+#else
+                _logger.Error<PaymentProviderWorkflow>(paymentCreateFailedMessage);
+#endif
+
+                return WorkflowExecutionStatus.Failed;
             }
-
-            formHelper.UpdateRecordFieldValue(statusKey, "error");
-
-            return WorkflowExecutionStatus.Failed;
+            catch(Exception ex)
+            {
+#if NETCOREAPP
+                _logger.LogError($"Workflow failed: {ex.Message}");
+#else
+                _logger.Error<PaymentProviderWorkflow>($"Workflow failed: {ex.Message}");
+#endif
+                return WorkflowExecutionStatus.Failed;
+            }
         }
 
         public override List<Exception> ValidateSettings()
