@@ -89,3 +89,14 @@ When a form is submitted on the website, the workflow will execute and based on 
 The response for the second request will provide the URL for the hosted payment page, and the user will the redirected there. 
 
 On completing the payment the emerchantpay API will return the user to the page provided in matching event handler of the worklow.
+
+
+### Version History
+* 2.0.3 - Add payment operations logging
+* 2.0.2 - Fix record approve bug
+* 2.0.1 - Add package icon
+* 2.0.0 - Initial release
+* 1.0.3 - Add payment operations logging
+* 1.0.2 - Fix record approve bug
+* 1.0.1 - Add package icon
+* 1.0.0 - Initial release
