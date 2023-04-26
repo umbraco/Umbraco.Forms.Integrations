@@ -6,7 +6,7 @@
 
     <div ng-show="!vm.loading && vm.authorizationStatus === 'Unauthenticated'">
         <p>Umbraco Forms is not configured with a HubSpot CRM account.</p>
-        <p>To do this you can either create and save an API key into the <i>UmbracoForms.config</i> file.</p>
+        <p>To do this you can either create and save an API key or a Private Access Token into the <i>appsettings.json</i> file.</p>
         <p>Or you can click <a ng-click="vm.openAuth()" style="text-decoration: underline">here</a> to complete an OAuth connection.</p>
         <p><em>If your browser is unable to process the automated connection, paste the provided authorization code below and click to complete the authentication.</em>
         <input type="text" placeholder="Enter authorization code" ng-model="vm.authorizationCode" />
@@ -15,7 +15,11 @@
 
     <div ng-show="!vm.loading && vm.authorizationStatus !== 'Unauthenticated'">
 
-        <div class="umb-forms-mappings" ng-show="vm.mappings.length > 0 && vm.hubspotFields.length > 0">
+        <div class="umb-forms-settings-note ng-scope">
+            Umbraco Forms is configured with a HubSpot CRM account using: <b>{{ vm.authorizationStatus }}</b></p>
+        </div>
+
+        <div class="umb-forms-mappings mt2" ng-show="vm.mappings.length > 0 && vm.hubspotFields.length > 0">
 
             <div class="umb-forms-mapping-header">
                 <div class="umb-forms-mapping-field -no-margin-left">Form Field</div>
@@ -54,10 +58,12 @@
             </div>
         </div>
 
-        <umb-button type="button" action="vm.addMapping()" label="Add mapping"></umb-button>
+        <div class="mt2">
+            <umb-button type="button" action="vm.addMapping()" label="Add mapping"></umb-button>
 
-        <div ng-show="vm.authorizationStatus === 'OAuth'" style="margin-top: 20px">
-            <umb-button type="button" action="vm.deauthorize()" label="De-authorize from Hubspot"></umb-button>
+            <div ng-show="vm.authorizationStatus === 'OAuth'" style="margin-top: 20px">
+                <umb-button type="button" action="vm.deauthorize()" label="De-authorize from Hubspot"></umb-button>
+            </div>
         </div>
 
     </div>
