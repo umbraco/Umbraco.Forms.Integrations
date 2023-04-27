@@ -271,6 +271,10 @@ namespace Umbraco.Forms.Integrations.Crm.Hubspot.Services
             {
                 authentication.ApiKey = apiKey;
             }
+            else if (TryGetPrivateAccessToken(out string privateAccessToken))
+            {
+                authentication.PrivateAccessToken = privateAccessToken;
+            }
             else if (TryGetSavedRefreshToken(out string refreshToken))
             {
                 authentication.RefreshToken = refreshToken;
@@ -283,6 +287,12 @@ namespace Umbraco.Forms.Integrations.Crm.Hubspot.Services
         {
             apiKey = _configuration.GetSetting("HubSpotApiKey");
             return !string.IsNullOrEmpty(apiKey);
+        }
+
+        private bool TryGetPrivateAccessToken(out string privateAccessToken)
+        {
+            privateAccessToken = _configuration.GetSetting("HubSpotPrivateAccessToken");
+            return !string.IsNullOrEmpty(privateAccessToken);
         }
 
         private bool TryGetSavedRefreshToken(out string refreshToken)
@@ -360,6 +370,10 @@ namespace Umbraco.Forms.Integrations.Crm.Hubspot.Services
                 {
                     case AuthenticationMode.ApiKey:
                         requestMessage.RequestUri = new Uri($"{url}?hapikey={authenticationDetails.ApiKey}");
+                        break;
+                    case AuthenticationMode.PrivateAccessToken:
+                        requestMessage.Headers.Authorization =
+                            new AuthenticationHeaderValue("Bearer", authenticationDetails.PrivateAccessToken);
                         break;
                     case AuthenticationMode.OAuth:
                         requestMessage.Headers.Authorization =
