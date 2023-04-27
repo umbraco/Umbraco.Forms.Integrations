@@ -5,6 +5,7 @@ using Umbraco.Cms.Core.DependencyInjection;
 using Umbraco.Cms.Core.Notifications;
 using Umbraco.Forms.Core.Providers;
 using Umbraco.Forms.Integrations.Crm.Hubspot.Configuration;
+using Umbraco.Forms.Integrations.Crm.Hubspot.Filters;
 using Umbraco.Forms.Integrations.Crm.Hubspot.Services;
 
 namespace Umbraco.Forms.Integrations.Crm.Hubspot
@@ -16,12 +17,17 @@ namespace Umbraco.Forms.Integrations.Crm.Hubspot
             builder.Services.AddOptions<HubspotSettings>()
                 .Bind(builder.Config.GetSection(HubspotWorkflow.HubspotSettings));
 
+            builder.Services.AddSingleton<IAuthenticationService, AuthenticationService>();
             builder.Services.AddSingleton<IContactService, HubspotContactService>();
 
             builder.AddNotificationHandler<ServerVariablesParsingNotification, HubspotServerVariablesParsingHandler>();
 
             builder.WithCollectionBuilder<WorkflowCollectionBuilder>()
                 .Add<HubspotWorkflow>();
+            
+            builder.Services.AddScoped<ConfiguredAuthenticationFilterAttribute>();
+
+
         }
     }
 }
