@@ -34,12 +34,8 @@ public class ContactsController : UmbracoApiController
     private readonly IKeyValueService _keyValueService;
     private readonly IAuthenticationService _authenticationService;
 
-    private readonly HubspotSettings _settings;
-
     private const string CrmApiHost = "https://api.hubapi.com";
     private static readonly string CrmV3ApiBaseUrl = $"{CrmApiHost}/crm/v3/";
-    private const string InstallUrlFormat = "https://app-eu1.hubspot.com/oauth/authorize?client_id={0}&redirect_uri={1}&scope={2}";
-    private const string OAuthScopes = "oauth%20forms%20crm.objects.contacts.read%20crm.objects.contacts.write";
     private const string OAuthClientId = "1a04f5bf-e99e-48e1-9d62-6c25bf2bdefe";
     private const string JsonContentType = "application/json";
 
@@ -48,14 +44,12 @@ public class ContactsController : UmbracoApiController
     private static string OAuthTokenProxyUrl = $"{OAuthBaseUrl}oauth/v1/token";
 
     public ContactsController(
-        IOptions<HubspotSettings> options,
         IHttpClientFactory httpClientFactory,
         ILogger<ContactsController> logger,
         AppCaches appCaches,
         IKeyValueService keyValueService,
         IAuthenticationService authenticationService)
     {
-        _settings = options.Value;
         _httpClientFactory = httpClientFactory;
         _logger = logger;
         _appCaches = appCaches;
@@ -80,7 +74,7 @@ public class ContactsController : UmbracoApiController
             }
             else
             {
-                _logger.LogError("Failed to fetch contact properties from HubSpot API for mapping. {StatusCode} {ReasonPhrase}", response.StatusCode, response.ReasonPhrase);
+                _logger.LogError("Failed to fetch contacts from HubSpot API. {StatusCode} {ReasonPhrase}", response.StatusCode, response.ReasonPhrase);
                 return BadRequest(response.ReasonPhrase);
             }
         }
@@ -107,7 +101,7 @@ public class ContactsController : UmbracoApiController
             }
             else
             {
-                _logger.LogError("Failed to fetch contact properties from HubSpot API for mapping. {StatusCode} {ReasonPhrase}", response.StatusCode, response.ReasonPhrase);
+                _logger.LogError("Failed to fetch contact with id: {id} from HubSpot API. {StatusCode} {ReasonPhrase}", id, response.StatusCode, response.ReasonPhrase);
                 return BadRequest(response.ReasonPhrase);
             }
         }
@@ -134,7 +128,7 @@ public class ContactsController : UmbracoApiController
             }
             else
             {
-                _logger.LogError("Failed to fetch contact properties from HubSpot API for mapping. {StatusCode} {ReasonPhrase}", response.StatusCode, response.ReasonPhrase);
+                _logger.LogError("Failed to create contact. {StatusCode} {ReasonPhrase}", response.StatusCode, response.ReasonPhrase);
                 return BadRequest(response.ReasonPhrase);
             }
         }
@@ -164,7 +158,7 @@ public class ContactsController : UmbracoApiController
             }
             else
             {
-                _logger.LogError("Failed to fetch contact properties from HubSpot API for mapping. {StatusCode} {ReasonPhrase}", response.StatusCode, response.ReasonPhrase);
+                _logger.LogError("Failed to update contact with id: {id} from HubSpot API. {StatusCode} {ReasonPhrase}", id, response.StatusCode, response.ReasonPhrase);
                 return BadRequest(response.ReasonPhrase);
             }
         }
@@ -190,7 +184,7 @@ public class ContactsController : UmbracoApiController
             }
             else
             {
-                _logger.LogError("Failed to fetch contact properties from HubSpot API for mapping. {StatusCode} {ReasonPhrase}", response.StatusCode, response.ReasonPhrase);
+                _logger.LogError("Failed to delete contact with id: {id} from HubSpot API. {StatusCode} {ReasonPhrase}", id, response.StatusCode, response.ReasonPhrase);
                 return BadRequest(response.ReasonPhrase);
             }
         }
