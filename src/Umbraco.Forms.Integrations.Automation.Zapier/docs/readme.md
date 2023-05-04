@@ -13,4 +13,4 @@ If you want to see the details on how the integration to Zapier is made for Umbr
 
 ![trigger](https://github.com/umbraco/Umbraco.Forms.Integrations/blob/docs/integrations-readmes/src/Umbraco.Forms.Integrations.Automation.Zapier/docs/images/trigger.png)
 
-![zap](https://github.com/umbraco/Umbraco.Forms.Integrations/blob/docs/integrations-readmes/src/Umbraco.Forms.Integrations.Automation.Zapier/docs/images/contentapp.png)
+![zap](https://github.com/umbraco/Umbraco.Forms.Integrations/blob/docs/integrations-readmes/src/Umbraco.Forms.Integrations.Automation.Zapier/docs/images/zap.png)
