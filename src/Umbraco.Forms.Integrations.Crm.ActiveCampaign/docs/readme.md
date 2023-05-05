@@ -13,10 +13,10 @@ When a form that has the ActiveCampaign workflow attached is submitted, the cont
 
 If you want to see the details on how the integration to ActiveCampaign Contacts is made or just follow the example of extending Umbraco with a third-party system you can take a look at the [blog post](https://umbraco.com/blog/integrating-umbraco-cms-and-forms-with-activecampaign/) supplementing this integration.
 
-![ac](https://github.com/umbraco/Umbraco.Forms.Integrations/blob/v10/docs/integrations-readmes/src/Umbraco.Forms.Integrations.Crm.ActiveCampaign/docs/images/ac.png)
+![ac](https://github.com/umbraco/Umbraco.Forms.Integrations/blob/main-v10/src/Umbraco.Forms.Integrations.Crm.ActiveCampaign/docs/images/ac.png)
 
-![fields](https://github.com/umbraco/Umbraco.Forms.Integrations/blob/v10/docs/integrations-readmes/src/Umbraco.Forms.Integrations.Crm.ActiveCampaign/docs/images/fields.png)
+![fields](https://github.com/umbraco/Umbraco.Forms.Integrations/blob/main-v10/src/Umbraco.Forms.Integrations.Crm.ActiveCampaign/docs/images/fields.png)
 
-![mappings1](https://github.com/umbraco/Umbraco.Forms.Integrations/blob/v10/docs/integrations-readmes/src/Umbraco.Forms.Integrations.Crm.ActiveCampaign/docs/images/mappings1.png)
+![mappings1](https://github.com/umbraco/Umbraco.Forms.Integrations/blob/main-v10/src/Umbraco.Forms.Integrations.Crm.ActiveCampaign/docs/images/mappings1.png)
 
-![workflow](https://github.com/umbraco/Umbraco.Forms.Integrations/blob/v10/docs/integrations-readmes/src/Umbraco.Forms.Integrations.Crm.ActiveCampaign/docs/images/workflow.png)
+![workflow](https://github.com/umbraco/Umbraco.Forms.Integrations/blob/main-v10/src/Umbraco.Forms.Integrations.Crm.ActiveCampaign/docs/images/workflow.png)

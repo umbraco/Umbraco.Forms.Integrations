@@ -13,8 +13,8 @@ Workflows within Umbraco Forms are processes that run after a form is submitted 
 
 If you want to see the details on how the integration to HubSpot CRM is made or just follow the example of extending Umbraco Forms with a third-party system you can take a look at the [blog post](https://umbraco.com/blog/integrating-umbraco-forms-with-hubspot-crm/) supplementing this integration. 
 
-![workflow](https://github.com/umbraco/Umbraco.Forms.Integrations/blob/v10/docs/integrations-readmes/src/Umbraco.Forms.Integrations.Crm.Hubspot/docs/images/workflow.png)
+![workflow](https://github.com/umbraco/Umbraco.Forms.Integrations/blob/main-v10/src/Umbraco.Forms.Integrations.Crm.Hubspot/docs/images/workflow.png)
 
-![picker](https://github.com/umbraco/Umbraco.Forms.Integrations/blob/v10/docs/integrations-readmes/src/Umbraco.Forms.Integrations.Crm.Hubspot/docs/images/picker.png)
+![picker](https://github.com/umbraco/Umbraco.Forms.Integrations/blob/main-v10/src/Umbraco.Forms.Integrations.Crm.Hubspot/docs/images/picker.png)
 
-![hb](https://github.com/umbraco/Umbraco.Forms.Integrations/blob/v10/docs/integrations-readmes/src/Umbraco.Forms.Integrations.Crm.Hubspot/docs/images/hb.png)
+![hb](https://github.com/umbraco/Umbraco.Forms.Integrations/blob/main-v10/src/Umbraco.Forms.Integrations.Crm.Hubspot/docs/images/hb.png)
