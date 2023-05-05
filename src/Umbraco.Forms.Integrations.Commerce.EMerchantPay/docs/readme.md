@@ -11,14 +11,14 @@ To get started with the EMerchantPay package for Umbraco Forms, you must have an
 
 If you want to see the details on how the integration to EMerchantPay is made or just follow the example of extending Umbraco Forms with a third-party system you can take a look at the [blog post](https://umbraco.com/blog/integrating-umbraco-forms-with-EMerchantPay/) supplementing this integration.
 
-![workflow](https://github.com/umbraco/Umbraco.Forms.Integrations/blob/docs/integrations-readmes/src/Umbraco.Forms.Integrations.Commerce.EMerchantPay/docs/images/workflow.png)
+![workflow](https://github.com/umbraco/Umbraco.Forms.Integrations/blob/main/src/Umbraco.Forms.Integrations.Commerce.EMerchantPay/docs/images/workflow.png)
 
-![workflow-config](https://github.com/umbraco/Umbraco.Forms.Integrations/blob/docs/integrations-readmes/src/Umbraco.Forms.Integrations.Commerce.EMerchantPay/docs/images/workflow-config.png)
+![workflow-config](https://github.com/umbraco/Umbraco.Forms.Integrations/blob/main/src/Umbraco.Forms.Integrations.Commerce.EMerchantPay/docs/images/workflow-config.png)
 
-![workflow-mapping](https://github.com/umbraco/Umbraco.Forms.Integrations/blob/docs/integrations-readmes/src/Umbraco.Forms.Integrations.Commerce.EMerchantPay/docs/images/workflow-mapping.png)
+![workflow-mapping](https://github.com/umbraco/Umbraco.Forms.Integrations/blob/main/src/Umbraco.Forms.Integrations.Commerce.EMerchantPay/docs/images/workflow-mapping.png)
 
-![render](https://github.com/umbraco/Umbraco.Forms.Integrations/blob/docs/integrations-readmes/src/Umbraco.Forms.Integrations.Commerce.EMerchantPay/docs/images/render.png)
+![render](https://github.com/umbraco/Umbraco.Forms.Integrations/blob/main/src/Umbraco.Forms.Integrations.Commerce.EMerchantPay/docs/images/render.png)
 
-![wpf](https://github.com/umbraco/Umbraco.Forms.Integrations/blob/docs/integrations-readmes/src/Umbraco.Forms.Integrations.Commerce.EMerchantPay/docs/images/wpf.png)
+![wpf](https://github.com/umbraco/Umbraco.Forms.Integrations/blob/main/src/Umbraco.Forms.Integrations.Commerce.EMerchantPay/docs/images/wpf.png)
 
-![records](https://github.com/umbraco/Umbraco.Forms.Integrations/blob/docs/integrations-readmes/src/Umbraco.Forms.Integrations.Commerce.EMerchantPay/docs/images/records.png)
+![records](https://github.com/umbraco/Umbraco.Forms.Integrations/blob/main/src/Umbraco.Forms.Integrations.Commerce.EMerchantPay/docs/images/records.png)

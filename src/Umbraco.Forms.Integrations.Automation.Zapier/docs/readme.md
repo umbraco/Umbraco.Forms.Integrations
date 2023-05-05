@@ -11,6 +11,6 @@ When the automatic workflow is activated (the form is submitted) the subscriptio
 
 If you want to see the details on how the integration to Zapier is made for Umbraco Forms or just follow the example of extending Umbraco with a third-party system you can take a look at the [blog post](https://umbraco.com/blog/integrating-umbraco-with-zapier/) supplementing this integration. 
 
-![trigger](https://github.com/umbraco/Umbraco.Forms.Integrations/blob/docs/integrations-readmes/src/Umbraco.Forms.Integrations.Automation.Zapier/docs/images/trigger.png)
+![trigger](https://github.com/umbraco/Umbraco.Forms.Integrations/blob/main/src/Umbraco.Forms.Integrations.Automation.Zapier/docs/images/trigger.png)
 
-![zap](https://github.com/umbraco/Umbraco.Forms.Integrations/blob/docs/integrations-readmes/src/Umbraco.Forms.Integrations.Automation.Zapier/docs/images/zap.png)
+![zap](https://github.com/umbraco/Umbraco.Forms.Integrations/blob/main/src/Umbraco.Forms.Integrations.Automation.Zapier/docs/images/zap.png)
