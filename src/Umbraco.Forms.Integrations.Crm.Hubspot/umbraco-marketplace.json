@@ -18,6 +18,20 @@
       "Description": "A custom workflow, allowing form entries to be mapped to an ActiveCampaign contact record, a contact's custom fields or to associate a contact with an existing CRM account."
     }
   ],
+  "Screenshots": [
+    {
+      "ImageUrl": "https://raw.githubusercontent.com/umbraco/Umbraco.Forms.Integrations/main-v10/src/Umbraco.Forms.Integrations.Crm.Hubspot/docs/images/workflow.png",
+      "Caption": "workflow"
+    },
+    {
+      "ImageUrl": "https://raw.githubusercontent.com/umbraco/Umbraco.Forms.Integrations/main-v10/src/Umbraco.Forms.Integrations.Crm.Hubspot/docs/images/picker.png",
+      "Caption": "picker"
+    },
+    {
+      "ImageUrl": "https://raw.githubusercontent.com/umbraco/Umbraco.Forms.Integrations/main-v10/src/Umbraco.Forms.Integrations.Crm.Hubspot/docs/images/hb.png",
+      "Caption": "hubspot"
+    }
+  ],
   "Tags": [],
   "Title": "HubSpot with Umbraco Forms"
 }

@@ -22,6 +22,24 @@
       "Description": "A dashboard interface that allows users to vizualize registered subscription hooks for their Umbraco Forms and to call Zapier triggers when a specific forms gets submitted."
     }
   ],
+  "Screenshots": [
+    {
+      "ImageUrl": "https://raw.githubusercontent.com/umbraco/Umbraco.Forms.Integrations/main-v10/src/Umbraco.Forms.Integrations.Crm.ActiveCampaign/docs/images/ac.png",
+      "Caption": "ac"
+    },
+    {
+      "ImageUrl": "https://raw.githubusercontent.com/umbraco/Umbraco.Forms.Integrations/main-v10/src/Umbraco.Forms.Integrations.Crm.ActiveCampaign/docs/images/fields.png",
+      "Caption": "fields"
+    },
+    {
+      "ImageUrl": "https://raw.githubusercontent.com/umbraco/Umbraco.Forms.Integrations/main-v10/src/Umbraco.Forms.Integrations.Crm.ActiveCampaign/docs/images/mappings1.png",
+      "Caption": "mappings"
+    },
+    {
+      "ImageUrl": "https://raw.githubusercontent.com/umbraco/Umbraco.Forms.Integrations/main-v10/src/Umbraco.Forms.Integrations.Crm.ActiveCampaign/docs/images/workflow.png",
+      "Caption": "workflow"
+    }
+  ],
   "Tags": [],
   "Title": "ActiveCampaign with Umbraco Forms"
 }

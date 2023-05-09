@@ -22,6 +22,16 @@
       "Description": "A custom workflow allowing form entries to be mapped to an ActiveCampaign contact, and stored withing the CRM platform."
     }
   ],
+  "Screenshots": [
+    {
+      "ImageUrl": "https://raw.githubusercontent.com/umbraco/Umbraco.Forms.Integrations/main-v10/src/Umbraco.Forms.Integrations.Automation.Zapier/docs/images/trigger.png",
+      "Caption": "trigger"
+    },
+    {
+      "ImageUrl": "https://raw.githubusercontent.com/umbraco/Umbraco.Forms.Integrations/main-v10/src/Umbraco.Forms.Integrations.Automation.Zapier/docs/images/zap.png",
+      "Caption": "zap"
+    }
+  ],
   "Tags": [],
   "Title": "Zapier with Umbraco Forms"
 }
