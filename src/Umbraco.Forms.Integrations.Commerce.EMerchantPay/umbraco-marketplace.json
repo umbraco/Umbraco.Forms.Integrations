@@ -18,6 +18,32 @@
       "Description": "A custom workflow allowing form form entries to be mapped to a HubSpot contact record, and stored within the CRM platform."
     }
   ],
+  "Screenshots": [
+    {
+      "ImageUrl": "https://raw.githubusercontent.com/umbraco/Umbraco.Forms.Integrations/main/src/Umbraco.Forms.Integrations.Commerce.EMerchantPay/docs/images/workflow.png",
+      "Caption": "workflow"
+    },
+    {
+      "ImageUrl": "https://raw.githubusercontent.com/umbraco/Umbraco.Forms.Integrations/main/src/Umbraco.Forms.Integrations.Commerce.EMerchantPay/docs/images/workflow-config.png",
+      "Caption": "workflow config"
+    },
+    {
+      "ImageUrl": "https://raw.githubusercontent.com/umbraco/Umbraco.Forms.Integrations/main/src/Umbraco.Forms.Integrations.Commerce.EMerchantPay/docs/images/workflow-mapping.png",
+      "Caption": "workflow mapping"
+    },
+    {
+      "ImageUrl": "https://raw.githubusercontent.com/umbraco/Umbraco.Forms.Integrations/main/src/Umbraco.Forms.Integrations.Commerce.EMerchantPay/docs/images/render.png",
+      "Caption": "render"
+    },
+    {
+      "ImageUrl": "https://raw.githubusercontent.com/umbraco/Umbraco.Forms.Integrations/main/src/Umbraco.Forms.Integrations.Commerce.EMerchantPay/docs/images/wpf.png",
+      "Caption": "wpf"
+    },
+    {
+      "ImageUrl": "https://raw.githubusercontent.com/umbraco/Umbraco.Forms.Integrations/main/src/Umbraco.Forms.Integrations.Commerce.EMerchantPay/docs/images/records.png",
+      "Caption": "records"
+    }
+  ],
   "Tags": [],
   "Title": "emerchantpay with Umbraco Forms"
 }

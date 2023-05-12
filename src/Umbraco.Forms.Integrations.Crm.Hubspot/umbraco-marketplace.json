@@ -14,6 +14,20 @@
       "Description": "A dashboard interface that allows users to vizualize registered subscription hooks for their Umbraco Forms and to call Zapier triggers when a specific forms gets submitted."
     }
   ],
+  "Screenshots": [
+    {
+      "ImageUrl": "https://raw.githubusercontent.com/umbraco/Umbraco.Forms.Integrations/main/src/Umbraco.Forms.Integrations.Crm.Hubspot/docs/images/workflow.png",
+      "Caption": "workflow"
+    },
+    {
+      "ImageUrl": "https://raw.githubusercontent.com/umbraco/Umbraco.Forms.Integrations/main/src/Umbraco.Forms.Integrations.Crm.Hubspot/docs/images/picker.png",
+      "Caption": "picker"
+    },
+    {
+      "ImageUrl": "https://raw.githubusercontent.com/umbraco/Umbraco.Forms.Integrations/main/src/Umbraco.Forms.Integrations.Crm.Hubspot/docs/images/hb.png",
+      "Caption": "hubspot"
+    }
+  ],
   "Tags": [],
   "Title": "HubSpot with Umbraco Forms"
 }
