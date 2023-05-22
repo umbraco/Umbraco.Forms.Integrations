@@ -48,6 +48,7 @@ namespace Umbraco.Forms.Integrations.Automation.Zapier.Services
 
                 dto = entities;
 
+                scope.Complete();
                 return entities.Any();
             }
         }
