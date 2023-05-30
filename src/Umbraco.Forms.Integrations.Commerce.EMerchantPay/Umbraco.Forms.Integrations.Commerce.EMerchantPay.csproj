@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFramework>net60</TargetFramework>
+		<TargetFrameworks>net60;net70</TargetFrameworks>
 	</PropertyGroup>
 
 	<PropertyGroup>
@@ -11,7 +11,7 @@
 		<PackageIconUrl></PackageIconUrl>
 		<PackageProjectUrl>https://github.com/umbraco/Umbraco.Forms.Integrations/tree/main-v10/src/Umbraco.Forms.Integrations.Commerce.EMerchantPay</PackageProjectUrl>
 		<RepositoryUrl>https://github.com/umbraco/Umbraco.Forms.Integrations</RepositoryUrl>
-		<Version>2.0.4</Version>
+		<Version>2.1.0</Version>
 		<Authors>Umbraco HQ</Authors>
 		<Company>Umbraco</Company>
 		<PackageTags>Umbraco;Umbraco-Marketplace</PackageTags>
@@ -19,11 +19,18 @@
 		<PackageReadmeFile>readme.md</PackageReadmeFile>
 	</PropertyGroup>
 
-	<ItemGroup>
-		<PackageReference Include="Umbraco.Cms.Web.Website" version="10.1.0" />
-		<PackageReference Include="Umbraco.Cms.Web.BackOffice" version="10.1.0" />
-		<PackageReference Include="Umbraco.Forms" version="10.1.0" />
-		<PackageReference Include="Umbraco.Forms.Core" version="10.1.0" />
+	<ItemGroup Condition="'$(TargetFramework)' == 'net60'">
+		<PackageReference Include="Umbraco.Cms.Web.Website" version="[10.1.0,11)" />
+		<PackageReference Include="Umbraco.Cms.Web.BackOffice" version="[10.1.0,11)" />
+		<PackageReference Include="Umbraco.Forms" version="[10.1.0,11)" />
+		<PackageReference Include="Umbraco.Forms.Core" version="[10.1.0,11)" />
+	</ItemGroup>
+
+	<ItemGroup Condition="'$(TargetFramework)' == 'net70'">
+		<PackageReference Include="Umbraco.Cms.Web.Website" version="[11.0.0,12]" />
+		<PackageReference Include="Umbraco.Cms.Web.BackOffice" version="[11.0.0,12]" />
+		<PackageReference Include="Umbraco.Forms" version="[11.0.0,12]" />
+		<PackageReference Include="Umbraco.Forms.Core" version="[11.0.0,12]" />
 	</ItemGroup>
 	
 	<ItemGroup>
