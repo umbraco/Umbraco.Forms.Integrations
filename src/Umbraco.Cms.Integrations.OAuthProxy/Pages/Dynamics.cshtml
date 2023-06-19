@@ -1,0 +1,37 @@
+﻿@page "/oauth/dynamics"
+@model Umbraco.Cms.Integrations.OAuthProxy.Pages.ShopifyModel
+@{
+    ViewData["Title"] = "Authorization";
+}
+
+<div class="text-center">
+    <h1 class="display-4">Umbraco Integrations Authentication</h1>
+    @if (!string.IsNullOrEmpty(Model.AuthorizationCode))
+    {
+        <div id="manual-complete" style="display: none">
+            <p>To complete the integration, please copy the following code and enter it in Umbraco using the form provided.</p>
+
+            <p><input id="auth-code" type="text" value="@Model.AuthorizationCode" readonly style="width: 700px; font-size: 36px; text-align: center" /></p>
+
+            <button onclick="copyToClipboard()">Copy To Clipboard</button>
+        </div>
+
+        <script>
+            if (window.opener && typeof opener.postMessage === 'function') {
+                opener.postMessage({ type: 'dynamics:oauth:success', url: location.href, code: '@Model.AuthorizationCode' }, '*');
+                window.close();
+            } else {
+                document.getElementById("manual-complete").style.display = "block";
+            } 1
+
+            function copyToClipboard() {
+                var authCodeInputElement = document.getElementById("auth-code");
+                authCodeInputElement.select();
+                authCodeInputElement.setSelectionRange(0, 99999);
+                navigator.clipboard.writeText(authCodeInputElement.value);
+                alert("Code copied to clipboard");
+            }
+        </script>
+
+    }
+</div>
