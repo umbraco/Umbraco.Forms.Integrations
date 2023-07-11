@@ -4,10 +4,12 @@ using Newtonsoft.Json;
 
 using System;
 using System.Collections.Generic;
-
+using System.Reflection;
 using Umbraco.Forms.Core;
 using Umbraco.Forms.Core.Attributes;
 using Umbraco.Forms.Core.Enums;
+using Umbraco.Forms.Core.Interfaces;
+using Umbraco.Forms.Core.Models;
 using Umbraco.Forms.Integrations.Crm.Hubspot.Models;
 using Umbraco.Forms.Integrations.Crm.Hubspot.Services;
 
@@ -39,12 +41,14 @@ namespace Umbraco.Forms.Integrations.Crm.Hubspot
 
         public override WorkflowExecutionStatus Execute(WorkflowExecutionContext context)
         {
+            var workflowName = GetWorkflowName();
+
             var fieldMappingsRawJson = FieldMappings;
             var fieldMappings = JsonConvert.DeserializeObject<List<MappedProperty>>(fieldMappingsRawJson);
             if (fieldMappings.Count == 0)
             {
-                _logger.LogWarning("Workflow {WorkflowName}: Missing Hubspot field mappings for workflow for the form {FormName} ({FormId})", 
-                    Workflow.Name, context.Form.Name, context.Form.Id);
+                _logger.LogWarning("Workflow {WorkflowName}: Missing Hubspot field mappings for workflow for the form {FormName} ({FormId})",
+                    workflowName, context.Form.Name, context.Form.Id);
                 return WorkflowExecutionStatus.NotConfigured;
             }
 
@@ -53,10 +57,10 @@ namespace Umbraco.Forms.Integrations.Crm.Hubspot
             {
                 case CommandResult.NotConfigured:
                     _logger.LogWarning("Workflow {WorkflowName}: Could not complete contact request for {FormName} ({FormId}) as the workflow is not correctly configured.",
-                        Workflow.Name, context.Form.Name, context.Form.Id);
+                        workflowName, context.Form.Name, context.Form.Id);
                     return WorkflowExecutionStatus.NotConfigured;
                 case CommandResult.Failed:
-                    _logger.LogWarning("Workflow {WorkflowName}: Failed for {FormName} ({FormId}).", Workflow.Name, context.Form.Name, context.Form.Id);
+                    _logger.LogWarning("Workflow {WorkflowName}: Failed for {FormName} ({FormId}).", workflowName, context.Form.Name, context.Form.Id);
                     return WorkflowExecutionStatus.Failed;
                 case CommandResult.Success:
                     return WorkflowExecutionStatus.Completed;
@@ -66,5 +70,17 @@ namespace Umbraco.Forms.Integrations.Crm.Hubspot
         }
 
         public override List<Exception> ValidateSettings() => new List<Exception>();
+
+        /// <summary>
+        /// Get workflow's name using reflection in regards to breaking changes between Forms 11 and 12.
+        /// </summary>
+        /// <returns></returns>
+        private string GetWorkflowName()
+        {
+            var workflow = typeof(WorkflowType).GetProperty(nameof(Workflow)).GetValue(this);
+            var name = workflow.GetType().GetProperty(nameof(Workflow.Name)).GetValue(workflow).ToString();
+
+            return name;
+        }
     }
 }

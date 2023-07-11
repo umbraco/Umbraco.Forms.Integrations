@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFramework>net6.0</TargetFramework>
+		<TargetFrameworks>net60;net70</TargetFrameworks>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<WarningsAsErrors>Nullable</WarningsAsErrors>
 	</PropertyGroup>
@@ -21,9 +21,14 @@
 		<PackageReadmeFile>readme.md</PackageReadmeFile>
 	</PropertyGroup>
 
-	<ItemGroup>
-		<PackageReference Include="Umbraco.Cms.Web.Website" Version="10.1.0" />
-		<PackageReference Include="Umbraco.Forms.Core" Version="10.1.0" />
+	<ItemGroup Condition="'$(TargetFramework)' == 'net60'">
+		<PackageReference Include="Umbraco.Cms.Web.Website" Version="[10.1.0,11)" />
+		<PackageReference Include="Umbraco.Forms.Core" Version="[10.1.0,11)" />
+	</ItemGroup>
+
+	<ItemGroup Condition="'$(TargetFramework)' == 'net70'">
+		<PackageReference Include="Umbraco.Cms.Web.Website" Version="[11.0.0,12]" />
+		<PackageReference Include="Umbraco.Forms.Core" Version="[11.0.0,12]" />
 	</ItemGroup>
 
 	<ItemGroup>
