@@ -14,9 +14,9 @@ public static class RecordFieldExtensions
 
         if (!escaped)
         {
-            return string.Join(", ", recordField.Values.ToArray());
+            return string.Join(";", recordField.Values.ToArray());
         }
 
-        return string.Join(", ", recordField.Values.ConvertAll((object input) => JsonHelper.EscapeStringValue(input.ToString())).ToArray());
+        return string.Join(";", recordField.Values.ConvertAll((object input) => JsonHelper.EscapeStringValue(input.ToString())).ToArray());
     }
 }
