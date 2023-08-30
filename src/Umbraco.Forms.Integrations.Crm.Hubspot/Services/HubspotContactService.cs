@@ -160,7 +160,7 @@ namespace Umbraco.Forms.Integrations.Crm.Hubspot.Services
                 var recordField = record.GetRecordField(Guid.Parse(fieldId));
                 if (recordField != null)
                 {
-                    var value = recordField.ValuesAsString(false);
+                    var value = recordField.ValuesAsHubspotString(false);
 
                     propertiesRequestV1.Properties.Add(new PropertiesRequestV1.PropertyValue(mapping.HubspotField, value));
                     propertiesRequestV3.Properties.Add(mapping.HubspotField, value);
@@ -218,7 +218,8 @@ namespace Umbraco.Forms.Integrations.Crm.Hubspot.Services
                     }
                     else
                     {
-                        _logger.LogError("Error creating a HubSpot contact.");
+                        var responseContent = await response.Content.ReadAsStringAsync();
+                        _logger.LogError($"Error creating a HubSpot contact: {responseContent}");
                         return CommandResult.Failed;
                     }
                 }
