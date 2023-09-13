@@ -9,5 +9,8 @@ namespace Umbraco.Forms.Integrations.Crm.Hubspot.Models
 
         [JsonProperty(PropertyName = "hubspotField")]
         public string HubspotField { get; set; }
+
+        [JsonProperty(PropertyName = "appendValue")]
+        public bool AppendValue { get; set; }
     }
 }

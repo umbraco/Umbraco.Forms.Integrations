@@ -53,10 +53,12 @@ function HubSpotFieldsController($scope, $routeParams, umbracoFormsIntegrationsC
 
     vm.$onInit = function () {
 
+        vm.allowContactUpdate = Umbraco.Sys.ServerVariables.umbracoPlugins.umbracoFormsIntegrationsCrmHubspot.allowContactUpdate;
+
         if (!vm.setting.value) {
             vm.mappings = [];
         } else {
-            vm.mappings = JSON.parse(vm.setting.value);
+            vm.mappings = parseMappings(vm.setting.value);
         }
 
         umbracoFormsIntegrationsCrmHubspotResource.isAuthorizationConfigured().then(function (response) {
@@ -178,7 +180,8 @@ function HubSpotFieldsController($scope, $routeParams, umbracoFormsIntegrationsC
         // Add new empty object into the mappings array.
         vm.mappings.push({
             formField: "",
-            hubspotField: ""
+            hubspotField: "",
+            appendValue: false
         });
     };
 
@@ -190,4 +193,14 @@ function HubSpotFieldsController($scope, $routeParams, umbracoFormsIntegrationsC
     vm.stringifyValue = function () {
         vm.setting.value = JSON.stringify(vm.mappings);
     };
+
+    function parseMappings(settingValue) {
+        var mappings = JSON.parse(settingValue);
+        return mappings.map(mappingObj => {
+            if (mappingObj.appendValue === undefined) {
+                mappingObj.appendValue = false;
+            }
+            return mappingObj;
+        });
+    }
 }
