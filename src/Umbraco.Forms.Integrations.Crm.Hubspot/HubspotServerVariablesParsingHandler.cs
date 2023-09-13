@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
-
+using System.Runtime.Serialization;
 using Umbraco.Cms.Core.Events;
 using Umbraco.Cms.Core.Notifications;
 using Umbraco.Extensions;
@@ -58,9 +58,19 @@ namespace Umbraco.Forms.Integrations.Crm.Hubspot
             if (serverVars.ContainsKey("umbracoPlugins"))
             {
                 var umbracoPlugins = (Dictionary<string, object>)serverVars["umbracoPlugins"];
-                umbracoPlugins.Add("umbracoFormsIntegrationsCrmHubspotAllowContactUpdate", _settings.AllowContactUpdate);
+                umbracoPlugins.Add("umbracoFormsIntegrationsCrmHubspot", new ClientSideConfiguration
+                {
+                    AllowContactUpdate = _settings.AllowContactUpdate
+                });
             }
 
+        }
+
+        [DataContract]
+        internal sealed class ClientSideConfiguration
+        {
+            [DataMember(Name = "allowContactUpdate")]
+            public bool AllowContactUpdate { get; set; }
         }
     }
 }

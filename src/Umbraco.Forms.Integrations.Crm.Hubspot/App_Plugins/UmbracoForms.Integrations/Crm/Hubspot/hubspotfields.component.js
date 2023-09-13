@@ -53,7 +53,7 @@ function HubSpotFieldsController($scope, $routeParams, umbracoFormsIntegrationsC
 
     vm.$onInit = function () {
 
-        vm.allowContactUpdate = Umbraco.Sys.ServerVariables.umbracoPlugins.umbracoFormsIntegrationsCrmHubspotAllowContactUpdate;
+        vm.allowContactUpdate = Umbraco.Sys.ServerVariables.umbracoPlugins.umbracoFormsIntegrationsCrmHubspot.allowContactUpdate;
 
         if (!vm.setting.value) {
             vm.mappings = [];
