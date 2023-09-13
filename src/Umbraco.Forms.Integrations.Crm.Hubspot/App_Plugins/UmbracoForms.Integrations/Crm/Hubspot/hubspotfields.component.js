@@ -53,10 +53,12 @@ function HubSpotFieldsController($scope, $routeParams, umbracoFormsIntegrationsC
 
     vm.$onInit = function () {
 
+        vm.allowContactUpdate = Umbraco.Sys.ServerVariables.umbracoPlugins.umbracoFormsIntegrationsCrmHubspotAllowContactUpdate;
+
         if (!vm.setting.value) {
             vm.mappings = [];
         } else {
-            vm.getParsedMappings();
+            vm.mappings = parseMappings(vm.setting.value);
         }
 
         umbracoFormsIntegrationsCrmHubspotResource.isAuthorizationConfigured().then(function (response) {
@@ -192,9 +194,9 @@ function HubSpotFieldsController($scope, $routeParams, umbracoFormsIntegrationsC
         vm.setting.value = JSON.stringify(vm.mappings);
     };
 
-    vm.getParsedMappings = function () {
-        var mappings = JSON.parse(vm.setting.value);
-        vm.mappings = mappings.map(mappingObj => {
+    function parseMappings(settingValue) {
+        var mappings = JSON.parse(settingValue);
+        return mappings.map(mappingObj => {
             if (mappingObj.appendValue === undefined) {
                 mappingObj.appendValue = false;
             }

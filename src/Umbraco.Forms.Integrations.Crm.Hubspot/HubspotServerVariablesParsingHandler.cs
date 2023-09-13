@@ -1,12 +1,13 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
-
+using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
 
 using Umbraco.Cms.Core.Events;
 using Umbraco.Cms.Core.Notifications;
 using Umbraco.Extensions;
+using Umbraco.Forms.Integrations.Crm.Hubspot.Configuration;
 using Umbraco.Forms.Integrations.Crm.Hubspot.Controllers;
 
 namespace Umbraco.Forms.Integrations.Crm.Hubspot
@@ -15,12 +16,15 @@ namespace Umbraco.Forms.Integrations.Crm.Hubspot
     {
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly LinkGenerator _linkGenerator;
+        private readonly HubspotSettings _settings;
 
-        public HubspotServerVariablesParsingHandler(IHttpContextAccessor httpContextAccessor, LinkGenerator linkGenerator)
+        public HubspotServerVariablesParsingHandler(IHttpContextAccessor httpContextAccessor, LinkGenerator linkGenerator, IOptions<HubspotSettings> options)
         {
             _httpContextAccessor = httpContextAccessor;
 
-            _linkGenerator = linkGenerator; 
+            _linkGenerator = linkGenerator;
+
+            _settings = options.Value;
         }
 
         public void Handle(ServerVariablesParsingNotification notification)
@@ -50,6 +54,12 @@ namespace Umbraco.Forms.Integrations.Crm.Hubspot
 
             umbracoUrls["umbracoFormsIntegrationsCrmHubspotBaseUrl"] =
                 _linkGenerator.GetUmbracoApiServiceBaseUrl<HubspotController>(controller => controller.GetAllProperties());
+
+            if (serverVars.ContainsKey("umbracoPlugins"))
+            {
+                var umbracoPlugins = (Dictionary<string, object>)serverVars["umbracoPlugins"];
+                umbracoPlugins.Add("umbracoFormsIntegrationsCrmHubspotAllowContactUpdate", _settings.AllowContactUpdate);
+            }
 
         }
     }
