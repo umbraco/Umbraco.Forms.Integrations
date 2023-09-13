@@ -160,7 +160,9 @@ namespace Umbraco.Forms.Integrations.Crm.Hubspot.Services
                 var recordField = record.GetRecordField(Guid.Parse(fieldId));
                 if (recordField != null)
                 {
-                    var value = recordField.ValuesAsHubspotString(false);
+                    var value = _settings.AllowContactUpdate && mapping.AppendValue
+                        ? ";" + recordField.ValuesAsHubspotString(false)
+                        : recordField.ValuesAsHubspotString(false);
 
                     propertiesRequestV1.Properties.Add(new PropertiesRequestV1.PropertyValue(mapping.HubspotField, value));
                     propertiesRequestV3.Properties.Add(mapping.HubspotField, value);

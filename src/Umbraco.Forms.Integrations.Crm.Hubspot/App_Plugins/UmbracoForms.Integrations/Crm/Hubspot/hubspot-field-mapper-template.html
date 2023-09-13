@@ -24,6 +24,7 @@
             <div class="umb-forms-mapping-header">
                 <div class="umb-forms-mapping-field -no-margin-left">Form Field</div>
                 <div class="umb-forms-mapping-field">Hubspot Field</div>
+                <div class="umb-forms-mapping-field text-center">Append when updating values</div>
                 <div class="umb-forms-mapping-remove -no-margin-right"></div>
             </div>
 
@@ -44,6 +45,14 @@
                                 ng-model="mapping.hubspotField"
                                 ng-change="vm.stringifyValue()">
                         </select>
+                    </div>
+
+                    <div class="umb-forms-mapping-field flex justify-center">
+                        <umb-checkbox name="chkAppend"
+                                      value="mapping.appendValue"
+                                      model="mapping.appendValue"
+                                      on-change="vm.stringifyValue()">
+                        </umb-checkbox>
                     </div>
 
                     <div class="umb-forms-mapping-remove -no-margin-right">
