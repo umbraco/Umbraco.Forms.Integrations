@@ -14,8 +14,11 @@ namespace Umbraco.Forms.Integrations.Automation.Zapier
     {
         public void Compose(IUmbracoBuilder builder)
         {
-            var options = builder.Services
-                .AddOptions<ZapierSettings>()
+            builder.Services
+                .AddOptions<ZapierCmsSettings>()
+                .Bind(builder.Config.GetSection(Constants.Configuration.CmsSettings));
+            builder.Services
+                .AddOptions<ZapierFormsSettings>()
                 .Bind(builder.Config.GetSection(Constants.Configuration.Settings));
 
             builder

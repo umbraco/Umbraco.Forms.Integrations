@@ -1,6 +1,6 @@
 ﻿namespace Umbraco.Forms.Integrations.Automation.Zapier.Configuration
 {
-    public class ZapierSettings
+    public class AppSettings
     {
         public string UserGroupAlias { get; set; }
 
