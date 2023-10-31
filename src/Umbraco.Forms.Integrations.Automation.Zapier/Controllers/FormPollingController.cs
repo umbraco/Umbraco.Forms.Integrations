@@ -28,7 +28,7 @@ namespace Umbraco.Forms.Integrations.Automation.Zapier.Controllers
         private readonly UmbUrlHelper _umbUrlHelper;
 
 #if NETCOREAPP
-        public FormPollingController(IOptions<ZapierSettings> options, ZapierFormService zapierFormService, IRecordStorage recordStorage, 
+        public FormPollingController(IOptions<ZapierCmsSettings> options, ZapierFormService zapierFormService, IRecordStorage recordStorage, 
             UmbUrlHelper umbUrlHelper,
             IUserValidationService userValidationService)
             : base(options, userValidationService)

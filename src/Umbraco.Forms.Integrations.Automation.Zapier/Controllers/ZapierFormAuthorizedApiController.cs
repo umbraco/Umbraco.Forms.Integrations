@@ -17,12 +17,12 @@ namespace Umbraco.Forms.Integrations.Automation.Zapier.Controllers
 {
     public class ZapierFormAuthorizedApiController : UmbracoApiController
     {
-        private readonly ZapierSettings Options;
+        private readonly ZapierCmsSettings Options;
 
         private readonly IUserValidationService _userValidationService;
 
 #if NETCOREAPP
-        public ZapierFormAuthorizedApiController(IOptions<ZapierSettings> options, IUserValidationService userValidationService)
+        public ZapierFormAuthorizedApiController(IOptions<ZapierCmsSettings> options, IUserValidationService userValidationService)
 #else
         public ZapierFormAuthorizedApiController(IUserValidationService userValidationService)
 #endif
@@ -30,7 +30,7 @@ namespace Umbraco.Forms.Integrations.Automation.Zapier.Controllers
 #if NETCOREAPP
             Options = options.Value;
 #else
-            Options = new ZapierSettings(ConfigurationManager.AppSettings);
+            Options = new ZapierCmsSettings(ConfigurationManager.AppSettings);
 #endif
 
             _userValidationService = userValidationService;
@@ -65,9 +65,6 @@ namespace Umbraco.Forms.Integrations.Automation.Zapier.Controllers
 #endif
 
             if (string.IsNullOrEmpty(apiKey) && (string.IsNullOrEmpty(username) || string.IsNullOrEmpty(password))) return false;
-
-            if (!string.IsNullOrEmpty(apiKey))
-                return apiKey == Options.ApiKey;
 
             var isAuthorized = _userValidationService.Validate(username, password, Options.ApiKey).GetAwaiter()
                 .GetResult();
