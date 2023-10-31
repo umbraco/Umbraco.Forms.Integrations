@@ -101,29 +101,5 @@ namespace Umbraco.Forms.Integrations.Automation.Zapier.Services
 
             return true;
         }
-
-//        public async Task<bool> Validate(string username, string password, string apiKey)
-//        {
-//            if (!string.IsNullOrEmpty(apiKey))
-//                return apiKey == _zapierSettings.ApiKey;
-
-//#if NETCOREAPP
-//            var isUserValid =
-//                await _backOfficeUserManager.ValidateCredentialsAsync(username, password);
-//#else
-//            var isUserValid = Umbraco.Web.Composing.Current.UmbracoContext.Security.ValidateBackOfficeCredentials(username, password);
-//#endif
-
-//            if (!isUserValid) return false;
-
-//            if (!string.IsNullOrEmpty(_zapierSettings.UserGroupAlias))
-//            {
-//                var user = _userService.GetByUsername(username);
-
-//                return user != null && user.Groups.Any(p => p.Alias == _zapierSettings.UserGroupAlias);
-//            }
-
-//            return true;
-//        }
     }
 }
