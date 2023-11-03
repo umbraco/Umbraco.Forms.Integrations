@@ -1,25 +1,16 @@
 ﻿using System.Linq;
-
-using Microsoft.Extensions.Options;
-
-using Umbraco.Forms.Integrations.Automation.Zapier.Configuration;
-using Umbraco.Forms.Integrations.Automation.Zapier.Services;
 using Umbraco.Cms.Web.Common.Controllers;
+using Umbraco.Forms.Integrations.Automation.Zapier.Services;
 
 namespace Umbraco.Forms.Integrations.Automation.Zapier.Controllers
 {
     public class ZapierFormAuthorizedApiController : UmbracoApiController
     {
-        private readonly ZapierSettings Options;
-
         private readonly IUserValidationService _userValidationService;
 
-        public ZapierFormAuthorizedApiController(IOptions<ZapierSettings> options, IUserValidationService userValidationService)
-        {
-            Options = options.Value;
-
+        public ZapierFormAuthorizedApiController(
+            IUserValidationService userValidationService) =>
             _userValidationService = userValidationService;
-        }
 
         public bool IsAccessValid()
         {
@@ -39,10 +30,7 @@ namespace Umbraco.Forms.Integrations.Automation.Zapier.Controllers
 
             if (string.IsNullOrEmpty(apiKey) && (string.IsNullOrEmpty(username) || string.IsNullOrEmpty(password))) return false;
 
-            if (!string.IsNullOrEmpty(apiKey))
-                return apiKey == Options.ApiKey;
-
-            var isAuthorized = _userValidationService.Validate(username, password, Options.ApiKey).GetAwaiter()
+            var isAuthorized = _userValidationService.Validate(username, password, apiKey).GetAwaiter()
                 .GetResult();
             if (!isAuthorized) return false;
 

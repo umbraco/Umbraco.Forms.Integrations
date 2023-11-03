@@ -3,9 +3,6 @@ using System.Linq;
 
 using Umbraco.Forms.Integrations.Automation.Zapier.Models.Dtos;
 using Umbraco.Forms.Integrations.Automation.Zapier.Services;
-using Umbraco.Forms.Integrations.Automation.Zapier.Configuration;
-
-using Microsoft.Extensions.Options;
 
 namespace Umbraco.Forms.Integrations.Automation.Zapier.Controllers
 {
@@ -16,11 +13,9 @@ namespace Umbraco.Forms.Integrations.Automation.Zapier.Controllers
     {
         private readonly ZapierFormService _zapierFormService;
 
-        public FormController(IOptions<ZapierSettings> options, IUserValidationService userValidationService, ZapierFormService zapierFormService)
-            : base(options, userValidationService)
-        {
-            _zapierFormService = zapierFormService;
-        }
+        public FormController(
+            IUserValidationService userValidationService, ZapierFormService zapierFormService)
+            : base(userValidationService) => _zapierFormService = zapierFormService;
 
         public IEnumerable<FormDto> GetForms()
         {

@@ -1,13 +1,6 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
-
-using Microsoft.Extensions.Options;
-
-using Umbraco.Forms.Core.Data.Storage;
 using Umbraco.Forms.Integrations.Automation.Zapier.Extensions;
-using Umbraco.Forms.Integrations.Automation.Zapier.Helpers;
 using Umbraco.Forms.Integrations.Automation.Zapier.Services;
-using Umbraco.Forms.Integrations.Automation.Zapier.Configuration;
 
 namespace Umbraco.Forms.Integrations.Automation.Zapier.Controllers
 {
@@ -19,21 +12,10 @@ namespace Umbraco.Forms.Integrations.Automation.Zapier.Controllers
     {
         private readonly ZapierFormService _zapierFormService;
 
-        private readonly IRecordStorage _recordStorage;
-
-        private readonly UmbUrlHelper _umbUrlHelper;
-
-        public FormPollingController(IOptions<ZapierSettings> options, ZapierFormService zapierFormService, IRecordStorage recordStorage, 
-            UmbUrlHelper umbUrlHelper,
+        public FormPollingController(
+            ZapierFormService zapierFormService,
             IUserValidationService userValidationService)
-            : base(options, userValidationService)
-        {
-            _zapierFormService = zapierFormService;
-
-            _recordStorage = recordStorage;
-
-            _umbUrlHelper = umbUrlHelper;
-        }
+            : base(userValidationService) => _zapierFormService = zapierFormService;
 
         public List<Dictionary<string, string>> GetFormPropertiesById(string id)
         {
