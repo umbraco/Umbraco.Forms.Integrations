@@ -20,7 +20,7 @@ namespace Umbraco.Forms.Integrations.Automation.Zapier.Controllers
         private readonly ZapierFormService _zapierFormService;
 
 #if NETCOREAPP
-        public FormController(IOptions<ZapierSettings> options, IUserValidationService userValidationService, ZapierFormService zapierFormService)
+        public FormController(IOptions<ZapierCmsSettings> options, IUserValidationService userValidationService, ZapierFormService zapierFormService)
             : base(options, userValidationService)
 #else
         public FormController(ZapierFormService zapierFormService, IUserValidationService userValidationService)
