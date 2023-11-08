@@ -2,7 +2,6 @@
 using Microsoft.Extensions.Options;
 
 using System.Text.Json;
-
 using Umbraco.Forms.Core;
 using Umbraco.Forms.Core.Enums;
 using Umbraco.Forms.Core.Persistence.Dtos;
@@ -12,7 +11,7 @@ using Umbraco.Forms.Integrations.Crm.ActiveCampaign.Services;
 
 namespace Umbraco.Forms.Integrations.Crm.ActiveCampaign
 {
-    public class ActiveCampaignContactsWorkflow : WorkflowType
+	public class ActiveCampaignContactsWorkflow : WorkflowType
     {
         private readonly ActiveCampaignSettings _settings;
 
@@ -55,67 +54,65 @@ namespace Umbraco.Forms.Integrations.Crm.ActiveCampaign
             _logger = logger;
         }
 
-        public override WorkflowExecutionStatus Execute(WorkflowExecutionContext context)
-        {
-            try
-            {
-                var mappings = JsonSerializer.Deserialize<List<ContactMappingDto>>(ContactMappings);
+		public override async Task<WorkflowExecutionStatus> ExecuteAsync(WorkflowExecutionContext context)
+		{
+			try
+			{
+				var mappings = JsonSerializer.Deserialize<List<ContactMappingDto>>(ContactMappings);
 
-                var email = context.Record.RecordFields[Guid.Parse(mappings.First(p => p.ContactField == "email").FormField.Id)]
-                    .ValuesAsString();
+				var email = context.Record.RecordFields[Guid.Parse(mappings.First(p => p.ContactField == "email").FormField.Id)]
+					.ValuesAsString();
 
                 // Check if contact exists.
-                var contacts = _contactService.Get(email).ConfigureAwait(false).GetAwaiter().GetResult();
+                var contacts = await _contactService.Get(email);
 
-                if(contacts.Contacts.Count > 0 && !_settings.AllowContactUpdate)
-                {
-                    _logger.LogInformation("Contact already exists in ActiveCampaign and workflow is configured to not apply updates, so update of information was skipped.");
+				if (contacts.Contacts.Count > 0 && !_settings.AllowContactUpdate)
+				{
+					_logger.LogInformation("Contact already exists in ActiveCampaign and workflow is configured to not apply updates, so update of information was skipped.");
 
-                    return WorkflowExecutionStatus.Completed;
-                }
+					return WorkflowExecutionStatus.Completed;
+				}
 
-                var requestDto = new ContactDetailDto { Contact = Build(context.Record) };
+				var requestDto = new ContactDetailDto { Contact = Build(context.Record) };
 
-                if (contacts.Contacts.Count > 0) requestDto.Contact.Id = contacts.Contacts.First().Id;
+				if (contacts.Contacts.Count > 0) requestDto.Contact.Id = contacts.Contacts.First().Id;
 
-                // Set contact custom fields.
-                if (!string.IsNullOrEmpty(CustomFieldMappings))
-                {
-                    var customFieldMappings = JsonSerializer.Deserialize<List<CustomFieldMappingDto>>(CustomFieldMappings);
+				// Set contact custom fields.
+				if (!string.IsNullOrEmpty(CustomFieldMappings))
+				{
+					var customFieldMappings = JsonSerializer.Deserialize<List<CustomFieldMappingDto>>(CustomFieldMappings);
 
-                    requestDto.Contact.FieldValues = customFieldMappings.Select(p => new CustomFieldValueDto
-                    {
-                        Field = p.CustomField.Id,
-                        Value = context.Record.RecordFields[Guid.Parse(p.FormField.Id)].ValuesAsString()
-                    }).ToList();
-                }
+					requestDto.Contact.FieldValues = customFieldMappings.Select(p => new CustomFieldValueDto
+					{
+						Field = p.CustomField.Id,
+						Value = context.Record.RecordFields[Guid.Parse(p.FormField.Id)].ValuesAsString()
+					}).ToList();
+				}
 
-                var contactId = _contactService.CreateOrUpdate(requestDto, contacts.Contacts.Count > 0)
-                    .ConfigureAwait(false).GetAwaiter().GetResult();
+                var contactId = await _contactService.CreateOrUpdate(requestDto, contacts.Contacts.Count > 0);
 
-                if (string.IsNullOrEmpty(contactId))
-                {
-                    _logger.LogError($"Failed to create/update contact: {email}");
+				if (string.IsNullOrEmpty(contactId))
+				{
+					_logger.LogError($"Failed to create/update contact: {email}");
 
-                    return WorkflowExecutionStatus.Failed;
-                }
+					return WorkflowExecutionStatus.Failed;
+				}
 
-                // Associate contact with account if last one is specified.
-                if (!string.IsNullOrEmpty(Account))
-                {
-                    var associationResponse = _accountService.CreateAssociation(int.Parse(Account), int.Parse(contactId))
-                        .ConfigureAwait(false).GetAwaiter().GetResult();
-                }
+				// Associate contact with account if last one is specified.
+				if (!string.IsNullOrEmpty(Account))
+				{
+                    var associationResponse = await _accountService.CreateAssociation(int.Parse(Account), int.Parse(contactId));
+				}
 
-                return WorkflowExecutionStatus.Completed;
-            }
-            catch(Exception ex)
-            {
-                _logger.LogError(ex, ex.Message);
+				return WorkflowExecutionStatus.Completed;
+			}
+			catch (Exception ex)
+			{
+				_logger.LogError(ex, ex.Message);
 
-                return WorkflowExecutionStatus.Failed;
-            }
-        }
+				return WorkflowExecutionStatus.Failed;
+			}
+		}
 
         public override List<Exception> ValidateSettings()
         {
@@ -163,5 +160,5 @@ namespace Umbraco.Forms.Integrations.Crm.ActiveCampaign
                 ? record.RecordFields[Guid.Parse(mappingItem.FormField.Id)].ValuesAsString()
                 : string.Empty;
         }
-    }
+	}
 }

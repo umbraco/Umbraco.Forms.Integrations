@@ -36,15 +36,12 @@ namespace Umbraco.Forms.Integrations.Commerce.Emerchantpay.Controllers
         }
 
         [HttpPost]
-        public HttpResponseMessage NotifyPayment(string formId, string recordUniqueId, string statusFieldId, bool approve, [FromForm] NotificationDto notificationDto)
+        public async Task<HttpResponseMessage> NotifyPaymentAsync(string formId, string recordUniqueId, string statusFieldId, bool approve, [FromForm] NotificationDto notificationDto)
         {
             try
             {
                 // reconcile
-                var reconcileTask =
-                    Task.Run(async () => await _paymentService.Reconcile(notificationDto.UniqueId));
-
-                var reconcileResponse = reconcileTask.Result;
+                var reconcileResponse = await _paymentService.Reconcile(notificationDto.UniqueId);
 
                 // get record with uniqueId and update status
                 var form = _formService.Get(Guid.Parse(formId));
@@ -59,7 +56,7 @@ namespace Umbraco.Forms.Integrations.Commerce.Emerchantpay.Controllers
 
                 if (approve && notificationDto.Status == Constants.PaymentStatus.Approved)
                 {
-                    _recordService.Approve(record, form);
+                    await _recordService.ApproveAsync(record, form);
                 }
 
                 if (reconcileResponse.Status == Constants.ErrorCode.WorkflowError)
@@ -71,7 +68,7 @@ namespace Umbraco.Forms.Integrations.Commerce.Emerchantpay.Controllers
                     Content = new StringContent(notificationXml, Encoding.UTF8, "application/xml")
                 };
             }
-            catch (Exception ex)
+			catch (Exception ex)
             {
                 return new HttpResponseMessage(HttpStatusCode.InternalServerError);
             }
