@@ -7,57 +7,56 @@ using Umbraco.Forms.Integrations.Automation.Zapier.Extensions;
 using Umbraco.Forms.Integrations.Automation.Zapier.Helpers;
 using Umbraco.Forms.Integrations.Automation.Zapier.Services;
 
-namespace Umbraco.Forms.Integrations.Automation.Zapier.Components
+namespace Umbraco.Forms.Integrations.Automation.Zapier.Components;
+
+public class NewFormSubmittedNotification : INotificationHandler<RecordCreatingNotification>
 {
-    public class NewFormSubmittedNotification : INotificationHandler<RecordCreatingNotification>
+    private readonly UmbUrlHelper _umbUrlHelper;
+
+    private readonly IFormService _formService;
+
+    private readonly ZapierService _zapierService;
+
+    private readonly ZapierFormSubscriptionHookService _zapierFormSubscriptionHookService;
+
+    private readonly ILogger<NewFormSubmittedNotification> _logger;
+
+    public NewFormSubmittedNotification(
+        UmbUrlHelper umbUrlHelper,
+        IFormService formService, 
+        ZapierService zapierService, ZapierFormSubscriptionHookService zapierFormSubscriptionHookService,
+        ILogger<NewFormSubmittedNotification> logger)
     {
-        private readonly UmbUrlHelper _umbUrlHelper;
+        _umbUrlHelper = umbUrlHelper;
 
-        private readonly IFormService _formService;
+        _formService = formService;
 
-        private readonly ZapierService _zapierService;
+        _zapierService = zapierService;
 
-        private readonly ZapierFormSubscriptionHookService _zapierFormSubscriptionHookService;
+        _zapierFormSubscriptionHookService = zapierFormSubscriptionHookService;
 
-        private readonly ILogger<NewFormSubmittedNotification> _logger;
+        _logger = logger;
+    }
 
-        public NewFormSubmittedNotification(
-            UmbUrlHelper umbUrlHelper,
-            IFormService formService, 
-            ZapierService zapierService, ZapierFormSubscriptionHookService zapierFormSubscriptionHookService,
-            ILogger<NewFormSubmittedNotification> logger)
+    public void Handle(RecordCreatingNotification notification)
+    {
+        var triggerHelper = new TriggerHelper(_zapierService);
+
+        foreach (var notificationSavedEntity in notification.SavedEntities)
         {
-            _umbUrlHelper = umbUrlHelper;
+            var form = _formService.Get(notificationSavedEntity.Form);
 
-            _formService = formService;
-
-            _zapierService = zapierService;
-
-            _zapierFormSubscriptionHookService = zapierFormSubscriptionHookService;
-
-            _logger = logger;
-        }
-
-        public void Handle(RecordCreatingNotification notification)
-        {
-            var triggerHelper = new TriggerHelper(_zapierService);
-
-            foreach (var notificationSavedEntity in notification.SavedEntities)
+            if (_zapierFormSubscriptionHookService.TryGetById(form.Id.ToString(), out var subscriptionHooks))
             {
-                var form = _formService.Get(notificationSavedEntity.Form);
+                var content = form.ToFormDictionary(notificationSavedEntity, _umbUrlHelper.GetPageUrl(notificationSavedEntity.UmbracoPageId));
 
-                if (_zapierFormSubscriptionHookService.TryGetById(form.Id.ToString(), out var subscriptionHooks))
+                foreach (var subscriptionHook in subscriptionHooks)
                 {
-                    var content = form.ToFormDictionary(notificationSavedEntity, _umbUrlHelper.GetPageUrl(notificationSavedEntity.UmbracoPageId));
+                    var result =
+                        triggerHelper.FormExecute(subscriptionHook.HookUrl, content);
 
-                    foreach (var subscriptionHook in subscriptionHooks)
-                    {
-                        var result =
-                            triggerHelper.FormExecute(subscriptionHook.HookUrl, content);
-
-                        if (!string.IsNullOrEmpty(result))
-                            _logger.LogError(result);
-                    }
+                    if (!string.IsNullOrEmpty(result))
+                        _logger.LogError(result);
                 }
             }
         }

@@ -4,26 +4,24 @@ using System.Linq;
 
 using Umbraco.Forms.Integrations.Commerce.Emerchantpay.Configuration;
 
-namespace Umbraco.Forms.Integrations.Commerce.Emerchantpay.Helpers
+namespace Umbraco.Forms.Integrations.Commerce.Emerchantpay.Helpers;
+
+public class MappingFieldHelper
 {
-    public class MappingFieldHelper
+    private readonly ISettingsParser _settingsParser;
+
+    public MappingFieldHelper(ISettingsParser settingsParser)
     {
-        private readonly ISettingsParser _settingsParser;
+        _settingsParser = settingsParser;
+    }
 
-        public MappingFieldHelper(ISettingsParser settingsParser)
-        {
-            _settingsParser = settingsParser;
-        }
+    public IEnumerable<string> GetMappings()
+    {
+        var mappings = _settingsParser.AsEnumerable(nameof(PaymentProviderSettings.MappingFields));
 
-        public IEnumerable<string> GetMappings()
-        {
-            var mappings = _settingsParser.AsEnumerable(nameof(PaymentProviderSettings.MappingFields));
+        if (mappings.Count() == 0) throw new ArgumentNullException(nameof(MappingFieldHelper));
 
-            if (mappings.Count() == 0) throw new ArgumentNullException(nameof(MappingFieldHelper));
-
-            return mappings;
-
-        }
+        return mappings;
 
     }
 }

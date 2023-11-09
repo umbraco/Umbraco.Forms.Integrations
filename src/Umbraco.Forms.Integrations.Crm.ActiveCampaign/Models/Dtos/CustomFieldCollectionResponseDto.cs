@@ -1,10 +1,9 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace Umbraco.Forms.Integrations.Crm.ActiveCampaign.Models.Dtos
+namespace Umbraco.Forms.Integrations.Crm.ActiveCampaign.Models.Dtos;
+
+public class CustomFieldCollectionResponseDto
 {
-    public class CustomFieldCollectionResponseDto
-    {
-        [JsonPropertyName("fields")]
-        public List<CustomFieldDto> Fields { get; set; }
-    }
+    [JsonPropertyName("fields")]
+    public List<CustomFieldDto> Fields { get; set; }
 }

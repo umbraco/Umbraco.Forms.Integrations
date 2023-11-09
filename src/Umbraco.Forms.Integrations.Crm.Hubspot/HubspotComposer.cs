@@ -7,21 +7,20 @@ using Umbraco.Forms.Core.Providers;
 using Umbraco.Forms.Integrations.Crm.Hubspot.Configuration;
 using Umbraco.Forms.Integrations.Crm.Hubspot.Services;
 
-namespace Umbraco.Forms.Integrations.Crm.Hubspot
+namespace Umbraco.Forms.Integrations.Crm.Hubspot;
+
+public class HubspotComposer : IComposer
 {
-    public class HubspotComposer : IComposer
+    public void Compose(IUmbracoBuilder builder)
     {
-        public void Compose(IUmbracoBuilder builder)
-        {
-            builder.Services.AddOptions<HubspotSettings>()
-                .Bind(builder.Config.GetSection(HubspotWorkflow.HubspotSettings));
+        builder.Services.AddOptions<HubspotSettings>()
+            .Bind(builder.Config.GetSection(HubspotWorkflow.HubspotSettings));
 
-            builder.Services.AddSingleton<IContactService, HubspotContactService>();
+        builder.Services.AddSingleton<IContactService, HubspotContactService>();
 
-            builder.AddNotificationHandler<ServerVariablesParsingNotification, HubspotServerVariablesParsingHandler>();
+        builder.AddNotificationHandler<ServerVariablesParsingNotification, HubspotServerVariablesParsingHandler>();
 
-            builder.WithCollectionBuilder<WorkflowCollectionBuilder>()
-                .Add<HubspotWorkflow>();
-        }
+        builder.WithCollectionBuilder<WorkflowCollectionBuilder>()
+            .Add<HubspotWorkflow>();
     }
 }

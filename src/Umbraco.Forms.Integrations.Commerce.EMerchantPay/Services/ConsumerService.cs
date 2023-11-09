@@ -7,49 +7,46 @@ using Umbraco.Forms.Integrations.Commerce.Emerchantpay.Models.Dtos;
 
 using Microsoft.Extensions.Options;
 
-namespace Umbraco.Forms.Integrations.Commerce.Emerchantpay.Services
+namespace Umbraco.Forms.Integrations.Commerce.Emerchantpay.Services;
+
+public class ConsumerService : BaseService<ConsumerDto>
 {
-    public class ConsumerService : BaseService<ConsumerDto>
+    private readonly PaymentProviderSettings Options;
+
+    private readonly IHttpClientFactory _httpClientFactory;
+
+    public ConsumerService(IOptions<PaymentProviderSettings> options, IHttpClientFactory httpClientFactory)
     {
-        private readonly PaymentProviderSettings Options;
+        Options = options.Value;
 
-        private readonly IHttpClientFactory _httpClientFactory;
+        _httpClientFactory = httpClientFactory;
+    }
 
-        public ConsumerService(IOptions<PaymentProviderSettings> options, IHttpClientFactory httpClientFactory)
-        {
-            Options = options.Value;
+    public async Task<ConsumerDto> Create(ConsumerDto consumer)
+    {
+        var httpClient = _httpClientFactory.CreateClient(Constants.HttpClients.GatewayClient);
 
-            _httpClientFactory = httpClientFactory;
-        }
+        var consumerRequestContent = Serialize(consumer, Constants.RootNode.CreateConsumerRequest);
 
-        public async Task<ConsumerDto> Create(ConsumerDto consumer)
-        {
-            var httpClient = _httpClientFactory.CreateClient(Constants.HttpClients.GatewayClient);
+        var consumerResponse = await httpClient
+            .PostAsync("v1/create_consumer", consumerRequestContent);
 
-            var consumerRequestContent = Serialize(consumer, Constants.RootNode.CreateConsumerRequest);
+        var response = await consumerResponse.Content.ReadAsStringAsync();
 
-            var consumerResponse = await httpClient
-                .PostAsync("v1/create_consumer", consumerRequestContent);
+        return Deserialize(response, Constants.RootNode.CreateConsumerResponse);
+    }
 
-            var response = await consumerResponse.Content.ReadAsStringAsync();
+    public async Task<ConsumerDto> Retrieve(ConsumerDto consumer)
+    {
+        var httpClient = _httpClientFactory.CreateClient(Constants.HttpClients.GatewayClient);
 
-            return Deserialize(response, Constants.RootNode.CreateConsumerResponse);
-        }
+        var consumerRequestContent = Serialize(consumer, Constants.RootNode.RetrieveConsumerRequest);
 
-        public async Task<ConsumerDto> Retrieve(ConsumerDto consumer)
-        {
-            var httpClient = _httpClientFactory.CreateClient(Constants.HttpClients.GatewayClient);
+        var consumerResponse = await httpClient
+            .PostAsync("v1/retrieve_consumer", consumerRequestContent);
 
-            var consumerRequestContent = Serialize(consumer, Constants.RootNode.RetrieveConsumerRequest);
+        var response = await consumerResponse.Content.ReadAsStringAsync();
 
-            var consumerResponse = await httpClient
-                .PostAsync("v1/retrieve_consumer", consumerRequestContent);
-
-            var response = await consumerResponse.Content.ReadAsStringAsync();
-
-            return Deserialize(response, Constants.RootNode.RetrieveConsumerResponse);
-        }
-
-
+        return Deserialize(response, Constants.RootNode.RetrieveConsumerResponse);
     }
 }

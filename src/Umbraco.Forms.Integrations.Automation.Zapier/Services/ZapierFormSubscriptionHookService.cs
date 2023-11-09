@@ -6,35 +6,34 @@ using System.Linq;
 using Umbraco.Forms.Integrations.Automation.Zapier.Models.Dtos;
 using Umbraco.Cms.Infrastructure.Scoping;
 
-namespace Umbraco.Forms.Integrations.Automation.Zapier.Services
+namespace Umbraco.Forms.Integrations.Automation.Zapier.Services;
+
+public class ZapierFormSubscriptionHookService
 {
-    public class ZapierFormSubscriptionHookService
+    private readonly IScopeProvider _scopeProvider;
+
+    private readonly ILogger<ZapierFormSubscriptionHookService> _logger;
+
+    public ZapierFormSubscriptionHookService(IScopeProvider scopeProvider, ILogger<ZapierFormSubscriptionHookService> logger)
     {
-        private readonly IScopeProvider _scopeProvider;
+        _scopeProvider = scopeProvider;
 
-        private readonly ILogger<ZapierFormSubscriptionHookService> _logger;
+        _logger = logger;
+    }
 
-        public ZapierFormSubscriptionHookService(IScopeProvider scopeProvider, ILogger<ZapierFormSubscriptionHookService> logger)
+    public bool TryGetById(string id, out IEnumerable<SubscriptionDto> dto)
+    {
+        using (var scope = _scopeProvider.CreateScope())
         {
-            _scopeProvider = scopeProvider;
+            var entities = scope.Database
+                .Query<SubscriptionDto>("SELECT * FROM zapierSubscriptionHook where Type=@0", Constants.EntityType.Form)
+                .Where(p => p.EntityId == id)
+                .ToList();
 
-            _logger = logger;
-        }
+            dto = entities;
 
-        public bool TryGetById(string id, out IEnumerable<SubscriptionDto> dto)
-        {
-            using (var scope = _scopeProvider.CreateScope())
-            {
-                var entities = scope.Database
-                    .Query<SubscriptionDto>("SELECT * FROM zapierSubscriptionHook where Type=@0", Constants.EntityType.Form)
-                    .Where(p => p.EntityId == id)
-                    .ToList();
-
-                dto = entities;
-
-                scope.Complete();
-                return entities.Any();
-            }
+            scope.Complete();
+            return entities.Any();
         }
     }
 }

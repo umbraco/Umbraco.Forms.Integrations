@@ -3,57 +3,56 @@ using System.Text.Json.Nodes;
 
 using Umbraco.Forms.Integrations.Crm.ActiveCampaign.Models.Dtos;
 
-namespace Umbraco.Forms.Integrations.Crm.ActiveCampaign.Services
+namespace Umbraco.Forms.Integrations.Crm.ActiveCampaign.Services;
+
+public class ContactService : IContactService
 {
-    public class ContactService : IContactService
+    private readonly IHttpClientFactory _httpClientFactory;
+
+    public ContactService(IHttpClientFactory httpClientFactory)
     {
-        private readonly IHttpClientFactory _httpClientFactory;
+        _httpClientFactory = httpClientFactory;
+    }
 
-        public ContactService(IHttpClientFactory httpClientFactory)
+    public async Task<string> CreateOrUpdate(ContactDetailDto contactRequestDto, bool update = false)
+    {
+        var client = _httpClientFactory.CreateClient(Constants.HttpClient);
+
+        var requestContent = new StringContent(JsonSerializer.Serialize(contactRequestDto));
+
+        var response = update
+           ? await client.PutAsync($"contacts/{contactRequestDto.Contact.Id}", requestContent)
+           : await client.PostAsync("contacts", requestContent);
+
+        if(response.IsSuccessStatusCode)
         {
-            _httpClientFactory = httpClientFactory;
+            var result = await response.Content.ReadAsStringAsync();
+
+            return JsonObject.Parse(result)["contact"]["id"].ToString();
         }
 
-        public async Task<string> CreateOrUpdate(ContactDetailDto contactRequestDto, bool update = false)
-        {
-            var client = _httpClientFactory.CreateClient(Constants.HttpClient);
+        return string.Empty;
+    }
 
-            var requestContent = new StringContent(JsonSerializer.Serialize(contactRequestDto));
+    public async Task<ContactCollectionResponseDto> Get(string email)
+    {
+        var client = _httpClientFactory.CreateClient(Constants.HttpClient);
 
-            var response = update
-               ? await client.PutAsync($"contacts/{contactRequestDto.Contact.Id}", requestContent)
-               : await client.PostAsync("contacts", requestContent);
+        var response = await client.GetAsync($"contacts?email={email}");
 
-            if(response.IsSuccessStatusCode)
-            {
-                var result = await response.Content.ReadAsStringAsync();
+        var content = await response.Content.ReadAsStringAsync();
 
-                return JsonObject.Parse(result)["contact"]["id"].ToString();
-            }
+        return JsonSerializer.Deserialize<ContactCollectionResponseDto>(content);
+    }
 
-            return string.Empty;
-        }
+    public async Task<CustomFieldCollectionResponseDto> GetCustomFields()
+    {
+        var client = _httpClientFactory.CreateClient(Constants.HttpClient);
 
-        public async Task<ContactCollectionResponseDto> Get(string email)
-        {
-            var client = _httpClientFactory.CreateClient(Constants.HttpClient);
+        var response = await client.GetAsync("fields");
 
-            var response = await client.GetAsync($"contacts?email={email}");
+        var content = await response.Content.ReadAsStringAsync();
 
-            var content = await response.Content.ReadAsStringAsync();
-
-            return JsonSerializer.Deserialize<ContactCollectionResponseDto>(content);
-        }
-
-        public async Task<CustomFieldCollectionResponseDto> GetCustomFields()
-        {
-            var client = _httpClientFactory.CreateClient(Constants.HttpClient);
-
-            var response = await client.GetAsync("fields");
-
-            var content = await response.Content.ReadAsStringAsync();
-
-            return JsonSerializer.Deserialize<CustomFieldCollectionResponseDto>(content);
-        }
+        return JsonSerializer.Deserialize<CustomFieldCollectionResponseDto>(content);
     }
 }

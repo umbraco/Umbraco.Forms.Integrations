@@ -6,34 +6,33 @@ using System.Xml.Serialization;
 
 using Umbraco.Forms.Integrations.Commerce.Emerchantpay.Configuration;
 
-namespace Umbraco.Forms.Integrations.Commerce.Emerchantpay.Services
+namespace Umbraco.Forms.Integrations.Commerce.Emerchantpay.Services;
+
+public abstract class BaseService<T> where T : class
 {
-    public abstract class BaseService<T> where T : class
+    protected StringContent Serialize(T input, string root)
     {
-        protected StringContent Serialize(T input, string root)
+        var serializer = new XmlSerializer(typeof(T), new XmlRootAttribute(root));
+
+        using (var stringWriter = new PaymentProviderStringWriter())
         {
-            var serializer = new XmlSerializer(typeof(T), new XmlRootAttribute(root));
-
-            using (var stringWriter = new PaymentProviderStringWriter())
+            using (XmlWriter writer = XmlWriter.Create(stringWriter))
             {
-                using (XmlWriter writer = XmlWriter.Create(stringWriter))
-                {
-                    serializer.Serialize(writer, input);
+                serializer.Serialize(writer, input);
 
-                    return new StringContent(stringWriter.ToString(), Encoding.UTF8, "text/xml");
-                }
+                return new StringContent(stringWriter.ToString(), Encoding.UTF8, "text/xml");
             }
         }
-
-        protected T Deserialize(string response, string root)
-        {
-            var serializer = new XmlSerializer(typeof(T), new XmlRootAttribute(root));
-
-            using (var stringReader = new StringReader(response))
-            {
-                return (T)serializer.Deserialize(stringReader);
-            }
-        }
-
     }
+
+    protected T Deserialize(string response, string root)
+    {
+        var serializer = new XmlSerializer(typeof(T), new XmlRootAttribute(root));
+
+        using (var stringReader = new StringReader(response))
+        {
+            return (T)serializer.Deserialize(stringReader);
+        }
+    }
+
 }

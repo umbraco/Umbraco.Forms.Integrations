@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFramework>net6.0</TargetFramework>
+		<TargetFramework>net8.0</TargetFramework>
 	</PropertyGroup>
 
 	<PropertyGroup>
@@ -11,7 +11,7 @@
 		<PackageIconUrl></PackageIconUrl>
 		<PackageProjectUrl>https://github.com/umbraco/Umbraco.Forms.Integrations/tree/main-v10/src/Umbraco.Forms.Integrations.Automation.Zapier</PackageProjectUrl>
 		<RepositoryUrl>https://github.com/umbraco/Umbraco.Forms.Integrations</RepositoryUrl>
-		<Version>2.0.6</Version>
+		<Version>3.0.0</Version>
 		<Authors>Umbraco HQ</Authors>
 		<Company>Umbraco</Company>
 		<PackageTags>Umbraco;Umbraco-Marketplace</PackageTags>
@@ -20,9 +20,12 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Umbraco.Cms.Web.Website" version="10.1.0" />
-		<PackageReference Include="Umbraco.Cms.Core" version="10.1.0" />
-		<PackageReference Include="Umbraco.Forms.Core" version="10.1.0" />
+		<!--<PackageReference Include="Umbraco.Cms.Web.Website" version="[13.0.0,14)" />
+		<PackageReference Include="Umbraco.Cms.Core" version="[13.0.0,14)" />
+		<PackageReference Include="Umbraco.Forms.Core" version="[13.0.0,14)" />-->
+		<PackageReference Include="Umbraco.Cms.Web.Website" version="13.0.0-rc1" />
+		<PackageReference Include="Umbraco.Cms.Core" version="13.0.0-rc1" />
+		<PackageReference Include="Umbraco.Forms.Core" version="13.0.0-rc1" />
 	</ItemGroup>
 
 	<ItemGroup>

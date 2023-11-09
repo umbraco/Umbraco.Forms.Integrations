@@ -1,6 +1,5 @@
-﻿namespace Umbraco.Forms.Integrations.Automation.Zapier.Configuration
+﻿namespace Umbraco.Forms.Integrations.Automation.Zapier.Configuration;
+
+public class ZapierCmsSettings : AppSettings
 {
-    public class ZapierCmsSettings : AppSettings
-    {
-    }
 }
