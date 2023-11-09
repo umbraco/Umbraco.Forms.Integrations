@@ -1,15 +1,14 @@
 ﻿using Newtonsoft.Json;
 
-namespace Umbraco.Forms.Integrations.Crm.Hubspot.Services
+namespace Umbraco.Forms.Integrations.Crm.Hubspot.Services;
+
+internal abstract class BaseTokenRequest
 {
-    internal abstract class BaseTokenRequest
-    {
-        public abstract string GrantType { get; }
+    public abstract string GrantType { get; }
 
-        [JsonProperty("client_id")]
-        public string ClientId { get; set; }
+    [JsonProperty("client_id")]
+    public string ClientId { get; set; }
 
-        [JsonProperty("redirect_uri")]
-        public string RedirectUrl { get; set; }
-    }
+    [JsonProperty("redirect_uri")]
+    public string RedirectUrl { get; set; }
 }

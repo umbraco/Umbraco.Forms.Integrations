@@ -1,9 +1,8 @@
 ﻿using System.Collections.Generic;
 
-namespace Umbraco.Forms.Integrations.Commerce.Emerchantpay.Services
+namespace Umbraco.Forms.Integrations.Commerce.Emerchantpay.Services;
+
+public interface IMappingService<Mapping>
 {
-    public interface IMappingService<Mapping>
-    {
-        bool TryParse(string mappings, out List<Mapping> result);
-    }
+    bool TryParse(string mappings, out List<Mapping> result);
 }

@@ -1,10 +1,9 @@
 ﻿using Newtonsoft.Json;
 
-namespace Umbraco.Forms.Integrations.Crm.Hubspot.Models.Responses
+namespace Umbraco.Forms.Integrations.Crm.Hubspot.Models.Responses;
+
+public class ErrorResponse
 {
-    public class ErrorResponse
-    {
-        [JsonProperty(PropertyName = "message")]
-        public string Message { get; set; }
-    }
+    [JsonProperty(PropertyName = "message")]
+    public string Message { get; set; }
 }

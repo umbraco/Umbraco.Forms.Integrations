@@ -12,67 +12,65 @@ using Umbraco.Forms.Core.Services;
 using Umbraco.Forms.Integrations.Commerce.Emerchantpay.Models.Dtos;
 using Umbraco.Forms.Integrations.Commerce.Emerchantpay.Services;
 
-namespace Umbraco.Forms.Integrations.Commerce.Emerchantpay.Controllers
+namespace Umbraco.Forms.Integrations.Commerce.Emerchantpay.Controllers;
+
+public class PaymentProviderController : UmbracoApiController
 {
-    public class PaymentProviderController : UmbracoApiController
+    private readonly PaymentService _paymentService;
+
+    private readonly IRecordStorage _recordStorage;
+
+    private readonly IRecordService _recordService;
+
+    private readonly IFormService _formService;
+    
+    public PaymentProviderController(PaymentService paymentService, IRecordStorage recordStorage, IRecordService recordService, IFormService formService)
     {
-        private readonly PaymentService _paymentService;
+        _paymentService = paymentService;
 
-        private readonly IRecordStorage _recordStorage;
+        _recordStorage = recordStorage;
 
-        private readonly IRecordService _recordService;
+        _recordService = recordService;
 
-        private readonly IFormService _formService;
-        
-        public PaymentProviderController(PaymentService paymentService, IRecordStorage recordStorage, IRecordService recordService, IFormService formService)
+        _formService = formService;
+    }
+
+    [HttpPost]
+    public async Task<HttpResponseMessage> NotifyPaymentAsync(string formId, string recordUniqueId, string statusFieldId, bool approve, [FromForm] NotificationDto notificationDto)
+    {
+        try
         {
-            _paymentService = paymentService;
+            // reconcile
+            var reconcileResponse = await _paymentService.Reconcile(notificationDto.UniqueId);
 
-            _recordStorage = recordStorage;
+            // get record with uniqueId and update status
+            var form = _formService.Get(Guid.Parse(formId));
 
-            _recordService = recordService;
+            var record = _recordStorage.GetRecordByUniqueId(Guid.Parse(recordUniqueId), form);
 
-            _formService = formService;
+            var paymentStatusField = record.GetRecordField(Guid.Parse(statusFieldId));
+            paymentStatusField.Values.Clear();
+            paymentStatusField.Values.Add(reconcileResponse.Status);
+
+            _recordStorage.UpdateRecord(record, form);
+
+            if (approve && notificationDto.Status == Constants.PaymentStatus.Approved)
+            {
+                await _recordService.ApproveAsync(record, form);
+            }
+
+            if (reconcileResponse.Status == Constants.ErrorCode.WorkflowError)
+                return new HttpResponseMessage(HttpStatusCode.BadRequest);
+
+            string notificationXml = $"<notification_echo><wpf_unique_id>{notificationDto.UniqueId}</wpf_unique_id></notification_echo>";
+            return new HttpResponseMessage()
+            {
+                Content = new StringContent(notificationXml, Encoding.UTF8, "application/xml")
+            };
         }
-
-        [HttpPost]
-        public async Task<HttpResponseMessage> NotifyPaymentAsync(string formId, string recordUniqueId, string statusFieldId, bool approve, [FromForm] NotificationDto notificationDto)
-        {
-            try
-            {
-                // reconcile
-                var reconcileResponse = await _paymentService.Reconcile(notificationDto.UniqueId);
-
-                // get record with uniqueId and update status
-                var form = _formService.Get(Guid.Parse(formId));
-
-                var record = _recordStorage.GetRecordByUniqueId(Guid.Parse(recordUniqueId), form);
-
-                var paymentStatusField = record.GetRecordField(Guid.Parse(statusFieldId));
-                paymentStatusField.Values.Clear();
-                paymentStatusField.Values.Add(reconcileResponse.Status);
-
-                _recordStorage.UpdateRecord(record, form);
-
-                if (approve && notificationDto.Status == Constants.PaymentStatus.Approved)
-                {
-                    await _recordService.ApproveAsync(record, form);
-                }
-
-                if (reconcileResponse.Status == Constants.ErrorCode.WorkflowError)
-                    return new HttpResponseMessage(HttpStatusCode.BadRequest);
-
-                string notificationXml = $"<notification_echo><wpf_unique_id>{notificationDto.UniqueId}</wpf_unique_id></notification_echo>";
-                return new HttpResponseMessage()
-                {
-                    Content = new StringContent(notificationXml, Encoding.UTF8, "application/xml")
-                };
-            }
 			catch (Exception ex)
-            {
-                return new HttpResponseMessage(HttpStatusCode.InternalServerError);
-            }
-
+        {
+            return new HttpResponseMessage(HttpStatusCode.InternalServerError);
         }
 
     }

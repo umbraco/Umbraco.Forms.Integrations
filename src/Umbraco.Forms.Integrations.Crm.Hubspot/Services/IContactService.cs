@@ -6,29 +6,28 @@ using Umbraco.Forms.Integrations.Crm.Hubspot.Models;
 using Umbraco.Forms.Integrations.Crm.Hubspot.Models.Dtos;
 using Umbraco.Forms.Integrations.Crm.Hubspot.Models.Responses;
 
-namespace Umbraco.Forms.Integrations.Crm.Hubspot.Services
+namespace Umbraco.Forms.Integrations.Crm.Hubspot.Services;
+
+public enum CommandResult
 {
-    public enum CommandResult
-    {
-        Success,
-        Failed,
-        NotConfigured,
-    }
+    Success,
+    Failed,
+    NotConfigured,
+}
 
-    public interface IContactService
-    {
-        AuthenticationMode IsAuthorizationConfigured();
+public interface IContactService
+{
+    AuthenticationMode IsAuthorizationConfigured();
 
-        string GetAuthenticationUrl();
+    string GetAuthenticationUrl();
 
-        Task<AuthorizationResult> AuthorizeAsync(string code);
+    Task<AuthorizationResult> AuthorizeAsync(string code);
 
-        AuthorizationResult Deauthorize();
+    AuthorizationResult Deauthorize();
 
-        Task<IEnumerable<Property>> GetContactPropertiesAsync();
+    Task<IEnumerable<Property>> GetContactPropertiesAsync();
 
-        Task<CommandResult> PostContactAsync(Record record, List<MappedProperty> fieldMappings);
+    Task<CommandResult> PostContactAsync(Record record, List<MappedProperty> fieldMappings);
 
-        Task<CommandResult> PostContactAsync(Record record, List<MappedProperty> fieldMappings, Dictionary<string, string> additionalFields);
-    }
+    Task<CommandResult> PostContactAsync(Record record, List<MappedProperty> fieldMappings, Dictionary<string, string> additionalFields);
 }

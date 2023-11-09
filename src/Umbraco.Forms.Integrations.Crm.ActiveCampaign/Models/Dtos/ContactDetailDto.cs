@@ -1,10 +1,9 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace Umbraco.Forms.Integrations.Crm.ActiveCampaign.Models.Dtos
+namespace Umbraco.Forms.Integrations.Crm.ActiveCampaign.Models.Dtos;
+
+public class ContactDetailDto
 {
-    public class ContactDetailDto
-    {
-        [JsonPropertyName("contact")]
-        public ContactDto Contact { get; set; }
-    }
+    [JsonPropertyName("contact")]
+    public ContactDto Contact { get; set; }
 }
