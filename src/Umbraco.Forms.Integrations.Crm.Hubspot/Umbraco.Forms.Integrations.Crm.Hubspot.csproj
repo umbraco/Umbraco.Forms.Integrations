@@ -11,7 +11,7 @@
 		<PackageIconUrl></PackageIconUrl>
 		<PackageProjectUrl>https://github.com/umbraco/Umbraco.Forms.Integrations/tree/main-v10/src/Umbraco.Forms.Integrations.Crm.Hubspot</PackageProjectUrl>
 		<RepositoryUrl>https://github.com/umbraco/Umbraco.Forms.Integrations</RepositoryUrl>
-		<Version>3.3.0</Version>
+		<Version>3.3.1</Version>
 		<Authors>Umbraco HQ</Authors>
 		<Company>Umbraco</Company>
 		<PackageTags>Umbraco;Umbraco-Marketplace</PackageTags>
@@ -25,8 +25,8 @@
 	</ItemGroup>
 
 	<ItemGroup Condition="'$(TargetFramework)' == 'net70'">
-		<PackageReference Include="Umbraco.Cms.Web.Website" Version="[11.0.0,)" />
-		<PackageReference Include="Umbraco.Forms.Core" Version="[11.0.0,)" />
+		<PackageReference Include="Umbraco.Cms.Web.Website" Version="[11.0.0,13)" />
+		<PackageReference Include="Umbraco.Forms.Core" Version="[11.0.0,13)" />
 	</ItemGroup>
 
 	<ItemGroup>
