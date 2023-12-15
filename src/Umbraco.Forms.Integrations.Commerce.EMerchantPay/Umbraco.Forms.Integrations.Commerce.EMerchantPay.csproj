@@ -20,14 +20,10 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<!--<PackageReference Include="Umbraco.Cms.Web.Website" version="[13.0.0,14)" />
+		<PackageReference Include="Umbraco.Cms.Web.Website" version="[13.0.0,14)" />
 		<PackageReference Include="Umbraco.Cms.Web.BackOffice" version="[13.0.0,14)" />
 		<PackageReference Include="Umbraco.Forms" version="[13.0.0,14)" />
-		<PackageReference Include="Umbraco.Forms.Core" version="[13.0.0,14)" />-->
-		<PackageReference Include="Umbraco.Cms.Web.Website" version="13.0.0-rc1" />
-		<PackageReference Include="Umbraco.Cms.Web.BackOffice" version="13.0.0-rc1" />
-		<PackageReference Include="Umbraco.Forms" version="13.0.0-rc1" />
-		<PackageReference Include="Umbraco.Forms.Core" version="13.0.0-rc1" />
+		<PackageReference Include="Umbraco.Forms.Core" version="[13.0.0,14)" />
 	</ItemGroup>
 	
 	<ItemGroup>
