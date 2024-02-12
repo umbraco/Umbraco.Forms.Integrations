@@ -1,4 +1,4 @@
-# Hubspot with Umbraco Forms
+# HubSpot with Umbraco Forms
 With this integration, you can connect HubSpot CRM with Umbraco Forms and store information  that your Umbraco website visitors submit, as contacts in your HubSpot CRM platform!
 
 More specifically the integration adds a new workflow option when creating or editing a form via the back-office. When the form is added to your webpage, filled out, and submitted the information can be seen via your HubSpot account dashboard. 
