@@ -21,7 +21,7 @@
       <contributor>Warren Buckley</contributor>
       <contributor>Andy Butland</contributor>
     </contributors>
-    <readme><![CDATA[An extension for Umbraco Forms to add support for submitting data to Hubspot]]></readme>
+    <readme><![CDATA[An extension for Umbraco Forms to add support for submitting data to HubSpot]]></readme>
   </info>
   <files>
     <folder path="App_Plugins/UmbracoForms.Integrations/Crm/Hubspot" orgPath="App_Plugins/UmbracoForms.Integrations/Crm/Hubspot" />
