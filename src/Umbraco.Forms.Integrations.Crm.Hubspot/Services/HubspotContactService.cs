@@ -149,7 +149,7 @@ public class HubspotContactService : IContactService
             return CommandResult.NotConfigured;
         }
 
-        // Map data from the workflow setting Hubspot fields
+        // Map data from the workflow setting HubSpot fields
         // From the form field values submitted for this form submission
         var propertiesRequestV1 = new PropertiesRequestV1();
         var propertiesRequestV3 = new PropertiesRequestV3();
@@ -167,7 +167,7 @@ public class HubspotContactService : IContactService
                 propertiesRequestV1.Properties.Add(new PropertiesRequestV1.PropertyValue(mapping.HubspotField, value));
                 propertiesRequestV3.Properties.Add(mapping.HubspotField, value);
 
-                // TODO: What about different field types in forms & Hubspot that are not simple text ones?
+                // TODO: What about different field types in forms & HubSpot that are not simple text ones?
 
                 // "Email" appears to be a special form field used for uniqueness checks, so we can safely look it up by name.
                 if (mapping.HubspotField.ToLowerInvariant() == "email")
@@ -192,7 +192,7 @@ public class HubspotContactService : IContactService
             }
         }
 
-        // POST data to hubspot
+        // POST data to HubSpot
         // https://api.hubapi.com/crm/v3/objects/contacts?hapikey=YOUR_HUBSPOT_API_KEY
         var requestUrl = $"{CrmV3ApiBaseUrl}objects/contacts";
         var httpMethod = HttpMethod.Post;
@@ -215,7 +215,7 @@ public class HubspotContactService : IContactService
                 var retryResult = await HandleFailedRequest(response.StatusCode, requestUrl, httpMethod, authenticationDetails, propertiesRequestV3, JsonContentType);
                 if (retryResult.Success)
                 {
-                    _logger.LogInformation($"Hubspot contact record created from record {record.UniqueId}.");
+                    _logger.LogInformation($"HubSpot contact record created from record {record.UniqueId}.");
                     return CommandResult.Success;
                 }
                 else
@@ -228,7 +228,7 @@ public class HubspotContactService : IContactService
         }
         else
         {
-            _logger.LogInformation($"Hubspot contact record created from record {record.UniqueId}.");
+            _logger.LogInformation($"HubSpot contact record created from record {record.UniqueId}.");
             return CommandResult.Success;
         }
     }
@@ -247,7 +247,7 @@ public class HubspotContactService : IContactService
                 var retryResult = await HandleFailedRequest(response.StatusCode, requestUrl, HttpMethod.Post, authenticationDetails, postData, JsonContentType);
                 if (retryResult.Success)
                 {
-                    _logger.LogInformation($"Hubspot contact record updated from record {record.UniqueId}.");
+                    _logger.LogInformation($"HubSpot contact record updated from record {record.UniqueId}.");
                     return CommandResult.Success;
                 }
                 else
@@ -258,7 +258,7 @@ public class HubspotContactService : IContactService
             }
             else
             {
-                _logger.LogInformation($"Hubspot contact record updated from record {record.UniqueId}.");
+                _logger.LogInformation($"HubSpot contact record updated from record {record.UniqueId}.");
                 return CommandResult.Success;
             }
         }
