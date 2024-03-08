@@ -30,8 +30,8 @@ namespace Umbraco.Forms.Integrations.Crm.Hubspot
             _contactService = contactService;
 
             Id = new Guid(HubspotWorkflowId);
-            Name = "Save Contact to Hubspot";
-            Description = "Form submissions are sent to Hubspot CRM";
+            Name = "Save Contact to HubSpot";
+            Description = "Form submissions are sent to HubSpot CRM";
             Icon = "icon-handshake";
             Group = "CRM";
         }
@@ -47,7 +47,7 @@ namespace Umbraco.Forms.Integrations.Crm.Hubspot
             var fieldMappings = JsonConvert.DeserializeObject<List<MappedProperty>>(fieldMappingsRawJson);
             if (fieldMappings.Count == 0)
             {
-                _logger.LogWarning("Workflow {WorkflowName}: Missing Hubspot field mappings for workflow for the form {FormName} ({FormId})",
+                _logger.LogWarning("Workflow {WorkflowName}: Missing HubSpot field mappings for workflow for the form {FormName} ({FormId})",
                     workflowName, context.Form.Name, context.Form.Id);
                 return WorkflowExecutionStatus.NotConfigured;
             }
