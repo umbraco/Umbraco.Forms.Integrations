@@ -63,10 +63,10 @@ namespace Umbraco.Cms.Integrations.OAuthProxy.Controllers
 
             // Shopify's endpoint (and potentially others in future) for retrieving the access token is directly coupled with the shop's name.
             // As a result the address of the client needs to be updated with the request header value for the name of the shop.
-            var serviceAddressReplaceHeader = Request.Headers.FirstOrDefault(p => p.Key.Contains(ServiceAddressReplacePrefixHeaderKey));
+            var serviceAddressReplaceHeader = Request.Headers.FirstOrDefault(p => p.Key.ToLowerInvariant().Contains(ServiceAddressReplacePrefixHeaderKey));
             if (!serviceAddressReplaceHeader.Equals(default(KeyValuePair<string, StringValues>)) && httpClient.BaseAddress != null)
             {
-                var replaceKey = serviceAddressReplaceHeader.Key.Replace(ServiceAddressReplacePrefixHeaderKey, string.Empty);
+                var replaceKey = serviceAddressReplaceHeader.Key.ToLowerInvariant().Replace(ServiceAddressReplacePrefixHeaderKey, string.Empty);
 
                 var baseAddress = httpClient.BaseAddress.ToString().Replace($"{replaceKey}", serviceAddressReplaceHeader.Value);
                 httpClient.BaseAddress = new Uri(baseAddress);
