@@ -3,7 +3,7 @@ using Umbraco.Cms.Integrations.OAuthProxy.Filters;
 
 namespace Umbraco.Cms.Integrations.OAuthProxy.Controllers
 {
-	[ApiController]
+    [ApiController]
     public class ShopifyComplianceController : Controller
     {
         /// <summary>

@@ -16,7 +16,7 @@ namespace Umbraco.Cms.Integrations.OAuthProxy.Filters
 	{
 		private const string HeaderKey = "X-Shopify-Hmac-Sha256";
 
-        public override async Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next)
+		public override async Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next)
 		{
 			var appSettings = context.HttpContext.RequestServices.GetService<IOptions<AppSettings>>().Value;
 
