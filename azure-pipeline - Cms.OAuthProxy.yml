@@ -59,6 +59,11 @@ steps:
           "name": "AppSettings:DynamicsClientSecret",
           "value": "$(dynamicsAppSecretKey)",
           "slotSetting": false
+        },
+        {
+          "name": "AppSettings:ShopifyClientSecret",
+          "value": "$(shopifyAppSecretKey)",
+          "slotSetting": false
         }
       ]
 - task: AzureWebApp@1
@@ -97,6 +102,11 @@ steps:
         {
           "name": "AppSettings:DynamicsClientSecret",
           "value": "$(dynamicsAppSecretKey)",
+          "slotSetting": false
+        },
+        {
+          "name": "AppSettings:ShopifyClientSecret",
+          "value": "$(shopifyAppSecretKey)",
           "slotSetting": false
         }
       ]
