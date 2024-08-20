@@ -10,6 +10,13 @@
 *.userosscache
 *.sln.docstates
 
+# test site
+src/Umbraco.Forms.Integrations.Testsite.V14/App_Plugins/Our.Umbraco.DashIt
+src/Umbraco.Forms.Integrations.Testsite.V14/umbraco
+src/Umbraco.Forms.Integrations.Testsite.V14/Views
+src/Umbraco.Forms.Integrations.Testsite.V14/wwwroot
+src/Umbraco.Forms.Integrations.Automation.Zapier/wwwroot
+
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs
 

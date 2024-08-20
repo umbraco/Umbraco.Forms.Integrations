@@ -1,7 +1,9 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
-
+using Microsoft.OpenApi.Models;
+using Swashbuckle.AspNetCore.SwaggerGen;
 using Umbraco.Cms.Core.Composing;
 using Umbraco.Cms.Core.DependencyInjection;
+using Umbraco.Cms.Core.Notifications;
 using Umbraco.Forms.Core.Services.Notifications;
 using Umbraco.Forms.Integrations.Automation.Zapier.Components;
 using Umbraco.Forms.Integrations.Automation.Zapier.Configuration;
@@ -33,6 +35,22 @@ namespace Umbraco.Forms.Integrations.Automation.Zapier
             builder.Services.AddScoped<IUserValidationService, UserValidationService>();
 
             builder.Services.AddSingleton<UmbUrlHelper>();
+
+            // Generate Swagger documentation for Zapier Forms API
+            builder.Services.Configure<SwaggerGenOptions>(options =>
+            {
+                options.SwaggerDoc(
+                    Constants.ManagementApi.ApiName,
+                    new OpenApiInfo
+                    {
+                        Title = Constants.ManagementApi.ApiTitle,
+                        Version = "Latest",
+                        Description = $"Describes the {Constants.ManagementApi.ApiTitle} available for handling Zapier Forms automation and configuration."
+                    });
+                // remove this as Swagger throws an ArgumentException: An item with the same key has already been added. Key: 401
+                //options.OperationFilter<BackOfficeSecurityRequirementsOperationFilter>();
+                options.CustomOperationIds(e => $"{e.ActionDescriptor.RouteValues["action"]}");
+            });
         }
     }
 }

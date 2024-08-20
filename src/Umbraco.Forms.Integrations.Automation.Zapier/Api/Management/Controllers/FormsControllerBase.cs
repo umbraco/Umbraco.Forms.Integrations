@@ -1,16 +1,30 @@
-﻿using System.Linq;
-using Umbraco.Cms.Web.Common.Controllers;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
+using Umbraco.Cms.Api.Common.Attributes;
+using Umbraco.Cms.Web.Common.Routing;
 using Umbraco.Forms.Integrations.Automation.Zapier.Services;
 
-namespace Umbraco.Forms.Integrations.Automation.Zapier.Controllers
+namespace Umbraco.Forms.Integrations.Automation.Zapier.Api.Management.Controllers
 {
-    public class ZapierFormAuthorizedApiController : UmbracoApiController
+    [ApiController]
+    [BackOfficeRoute($"{Constants.ManagementApi.RootPath}/v{{version:apiVersion}}")]
+    [MapToApi(Constants.ManagementApi.ApiName)]
+    public class FormsControllerBase : Controller
     {
         private readonly IUserValidationService _userValidationService;
+        protected readonly ZapierFormService ZapierFormService;
 
-        public ZapierFormAuthorizedApiController(
-            IUserValidationService userValidationService) =>
+        public FormsControllerBase(
+            IUserValidationService userValidationService,
+            ZapierFormService zapierFormService)
+        {
             _userValidationService = userValidationService;
+            ZapierFormService = zapierFormService;
+        }
 
         public bool IsAccessValid()
         {
