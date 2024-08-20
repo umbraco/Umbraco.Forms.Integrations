@@ -26,7 +26,7 @@ namespace Umbraco.Forms.Integrations.Automation.Zapier.Api.Management.Controller
             ZapierFormService = zapierFormService;
         }
 
-        public bool IsAccessValid()
+        protected bool IsAccessValid()
         {
             string username = string.Empty;
             string password = string.Empty;

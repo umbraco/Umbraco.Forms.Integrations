@@ -47,8 +47,7 @@ namespace Umbraco.Forms.Integrations.Automation.Zapier
                         Version = "Latest",
                         Description = $"Describes the {Constants.ManagementApi.ApiTitle} available for handling Zapier Forms automation and configuration."
                     });
-                // remove this as Swagger throws an ArgumentException: An item with the same key has already been added. Key: 401
-                //options.OperationFilter<BackOfficeSecurityRequirementsOperationFilter>();
+
                 options.CustomOperationIds(e => $"{e.ActionDescriptor.RouteValues["action"]}");
             });
         }
