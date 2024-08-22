@@ -19,8 +19,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		..\README.md = ..\README.md
 	EndProjectSection
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Umbraco.Cms.Integrations.OAuthProxy", "Umbraco.Cms.Integrations.OAuthProxy\Umbraco.Cms.Integrations.OAuthProxy.csproj", "{B3FD7257-B50B-4221-A5CF-59AC25862924}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Automation", "Automation", "{8C56413E-07EF-4C1B-8D72-5493B6D35847}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Zapier", "Zapier", "{B05E7FB6-2403-4971-AB34-4BE43A69FBE2}"
@@ -41,7 +39,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Umbraco.Forms.Integrations.
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Umbraco.Forms.Integrations.Automation.Zapier", "Umbraco.Forms.Integrations.Automation.Zapier\Umbraco.Forms.Integrations.Automation.Zapier.csproj", "{B437434B-2A95-4C8E-AF6E-4B55D4781C70}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Umbraco.Forms.Integrations.Testsite.V14", "Umbraco.Forms.Integrations.Testsite.V14\Umbraco.Forms.Integrations.Testsite.V14.csproj", "{8595CB83-F6E1-485D-A776-E4EB5DA13436}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Umbraco.Forms.Integrations.Testsite.V14", "Umbraco.Forms.Integrations.Testsite.V14\Umbraco.Forms.Integrations.Testsite.V14.csproj", "{8595CB83-F6E1-485D-A776-E4EB5DA13436}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -57,10 +55,6 @@ Global
 		{53742941-B77B-4A95-B247-F3ADD944C2FD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{53742941-B77B-4A95-B247-F3ADD944C2FD}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{53742941-B77B-4A95-B247-F3ADD944C2FD}.Release|Any CPU.Build.0 = Release|Any CPU
-		{B3FD7257-B50B-4221-A5CF-59AC25862924}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{B3FD7257-B50B-4221-A5CF-59AC25862924}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{B3FD7257-B50B-4221-A5CF-59AC25862924}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{B3FD7257-B50B-4221-A5CF-59AC25862924}.Release|Any CPU.Build.0 = Release|Any CPU
 		{FD1A8505-A19E-4281-8701-6BA708C03CBE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{FD1A8505-A19E-4281-8701-6BA708C03CBE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FD1A8505-A19E-4281-8701-6BA708C03CBE}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -93,7 +87,6 @@ Global
 		{E7F3F2CC-DCB6-4158-AABA-D2EA9E1B9FA8} = {621A30D4-2251-43FF-BB4A-A4808C6A67D6}
 		{621A30D4-2251-43FF-BB4A-A4808C6A67D6} = {B068CD05-EA88-4457-B8D9-6DB899E7EBE1}
 		{53742941-B77B-4A95-B247-F3ADD944C2FD} = {621A30D4-2251-43FF-BB4A-A4808C6A67D6}
-		{B3FD7257-B50B-4221-A5CF-59AC25862924} = {621A30D4-2251-43FF-BB4A-A4808C6A67D6}
 		{B05E7FB6-2403-4971-AB34-4BE43A69FBE2} = {8C56413E-07EF-4C1B-8D72-5493B6D35847}
 		{854D0DF1-AAEE-406A-82A8-B05992A0A74B} = {F436249E-0796-4FCC-85A5-180A0DCDB05F}
 		{FD1A8505-A19E-4281-8701-6BA708C03CBE} = {854D0DF1-AAEE-406A-82A8-B05992A0A74B}

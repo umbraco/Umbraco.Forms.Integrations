@@ -1,0 +1,19 @@
+﻿namespace Umbraco.Forms.Integrations.Crm.Hubspot.Configuration
+{
+    public class AppSettings
+    {
+        public string HubspotClientSecret { get; set; }
+
+        public string HubspotFormsClientSecret { get; set; }
+
+        public string SemrushClientSecret { get; set; }
+
+        public string ShopifyClientSecret { get; set; }
+
+        public string GoogleClientSecret { get; set; }
+
+        public string DynamicsClientSecret { get; set; }
+
+        public string this[string propertyName] => (string)GetType().GetProperty(propertyName)?.GetValue(this, null);
+    }
+}

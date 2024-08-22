@@ -39,7 +39,7 @@ namespace Umbraco.Forms.Integrations.Crm.Hubspot
         [Setting("Field Mappings", Description = "Map Umbraco Form fields to HubSpot contact fields", View = "~/App_Plugins/UmbracoForms.Integrations/Crm/Hubspot/hubspotfields.html")]
         public string FieldMappings { get; set; }
 
-        public override WorkflowExecutionStatus Execute(WorkflowExecutionContext context)
+        public WorkflowExecutionStatus Execute(WorkflowExecutionContext context)
         {
             var workflowName = GetWorkflowName();
 
@@ -67,6 +67,11 @@ namespace Umbraco.Forms.Integrations.Crm.Hubspot
                 default:
                     throw new ArgumentOutOfRangeException(nameof(commandResult));
             }
+        }
+
+        public override Task<WorkflowExecutionStatus> ExecuteAsync(WorkflowExecutionContext context)
+        {
+            throw new NotImplementedException();
         }
 
         public override List<Exception> ValidateSettings() => new List<Exception>();

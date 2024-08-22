@@ -1,0 +1,22 @@
+﻿using Asp.Versioning;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using Umbraco.Cms.Api.Common.Attributes;
+using Umbraco.Cms.Web.Common.Authorization;
+using Umbraco.Cms.Web.Common.Routing;
+
+namespace Umbraco.Forms.Integrations.Crm.Hubspot.Api.Management.Controllers
+{
+    [ApiController]
+    [Authorize(Policy = AuthorizationPolicies.BackOfficeAccess)]
+    [MapToApi(Constants.ManagementApi.ApiName)]
+    public class HubspotControllerBase : Controller
+    {
+        
+    }
+}
