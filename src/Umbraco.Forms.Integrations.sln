@@ -25,21 +25,19 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Automation", "Automation", 
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Zapier", "Zapier", "{B05E7FB6-2403-4971-AB34-4BE43A69FBE2}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Umbraco.Forms.Integrations.Automation.Zapier", "Umbraco.Forms.Integrations.Automation.Zapier\Umbraco.Forms.Integrations.Automation.Zapier.csproj", "{9602AB40-C74D-4067-814F-AF7EC33A5F8C}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Commerce", "Commerce", "{F436249E-0796-4FCC-85A5-180A0DCDB05F}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Emerchantpay", "Emerchantpay", "{854D0DF1-AAEE-406A-82A8-B05992A0A74B}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Umbraco.Forms.Integrations.Commerce.Emerchantpay", "Umbraco.Forms.Integrations.Commerce.Emerchantpay\Umbraco.Forms.Integrations.Commerce.Emerchantpay.csproj", "{FD1A8505-A19E-4281-8701-6BA708C03CBE}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Umbraco.Forms.Integrations.Testsite.V10", "Umbraco.Forms.Integrations.Testsite.V10\Umbraco.Forms.Integrations.Testsite.V10.csproj", "{4A475341-A17E-419F-B5A1-415FF1911046}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ActiveCampaign", "ActiveCampaign", "{104D2677-6B53-4FF9-BB62-A68BD1D2884E}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Umbraco.Forms.Integrations.Crm.ActiveCampaign", "Umbraco.Forms.Integrations.Crm.ActiveCampaign\Umbraco.Forms.Integrations.Crm.ActiveCampaign.csproj", "{084CA526-1E5D-4AD7-8715-C5D6342CB3A0}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Umbraco.Forms.Integrations.Testsite.V12", "Umbraco.Forms.Integrations.Testsite.V12\Umbraco.Forms.Integrations.Testsite.V12.csproj", "{3A5AC6E0-FCA8-4C58-A478-F4E7EF37A02C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Umbraco.Forms.Integrations.Automation.Zapier", "Umbraco.Forms.Integrations.Automation.Zapier\Umbraco.Forms.Integrations.Automation.Zapier.csproj", "{B437434B-2A95-4C8E-AF6E-4B55D4781C70}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Umbraco.Forms.Integrations.Testsite.V14", "Umbraco.Forms.Integrations.Testsite.V14\Umbraco.Forms.Integrations.Testsite.V14.csproj", "{8595CB83-F6E1-485D-A776-E4EB5DA13436}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -59,26 +57,22 @@ Global
 		{B3FD7257-B50B-4221-A5CF-59AC25862924}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B3FD7257-B50B-4221-A5CF-59AC25862924}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B3FD7257-B50B-4221-A5CF-59AC25862924}.Release|Any CPU.Build.0 = Release|Any CPU
-		{9602AB40-C74D-4067-814F-AF7EC33A5F8C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{9602AB40-C74D-4067-814F-AF7EC33A5F8C}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{9602AB40-C74D-4067-814F-AF7EC33A5F8C}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{9602AB40-C74D-4067-814F-AF7EC33A5F8C}.Release|Any CPU.Build.0 = Release|Any CPU
 		{FD1A8505-A19E-4281-8701-6BA708C03CBE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{FD1A8505-A19E-4281-8701-6BA708C03CBE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FD1A8505-A19E-4281-8701-6BA708C03CBE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FD1A8505-A19E-4281-8701-6BA708C03CBE}.Release|Any CPU.Build.0 = Release|Any CPU
-		{4A475341-A17E-419F-B5A1-415FF1911046}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{4A475341-A17E-419F-B5A1-415FF1911046}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{4A475341-A17E-419F-B5A1-415FF1911046}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{4A475341-A17E-419F-B5A1-415FF1911046}.Release|Any CPU.Build.0 = Release|Any CPU
 		{084CA526-1E5D-4AD7-8715-C5D6342CB3A0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{084CA526-1E5D-4AD7-8715-C5D6342CB3A0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{084CA526-1E5D-4AD7-8715-C5D6342CB3A0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{084CA526-1E5D-4AD7-8715-C5D6342CB3A0}.Release|Any CPU.Build.0 = Release|Any CPU
-		{3A5AC6E0-FCA8-4C58-A478-F4E7EF37A02C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{3A5AC6E0-FCA8-4C58-A478-F4E7EF37A02C}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{3A5AC6E0-FCA8-4C58-A478-F4E7EF37A02C}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{3A5AC6E0-FCA8-4C58-A478-F4E7EF37A02C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B437434B-2A95-4C8E-AF6E-4B55D4781C70}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B437434B-2A95-4C8E-AF6E-4B55D4781C70}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B437434B-2A95-4C8E-AF6E-4B55D4781C70}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B437434B-2A95-4C8E-AF6E-4B55D4781C70}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8595CB83-F6E1-485D-A776-E4EB5DA13436}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8595CB83-F6E1-485D-A776-E4EB5DA13436}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8595CB83-F6E1-485D-A776-E4EB5DA13436}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8595CB83-F6E1-485D-A776-E4EB5DA13436}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -89,11 +83,11 @@ Global
 		{53742941-B77B-4A95-B247-F3ADD944C2FD} = {621A30D4-2251-43FF-BB4A-A4808C6A67D6}
 		{B3FD7257-B50B-4221-A5CF-59AC25862924} = {621A30D4-2251-43FF-BB4A-A4808C6A67D6}
 		{B05E7FB6-2403-4971-AB34-4BE43A69FBE2} = {8C56413E-07EF-4C1B-8D72-5493B6D35847}
-		{9602AB40-C74D-4067-814F-AF7EC33A5F8C} = {B05E7FB6-2403-4971-AB34-4BE43A69FBE2}
 		{854D0DF1-AAEE-406A-82A8-B05992A0A74B} = {F436249E-0796-4FCC-85A5-180A0DCDB05F}
 		{FD1A8505-A19E-4281-8701-6BA708C03CBE} = {854D0DF1-AAEE-406A-82A8-B05992A0A74B}
 		{104D2677-6B53-4FF9-BB62-A68BD1D2884E} = {B068CD05-EA88-4457-B8D9-6DB899E7EBE1}
 		{084CA526-1E5D-4AD7-8715-C5D6342CB3A0} = {104D2677-6B53-4FF9-BB62-A68BD1D2884E}
+		{B437434B-2A95-4C8E-AF6E-4B55D4781C70} = {B05E7FB6-2403-4971-AB34-4BE43A69FBE2}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {24944114-049F-4C44-95C5-E50600988018}

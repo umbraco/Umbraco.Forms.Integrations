@@ -1,24 +1,25 @@
-﻿using Newtonsoft.Json;
+﻿using System.Text.Json.Serialization;
 
 namespace Umbraco.Forms.Integrations.Automation.Zapier.Models.Dtos
 {
     public class SubscriptionDto
     {
-        [JsonProperty("id")]
+        [JsonPropertyName("id")]
         public int Id { get; set; }
 
-        [JsonProperty("entityId")]
+        [JsonPropertyName("entityId")]
         public string EntityId { get; set; }
 
-        [JsonProperty("type")]
+        [JsonPropertyName("type")]
         public int Type { get; set; }
 
-        [JsonProperty("typeName")] public string TypeName => nameof(Constants.EntityType.Form);
+        [JsonPropertyName("typeName")] 
+        public string TypeName => nameof(Constants.EntityType.Form);
         
-        [JsonProperty("hookUrl")]
+        [JsonPropertyName("hookUrl")]
         public string HookUrl { get; set; }
 
-        [JsonProperty("subscribeHook")]
+        [JsonPropertyName("subscribeHook")]
         public bool SubscribeHook { get; set; }
     }
 }

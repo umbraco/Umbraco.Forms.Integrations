@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-using Umbraco.Forms.Core.Models;
+﻿using Umbraco.Forms.Core.Models;
 using Umbraco.Forms.Core.Persistence.Dtos;
 
 namespace Umbraco.Forms.Integrations.Automation.Zapier.Extensions

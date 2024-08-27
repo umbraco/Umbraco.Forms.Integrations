@@ -34,5 +34,16 @@ namespace Umbraco.Forms.Integrations.Automation.Zapier
         {
             public const int Form = 2;
         }
+
+        public static class ManagementApi
+        {
+            public const string RootPath = "zapier/forms/management/api";
+
+            public const string ApiName = "zapier-forms-management";
+
+            public const string ApiTitle = "Zapier Forms Management API";
+
+            public const string GroupName = "Zapier Forms";
+        }
     }
 }
