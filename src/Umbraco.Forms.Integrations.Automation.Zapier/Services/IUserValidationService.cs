@@ -1,6 +1,4 @@
-﻿using System.Threading.Tasks;
-
-namespace Umbraco.Forms.Integrations.Automation.Zapier.Services
+﻿namespace Umbraco.Forms.Integrations.Automation.Zapier.Services
 {
     public interface IUserValidationService
     {

@@ -1,11 +1,6 @@
 ﻿using Asp.Versioning;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Umbraco.Forms.Integrations.Automation.Zapier.Extensions;
 using Umbraco.Forms.Integrations.Automation.Zapier.Services;
 
@@ -15,7 +10,8 @@ namespace Umbraco.Forms.Integrations.Automation.Zapier.Api.Management.Controller
     [ApiExplorerSettings(GroupName = Constants.ManagementApi.GroupName)]
     public class GetFormPropertiesByIdController : FormsControllerBase
     {
-        public GetFormPropertiesByIdController(IUserValidationService userValidationService, ZapierFormService zapierFormService) : base(userValidationService, zapierFormService)
+        public GetFormPropertiesByIdController(IUserValidationService userValidationService, ZapierFormService zapierFormService) 
+            : base(userValidationService, zapierFormService)
         {
         }
 
