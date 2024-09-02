@@ -18,9 +18,11 @@ namespace Umbraco.Forms.Integrations.Automation.Zapier.Api.Management.Controller
 
         [HttpGet("forms")]
         [ProducesResponseType(typeof(IEnumerable<FormDto>), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public IActionResult GetForms()
         {
-            if (!IsAccessValid()) return Ok(Enumerable.Empty<FormDto>());
+            if (!IsAccessValid())
+                return Unauthorized();
 
             return Ok(ZapierFormService.GetAll());
         }
