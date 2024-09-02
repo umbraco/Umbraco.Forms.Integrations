@@ -17,11 +17,13 @@ namespace Umbraco.Forms.Integrations.Automation.Zapier.Api.Management.Controller
 
         [HttpGet("forms/{id}")]
         [ProducesResponseType(typeof(List<Dictionary<string, string>>), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public IActionResult GetFormPropertiesById(string id)
         {
             var emptyList = new List<Dictionary<string, string>>();
 
-            if (!IsAccessValid()) return Ok(emptyList);
+            if (!IsAccessValid())
+                return Unauthorized();
 
             var form = ZapierFormService.GetById(id);
 
