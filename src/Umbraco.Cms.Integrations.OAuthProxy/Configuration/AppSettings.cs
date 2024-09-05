@@ -8,6 +8,8 @@
 
         public string SemrushClientSecret { get; set; }
 
+        public string ShopifyClientId { get; set; }
+
         public string ShopifyClientSecret { get; set; }
 
         public string GoogleClientSecret { get; set; }
