@@ -12,6 +12,8 @@ namespace Umbraco.Cms.Integrations.OAuthProxy.Models
 
         public ShopifyRequest(IQueryCollection collection) => _collection = collection;
 
+        public string Code => _collection["code"];
+
         public string Shop => _collection["shop"];
 
         public string Hmac => _collection["hmac"];
@@ -20,7 +22,9 @@ namespace Umbraco.Cms.Integrations.OAuthProxy.Models
 
         public string Timestamp => _collection["timestamp"];
 
-        public bool IsInstallationRequestFlow => !string.IsNullOrEmpty(Shop) && !string.IsNullOrEmpty(Hmac);
+        public bool IsInstallationRequestFlow => !string.IsNullOrEmpty(Shop) && !string.IsNullOrEmpty(Hmac) && string.IsNullOrEmpty(Code);
+
+        public bool IsInstallationRequestFlowWithCode => !string.IsNullOrEmpty(Shop) && !string.IsNullOrEmpty(Hmac) && !string.IsNullOrEmpty(Code);
 
         public string GetHmacBody()
         {

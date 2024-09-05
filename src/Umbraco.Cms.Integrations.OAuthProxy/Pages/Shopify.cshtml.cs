@@ -55,7 +55,7 @@ namespace Umbraco.Cms.Integrations.OAuthProxy.Pages
         public async Task<IActionResult> OnGetAsync()
         {
             var shopifyRequest = new ShopifyRequest(Request.Query);
-            if (shopifyRequest.IsInstallationRequestFlow)
+            if (shopifyRequest.IsInstallationRequestFlowWithCode)
             {
                 var hmacBody = shopifyRequest.GetHmacBody();
                 var hmacValue = shopifyRequest.GetHmacValue(_appSettings.ShopifyClientSecret, hmacBody);
@@ -74,7 +74,7 @@ namespace Umbraco.Cms.Integrations.OAuthProxy.Pages
                 var requestUri = string.Format("/admin/oauth/access_token?client_id={0}&client_secret={1}&code={2}",
                     _appSettings.ShopifyClientId,
                     _appSettings.ShopifyClientSecret,
-                    Request.Query["authorization_code"]);
+                    shopifyRequest.Code);
                 var response = await client.PostAsync(requestUri, new StringContent(string.Empty));
 
                 if (!response.IsSuccessStatusCode)
