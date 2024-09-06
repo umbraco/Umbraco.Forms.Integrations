@@ -1,5 +1,5 @@
 trigger:
-- main
+- main-v10
 
 pool:
   vmImage: 'windows-latest'
@@ -59,6 +59,16 @@ steps:
           "name": "AppSettings:DynamicsClientSecret",
           "value": "$(dynamicsAppSecretKey)",
           "slotSetting": false
+        },
+        {
+          "name": "AppSettings:ShopifyClientSecret",
+          "value": "$(shopifyAppSecretKey)",
+          "slotSetting": false
+        },
+        {
+          "name": "AppSettings:ShopifyClientId",
+          "value": "$(shopifyAppClientIdKey)",
+          "slotSetting": false
         }
       ]
 - task: AzureWebApp@1
@@ -97,6 +107,16 @@ steps:
         {
           "name": "AppSettings:DynamicsClientSecret",
           "value": "$(dynamicsAppSecretKey)",
+          "slotSetting": false
+        },
+        {
+          "name": "AppSettings:ShopifyClientSecret",
+          "value": "$(shopifyAppSecretKey)",
+          "slotSetting": false
+        },
+        {
+          "name": "AppSettings:ShopifyClientId",
+          "value": "$(shopifyAppClientIdKey)",
           "slotSetting": false
         }
       ]
