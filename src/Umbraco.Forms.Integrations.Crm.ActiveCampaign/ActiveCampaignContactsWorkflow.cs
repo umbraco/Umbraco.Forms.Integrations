@@ -2,7 +2,6 @@
 using Microsoft.Extensions.Options;
 
 using System.Text.Json;
-
 using Umbraco.Forms.Core;
 using Umbraco.Forms.Core.Enums;
 using Umbraco.Forms.Core.Persistence.Dtos;
@@ -55,7 +54,7 @@ namespace Umbraco.Forms.Integrations.Crm.ActiveCampaign
             _logger = logger;
         }
 
-        public override WorkflowExecutionStatus Execute(WorkflowExecutionContext context)
+        public override async Task<WorkflowExecutionStatus> ExecuteAsync(WorkflowExecutionContext context)
         {
             try
             {
@@ -71,7 +70,7 @@ namespace Umbraco.Forms.Integrations.Crm.ActiveCampaign
                 {
                     _logger.LogInformation("Contact already exists in ActiveCampaign and workflow is configured to not apply updates, so update of information was skipped.");
 
-                    return WorkflowExecutionStatus.Completed;
+                    return await Task.FromResult<WorkflowExecutionStatus>(WorkflowExecutionStatus.Completed);
                 }
 
                 var requestDto = new ContactDetailDto { Contact = Build(context.Record) };
@@ -97,7 +96,7 @@ namespace Umbraco.Forms.Integrations.Crm.ActiveCampaign
                 {
                     _logger.LogError($"Failed to create/update contact: {email}");
 
-                    return WorkflowExecutionStatus.Failed;
+                    return await Task.FromResult<WorkflowExecutionStatus>(WorkflowExecutionStatus.Failed);
                 }
 
                 // Associate contact with account if last one is specified.
@@ -107,13 +106,13 @@ namespace Umbraco.Forms.Integrations.Crm.ActiveCampaign
                         .ConfigureAwait(false).GetAwaiter().GetResult();
                 }
 
-                return WorkflowExecutionStatus.Completed;
+                return await Task.FromResult<WorkflowExecutionStatus>(WorkflowExecutionStatus.Completed);
             }
             catch(Exception ex)
             {
                 _logger.LogError(ex, ex.Message);
 
-                return WorkflowExecutionStatus.Failed;
+                return await Task.FromResult<WorkflowExecutionStatus>(WorkflowExecutionStatus.Failed);
             }
         }
 

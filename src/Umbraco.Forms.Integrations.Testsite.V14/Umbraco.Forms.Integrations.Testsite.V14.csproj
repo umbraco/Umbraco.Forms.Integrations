@@ -13,6 +13,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Umbraco.Forms.Integrations.Automation.Zapier\Umbraco.Forms.Integrations.Automation.Zapier.csproj" />
+    <ProjectReference Include="..\Umbraco.Forms.Integrations.Crm.ActiveCampaign\Umbraco.Forms.Integrations.Crm.ActiveCampaign.csproj" />
     <ProjectReference Include="..\Umbraco.Forms.Integrations.Crm.Hubspot\Umbraco.Forms.Integrations.Crm.Hubspot.csproj" />
   </ItemGroup>
 
