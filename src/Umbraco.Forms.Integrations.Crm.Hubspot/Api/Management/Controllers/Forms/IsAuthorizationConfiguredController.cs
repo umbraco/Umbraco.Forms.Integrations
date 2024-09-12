@@ -9,13 +9,13 @@ using Umbraco.Forms.Integrations.Crm.Hubspot.Services;
 
 namespace Umbraco.Forms.Integrations.Crm.Hubspot.Api.Management.Controllers.Forms
 {
-    public class IsAuthorizationConfiguredController : FormsControllerBase
+    public class IsAuthorizationConfiguredController : ContactControllerBase
     {
         public IsAuthorizationConfiguredController(IContactService contactService) : base(contactService)
         {
         }
 
-        [HttpGet("auth-configured")]
+        [HttpGet("auth/configured")]
         [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
         public IActionResult IsAuthorizationConfigured() => Ok(ContactService.IsAuthorizationConfigured().ToString());
     }

@@ -10,7 +10,7 @@ using Umbraco.Forms.Integrations.Crm.Hubspot.Services;
 
 namespace Umbraco.Forms.Integrations.Crm.Hubspot.Api.Management.Controllers.Forms
 {
-    public class DeauthorizeController : FormsControllerBase
+    public class DeauthorizeController : ContactControllerBase
     {
         public DeauthorizeController(IContactService contactService) : base(contactService)
         {

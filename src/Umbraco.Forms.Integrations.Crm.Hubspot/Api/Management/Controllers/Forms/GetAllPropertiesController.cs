@@ -11,7 +11,7 @@ using Umbraco.Forms.Integrations.Crm.Hubspot.Services;
 
 namespace Umbraco.Forms.Integrations.Crm.Hubspot.Api.Management.Controllers.Forms
 {
-    public class GetAllPropertiesController : FormsControllerBase
+    public class GetAllPropertiesController : ContactControllerBase
     {
         public GetAllPropertiesController(IContactService contactService) : base(contactService)
         {
@@ -19,6 +19,6 @@ namespace Umbraco.Forms.Integrations.Crm.Hubspot.Api.Management.Controllers.Form
 
         [HttpGet("properties")]
         [ProducesResponseType(typeof(IEnumerable<Property>), StatusCodes.Status200OK)]
-        public IActionResult GetAll() => Ok(ContactService.GetContactPropertiesAsync());
+        public async Task<IActionResult> GetAll() => Ok(await ContactService.GetContactPropertiesAsync());
     }
 }

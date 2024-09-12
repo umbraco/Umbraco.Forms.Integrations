@@ -16,11 +16,7 @@ namespace Umbraco.Forms.Integrations.Crm.Hubspot
 
             public const string ApiTitle = "Hubspot Management API";
 
-            public const string FormsGroupName = "Forms";
-
-            public const string OAuthGroupName = "OAuth";
-
-            public const string ShopifyComplianceGroupName = "Shopify Compliance";
+            public const string ContactGroupName = "Contacts";
         }
     }
 }

@@ -10,7 +10,7 @@ using Umbraco.Forms.Integrations.Crm.Hubspot.Services;
 
 namespace Umbraco.Forms.Integrations.Crm.Hubspot.Api.Management.Controllers.Forms
 {
-    public class AuthorizeController : FormsControllerBase
+    public class AuthorizeController : ContactControllerBase
     {
         public AuthorizeController(IContactService contactService) : base(contactService)
         {
@@ -18,6 +18,6 @@ namespace Umbraco.Forms.Integrations.Crm.Hubspot.Api.Management.Controllers.Form
 
         [HttpPost("authorize")]
         [ProducesResponseType(typeof(Task<AuthorizationResult>), StatusCodes.Status200OK)]
-        public IActionResult Authorize([FromBody] AuthorizationRequest request) => Ok(ContactService.AuthorizeAsync(request.Code));
+        public async Task<IActionResult> Authorize([FromBody] AuthorizationRequest request) => Ok(await ContactService.AuthorizeAsync(request.Code));
     }
 }

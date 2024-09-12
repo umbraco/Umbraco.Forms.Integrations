@@ -11,12 +11,12 @@ using Umbraco.Forms.Integrations.Crm.Hubspot.Services;
 namespace Umbraco.Forms.Integrations.Crm.Hubspot.Api.Management.Controllers.Forms
 {
     [ApiVersion("1.0")]
-    [BackOfficeRoute($"{Constants.ManagementApi.RootPath}/v{{version:apiVersion}}/forms")]
-    [ApiExplorerSettings(GroupName = Constants.ManagementApi.FormsGroupName)]
-    public class FormsControllerBase : HubspotControllerBase
+    [BackOfficeRoute($"{Constants.ManagementApi.RootPath}/v{{version:apiVersion}}/contacts")]
+    [ApiExplorerSettings(GroupName = Constants.ManagementApi.ContactGroupName)]
+    public class ContactControllerBase : HubspotControllerBase
     {
         protected readonly IContactService ContactService;
-        public FormsControllerBase(IContactService contactService)
+        public ContactControllerBase(IContactService contactService)
         {
             ContactService = contactService;
         }

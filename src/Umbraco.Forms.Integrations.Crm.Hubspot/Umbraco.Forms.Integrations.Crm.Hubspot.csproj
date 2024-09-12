@@ -32,21 +32,10 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<Content Include="App_Plugins\UmbracoForms.Integrations\Crm\Hubspot\**\*.*">
-			<Pack>true</Pack>
-			<PackagePath>App_Plugins\UmbracoForms.Integrations\Crm\Hubspot\</PackagePath>
-		</Content>
 		<None Include="build\**\*.*">
 			<Pack>True</Pack>
 			<PackagePath>buildTransitive</PackagePath>
 		</None>
-	</ItemGroup>
-
-	<ItemGroup>
-		<Content Include="App_Plugins\**\*.*">
-			<ExcludeFromSingleFile>true</ExcludeFromSingleFile>
-			<CopyToPublishDirectory>Always</CopyToPublishDirectory>
-		</Content>
 	</ItemGroup>
 
 	<ItemGroup>
