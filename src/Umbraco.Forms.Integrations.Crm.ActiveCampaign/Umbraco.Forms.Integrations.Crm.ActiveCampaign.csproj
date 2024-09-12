@@ -1,9 +1,11 @@
-<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk.Razor">
 
 	<PropertyGroup>
-		<TargetFrameworks>net60;net70</TargetFrameworks>
+		<TargetFramework>net8.0</TargetFramework>
+		<Nullable>enable</Nullable>
 		<ImplicitUsings>enable</ImplicitUsings>
-		<WarningsAsErrors>Nullable</WarningsAsErrors>
+		<AddRazorSupportForMvc>true</AddRazorSupportForMvc>
+		<EnableDefaultContentItems>false</EnableDefaultContentItems>
 	</PropertyGroup>
 
 	<PropertyGroup>
@@ -21,14 +23,12 @@
 		<PackageReadmeFile>readme.md</PackageReadmeFile>
 	</PropertyGroup>
 
-	<ItemGroup Condition="'$(TargetFramework)' == 'net60'">
-		<PackageReference Include="Umbraco.Cms.Web.Website" Version="[10.1.0,11)" />
-		<PackageReference Include="Umbraco.Forms.Core" Version="[10.1.0,11)" />
-	</ItemGroup>
-
-	<ItemGroup Condition="'$(TargetFramework)' == 'net70'">
-		<PackageReference Include="Umbraco.Cms.Web.Website" Version="[11.0.0,13)" />
-		<PackageReference Include="Umbraco.Forms.Core" Version="[11.0.0,13)" />
+	<ItemGroup>
+		<PackageReference Include="Umbraco.Cms.Api.Common" Version="[14.0.0, 15)" />
+		<PackageReference Include="Umbraco.Cms.Api.Management" Version="[14.0.0, 15)" />
+		<PackageReference Include="Umbraco.Cms.Core" Version="14.1.2" />
+		<PackageReference Include="Umbraco.Cms.Web.Website" Version="14.1.2" />
+		<PackageReference Include="Umbraco.Forms.Core" Version="14.1.1" />
 	</ItemGroup>
 
 	<ItemGroup>
