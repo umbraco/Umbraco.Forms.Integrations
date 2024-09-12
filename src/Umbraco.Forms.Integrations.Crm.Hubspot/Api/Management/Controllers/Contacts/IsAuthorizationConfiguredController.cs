@@ -7,7 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Umbraco.Forms.Integrations.Crm.Hubspot.Services;
 
-namespace Umbraco.Forms.Integrations.Crm.Hubspot.Api.Management.Controllers.Forms
+namespace Umbraco.Forms.Integrations.Crm.Hubspot.Api.Management.Controllers.Contacts
 {
     public class IsAuthorizationConfiguredController : ContactControllerBase
     {

@@ -9,7 +9,7 @@ using Umbraco.Cms.Web.Common.Attributes;
 using Umbraco.Forms.Integrations.Crm.Hubspot.Models.Responses;
 using Umbraco.Forms.Integrations.Crm.Hubspot.Services;
 
-namespace Umbraco.Forms.Integrations.Crm.Hubspot.Api.Management.Controllers.Forms
+namespace Umbraco.Forms.Integrations.Crm.Hubspot.Api.Management.Controllers.Contacts
 {
     public class GetAllPropertiesController : ContactControllerBase
     {
