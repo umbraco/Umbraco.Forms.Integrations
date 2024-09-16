@@ -1,0 +1,13 @@
+{
+    "id": "Umbraco.Forms.Integrations.Crm.ActiveCampaign",
+    "name": "Umbraco Forms Integrations: CRM - ActiveCampaign",
+    "version": "2.0.0",
+    "extensions": [
+      {
+        "name": "Umbraco EntryPoint",
+        "alias": "Umb.ActiveCampaign.EntryPoint",
+        "type": "entryPoint",
+        "js": "/App_Plugins/ActiveCampaign/activecampaign.js"
+      }
+    ]
+}

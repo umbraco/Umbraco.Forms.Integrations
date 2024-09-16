@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-
+using System.ComponentModel.DataAnnotations;
 using System.Text.Json;
 using Umbraco.Forms.Core;
 using Umbraco.Forms.Core.Enums;
@@ -23,17 +23,17 @@ namespace Umbraco.Forms.Integrations.Crm.ActiveCampaign
 
         [Core.Attributes.Setting("Account",
             Description = "Please select an account",
-            View = "~/App_Plugins/UmbracoForms.Integrations/Crm/ActiveCampaign/accountpicker.html")]
+            View = "ActiveCampaign.Contacts.PropertyEditorUi.Account")]
         public string Account { get; set; }
 
         [Core.Attributes.Setting("Contact Mappings",
             Description = "Map contact details with form fields",
-            View = "~/App_Plugins/UmbracoForms.Integrations/Crm/ActiveCampaign/contact-mapper.html")]
+            View = "ActiveCampaign.Contacts.PropertyEditorUi.ContactMapping")]
         public string ContactMappings { get; set; }
 
         [Core.Attributes.Setting("Custom Field Mappings",
             Description = "Map contact custom fields with form fields",
-            View = "~/App_Plugins/UmbracoForms.Integrations/Crm/ActiveCampaign/customfield-mapper.html")]
+            View = "ActiveCampaign.Contacts.PropertyEditorUi.CustomMapping")]
         public string CustomFieldMappings { get; set; }
 
         public ActiveCampaignContactsWorkflow(IOptions<ActiveCampaignSettings> options, 
