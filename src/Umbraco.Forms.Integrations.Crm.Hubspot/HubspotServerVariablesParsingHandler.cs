@@ -8,7 +8,6 @@ using Umbraco.Cms.Core.Events;
 using Umbraco.Cms.Core.Notifications;
 using Umbraco.Extensions;
 using Umbraco.Forms.Integrations.Crm.Hubspot.Api.Management.Controllers;
-using Umbraco.Forms.Integrations.Crm.Hubspot.Api.Management.Controllers.Forms;
 using Umbraco.Forms.Integrations.Crm.Hubspot.Configuration;
 
 namespace Umbraco.Forms.Integrations.Crm.Hubspot
