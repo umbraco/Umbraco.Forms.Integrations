@@ -53,7 +53,7 @@
 	</ItemGroup>
 
 	<!-- Build client assets using NPM -->
-	<Import Project="build\Umbraco.Forms.Integrations.Crm.ActiveCampaign.targets" />
+	<Import Project="build\Microsoft.AspNetCore.ClientAssets.targets" />
 	<PropertyGroup>
 		<!-- Use this to (temporarily) disable building client assets, e.g. to start the project and generate updated API models -->
 		<ShouldRunClientAssetsBuild>true</ShouldRunClientAssetsBuild>

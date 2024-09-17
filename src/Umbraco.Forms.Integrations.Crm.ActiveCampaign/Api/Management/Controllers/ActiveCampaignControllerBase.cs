@@ -13,7 +13,7 @@ namespace Umbraco.Forms.Integrations.Crm.ActiveCampaign.Api.Management.Controlle
     [ApiController]
     [Authorize(Policy = AuthorizationPolicies.BackOfficeAccess)]
     [MapToApi(Constants.ManagementApi.ApiName)]
-    public class ActiveCampaingControllerBase : Controller
+    public class ActiveCampaignControllerBase : Controller
     {
     }
 }

@@ -13,7 +13,7 @@ export class AccountsService {
     public static getAccounts(): CancelablePromise<GetAccountsResponse> {
         return __request(OpenAPI, {
             method: 'GET',
-            url: '/umbraco/active-campaign/management/api/v1/accounts'
+            url: '/umbraco/activecampaign/management/api/v1/accounts'
         });
     }
     
@@ -27,7 +27,7 @@ export class ContactsService {
     public static checkApiAccess(): CancelablePromise<CheckApiAccessResponse> {
         return __request(OpenAPI, {
             method: 'GET',
-            url: '/umbraco/active-campaign/management/api/v1/contacts/api-access'
+            url: '/umbraco/activecampaign/management/api/v1/contacts/api-access'
         });
     }
     
@@ -38,7 +38,7 @@ export class ContactsService {
     public static getCustomFields(): CancelablePromise<GetCustomFieldsResponse> {
         return __request(OpenAPI, {
             method: 'GET',
-            url: '/umbraco/active-campaign/management/api/v1/contacts/custom'
+            url: '/umbraco/activecampaign/management/api/v1/contacts/custom'
         });
     }
     
@@ -49,7 +49,7 @@ export class ContactsService {
     public static getContactFields(): CancelablePromise<GetContactFieldsResponse> {
         return __request(OpenAPI, {
             method: 'GET',
-            url: '/umbraco/active-campaign/management/api/v1/contacts/fields'
+            url: '/umbraco/activecampaign/management/api/v1/contacts/fields'
         });
     }
     

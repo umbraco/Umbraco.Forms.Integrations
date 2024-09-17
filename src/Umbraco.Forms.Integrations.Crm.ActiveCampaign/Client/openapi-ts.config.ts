@@ -1,5 +1,5 @@
 export default {
-    input: 'http://localhost:35411/umbraco/swagger/active-campaign-management/swagger.json',
+    input: 'http://localhost:35411/umbraco/swagger/activecampaign-management/swagger.json',
     output: {
       lint: 'eslint',
       path: 'generated',

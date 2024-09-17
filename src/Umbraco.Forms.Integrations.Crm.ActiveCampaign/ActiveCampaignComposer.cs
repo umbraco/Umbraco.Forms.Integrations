@@ -41,7 +41,7 @@ namespace Umbraco.Forms.Integrations.Crm.ActiveCampaign
                     {
                         Title = Constants.ManagementApi.ApiTitle,
                         Version = "Latest",
-                        Description = $"Describes the {Constants.ManagementApi.ApiTitle} available for handling Active Campaign automation and configuration."
+                        Description = $"Describes the {Constants.ManagementApi.ApiTitle} available for handling ActiveCampaign automation and configuration."
                     });
 
                 options.CustomOperationIds(e => $"{e.ActionDescriptor.RouteValues["action"]}");

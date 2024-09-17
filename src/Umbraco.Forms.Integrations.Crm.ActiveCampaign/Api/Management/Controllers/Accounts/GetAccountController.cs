@@ -1,15 +1,18 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Umbraco.Cms.Web.Common.Authorization;
 using Umbraco.Forms.Integrations.Crm.ActiveCampaign.Models.Dtos;
 using Umbraco.Forms.Integrations.Crm.ActiveCampaign.Services;
 
 namespace Umbraco.Forms.Integrations.Crm.ActiveCampaign.Api.Management.Controllers.Accounts
 {
+    [Authorize(Policy = AuthorizationPolicies.BackOfficeAccess)]
     public class GetAccountController : AccountControllerBase
     {
         public GetAccountController(IAccountService accountService) : base(accountService)
@@ -22,7 +25,7 @@ namespace Umbraco.Forms.Integrations.Crm.ActiveCampaign.Api.Management.Controlle
         {
             var accounts = await _accountService.Get();
 
-            return Ok(new JsonResult(accounts));
+            return Ok(accounts);
         }
     }
 }

@@ -38,7 +38,7 @@ export type GetCustomFieldsResponse = CustomFieldCollectionResponseDto;
 export type GetContactFieldsResponse = Array<(ContactFieldSettings)>;
 
 export type $OpenApiTs = {
-    '/umbraco/active-campaign/management/api/v1/accounts': {
+    '/umbraco/activecampaign/management/api/v1/accounts': {
         get: {
             res: {
                 /**
@@ -48,7 +48,7 @@ export type $OpenApiTs = {
             };
         };
     };
-    '/umbraco/active-campaign/management/api/v1/contacts/api-access': {
+    '/umbraco/activecampaign/management/api/v1/contacts/api-access': {
         get: {
             res: {
                 /**
@@ -58,7 +58,7 @@ export type $OpenApiTs = {
             };
         };
     };
-    '/umbraco/active-campaign/management/api/v1/contacts/custom': {
+    '/umbraco/activecampaign/management/api/v1/contacts/custom': {
         get: {
             res: {
                 /**
@@ -68,7 +68,7 @@ export type $OpenApiTs = {
             };
         };
     };
-    '/umbraco/active-campaign/management/api/v1/contacts/fields': {
+    '/umbraco/activecampaign/management/api/v1/contacts/fields': {
         get: {
             res: {
                 /**
