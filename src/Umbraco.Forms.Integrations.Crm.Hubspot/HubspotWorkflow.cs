@@ -36,7 +36,7 @@ namespace Umbraco.Forms.Integrations.Crm.Hubspot
             Group = "CRM";
         }
 
-        [Setting("Field Mappings", Description = "Map Umbraco Form fields to HubSpot contact fields", View = "~/App_Plugins/UmbracoForms.Integrations/Crm/Hubspot/hubspotfields.html")]
+        [Setting("Field Mappings", Description = "Map Umbraco Form fields to HubSpot contact fields", View = "Hubspot.PropertyEditorUi.Mapping")]
         public string FieldMappings { get; set; }
 
         public WorkflowExecutionStatus Execute(WorkflowExecutionContext context)

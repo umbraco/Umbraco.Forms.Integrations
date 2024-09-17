@@ -1,0 +1,12 @@
+{
+    "id": "Umbraco.Integrations.Integrations.Crm.HubSpot",
+    "name": "Umbraco Integrations Integrations: CRM - HubSpot",
+    "version": "4.0.0",
+    "extensions": [
+        {
+            "name": "Umbraco EntryPoint",
+            "alias": "Umb.Hubspot.EntryPoint",
+            "type": "entryPoint"
+        }
+    ]
+}

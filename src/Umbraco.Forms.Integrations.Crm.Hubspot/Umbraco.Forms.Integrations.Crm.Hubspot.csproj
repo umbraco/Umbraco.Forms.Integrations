@@ -24,6 +24,11 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+		<FrameworkReference Include="Microsoft.AspNetCore.App" />
+		<SupportedPlatform Include="browser" />
+	</ItemGroup>
+
+	<ItemGroup>
 		<PackageReference Include="Umbraco.Cms.Api.Common" Version="[14.0.0, 15)" />
 		<PackageReference Include="Umbraco.Cms.Api.Management" Version="[14.0.0, 15)" />
 		<PackageReference Include="Umbraco.Cms.Core" Version="14.1.2" />
@@ -49,4 +54,20 @@
 		<None Include="docs\readme.md" Pack="true" PackagePath="\" />
 	</ItemGroup>
 
+	<ItemGroup>
+		<Content Include="Views\**" />
+	</ItemGroup>
+
+	<!-- Build client assets using NPM -->
+	<Import Project="build\Umbraco.Forms.Integrations.Crm.Hubspot.targets" />
+	<PropertyGroup>
+		<!-- Use this to (temporarily) disable building client assets, e.g. to start the project and generate updated API models -->
+		<ShouldRunClientAssetsBuild>true</ShouldRunClientAssetsBuild>
+	</PropertyGroup>
+	<Target Name="ClientAssetsBuildOutputPath" BeforeTargets="ClientAssetsBuild">
+		<WriteLinesToFile File="Client\config.outputPath.js" Lines="export const outputPath = '$(Configuration)' !== 'Release' ? '../wwwroot' : '../$(IntermediateOutputPath.Replace('\', '/'))clientassets';" Overwrite="true" />
+	</Target>
+	<ItemGroup>
+		<ClientAssetsInputs Remove="Client\config.outputPath.js" />
+	</ItemGroup>
 </Project>

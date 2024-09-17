@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 using Umbraco.Cms.Web.Common.Routing;
 using Umbraco.Forms.Integrations.Crm.Hubspot.Services;
 
-namespace Umbraco.Forms.Integrations.Crm.Hubspot.Api.Management.Controllers.Forms
+namespace Umbraco.Forms.Integrations.Crm.Hubspot.Api.Management.Controllers.Contacts
 {
     [ApiVersion("1.0")]
     [BackOfficeRoute($"{Constants.ManagementApi.RootPath}/v{{version:apiVersion}}/contacts")]
