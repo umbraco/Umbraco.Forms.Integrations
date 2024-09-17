@@ -1,4 +1,4 @@
-import { ManifestTypes, type ManifestPropertyEditorUi } from "@umbraco-cms/backoffice/extension-registry";
+import { ManifestTypes } from "@umbraco-cms/backoffice/extension-registry";
 import { manifest as accountManifest } from "./account/manifests";
 import { manifest as contactMappingManifest } from "./contact-mapping/manifests";
 import { manifest as customMappingManifest } from "./custom-mapping/manifests";

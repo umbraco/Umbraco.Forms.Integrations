@@ -7,7 +7,7 @@
         "name": "Umbraco EntryPoint",
         "alias": "Umb.ActiveCampaign.EntryPoint",
         "type": "entryPoint",
-        "js": "/App_Plugins/ActiveCampaign/activecampaign.js"
+        "js": "/App_Plugins/ActiveCampaign/active-campaign.js"
       }
     ]
 }

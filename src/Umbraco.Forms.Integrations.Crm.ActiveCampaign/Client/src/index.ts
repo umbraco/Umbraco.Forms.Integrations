@@ -1,13 +1,13 @@
 ﻿import type { UmbEntryPointOnInit } from "@umbraco-cms/backoffice/extension-api";
 import { UMB_AUTH_CONTEXT } from "@umbraco-cms/backoffice/auth";
-import { manifests as activeCampaignPropertyEditor } from "./property-editor/manifests";
+import { manifests as propertyEditorManifests } from "./property-editor/manifests";
 import { OpenAPI } from "@umbraco-integrations/activecampaign/generated";
 import { manifests as localizationManifests } from "./lang/manifests.js";
 import { manifest as activecampaignContext } from "./context/manifest.js";
 
 export const onInit: UmbEntryPointOnInit = (host, extensionRegistry) => {
     extensionRegistry.registerMany([
-        ...activeCampaignPropertyEditor,
+        ...propertyEditorManifests,
         ...localizationManifests,
         activecampaignContext
   ]);
