@@ -13,7 +13,7 @@ export class ActiveCampaignContext extends UmbControllerBase {
     constructor(host: UmbControllerHost) {
         super(host);
 
-        this.provideContext(ACTIVECAMPAIGN_FORMS_CONTEXT_TOKEN, this);
+        this.provideContext(ACTIVECAMPAIGN_CONTEXT_TOKEN, this);
         this.#repository = new ActiveCampaignRepository(host);
     }
 
@@ -43,5 +43,5 @@ export class ActiveCampaignContext extends UmbControllerBase {
 
 export default ActiveCampaignContext;
 
-export const ACTIVECAMPAIGN_FORMS_CONTEXT_TOKEN =
+export const ACTIVECAMPAIGN_CONTEXT_TOKEN =
     new UmbContextToken<ActiveCampaignContext>(ActiveCampaignContext.name);

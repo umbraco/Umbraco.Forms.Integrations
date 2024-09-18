@@ -24,6 +24,6 @@ namespace Umbraco.Forms.Integrations.Crm.ActiveCampaign.Api.Management.Controlle
         [HttpGet("custom")]
         [ProducesResponseType(typeof(CustomFieldCollectionResponseDto), StatusCodes.Status200OK)]
         public IActionResult GetCustomFields() =>
-            Ok(new JsonResult(_contactService.GetCustomFields().ConfigureAwait(false).GetAwaiter().GetResult()));
+            Ok(_contactService.GetCustomFields().ConfigureAwait(false).GetAwaiter().GetResult());
     }
 }

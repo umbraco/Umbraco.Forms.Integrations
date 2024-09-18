@@ -23,6 +23,6 @@ namespace Umbraco.Forms.Integrations.Crm.ActiveCampaign.Api.Management.Controlle
 
         [HttpGet("fields")]
         [ProducesResponseType(typeof(List<ContactFieldSettings>), StatusCodes.Status200OK)]
-        public IActionResult GetContactFields() => Ok(new JsonResult(_settings.ContactFields));
+        public IActionResult GetContactFields() => Ok(_settings.ContactFields);
     }
 }
