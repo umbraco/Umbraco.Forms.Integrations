@@ -39,6 +39,10 @@ export class ActiveCampaignContext extends UmbControllerBase {
     async getCustomFields() {
         return await this.#repository.getCustomFields();
     }
+
+    async getFormFields(id: string) {
+        return await this.#repository.getFormFields(id);
+    }
 }
 
 export default ActiveCampaignContext;

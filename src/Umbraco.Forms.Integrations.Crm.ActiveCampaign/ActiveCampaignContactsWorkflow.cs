@@ -5,6 +5,7 @@ using System.Text.Json;
 using Umbraco.Forms.Core;
 using Umbraco.Forms.Core.Enums;
 using Umbraco.Forms.Core.Persistence.Dtos;
+using Umbraco.Forms.Core.Services;
 using Umbraco.Forms.Integrations.Crm.ActiveCampaign.Configuration;
 using Umbraco.Forms.Integrations.Crm.ActiveCampaign.Models.Dtos;
 using Umbraco.Forms.Integrations.Crm.ActiveCampaign.Services;
@@ -20,6 +21,7 @@ namespace Umbraco.Forms.Integrations.Crm.ActiveCampaign
         private readonly IContactService _contactService;
 
         private readonly ILogger<ActiveCampaignContactsWorkflow> _logger;
+        private readonly IFormService _formService;
 
         [Core.Attributes.Setting("Account",
             Description = "Please select an account",

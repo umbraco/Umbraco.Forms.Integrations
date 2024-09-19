@@ -1,7 +1,7 @@
 ﻿import { UmbControllerBase } from "@umbraco-cms/backoffice/class-api";
 import type { UmbControllerHost } from "@umbraco-cms/backoffice/controller-api";
 import { tryExecuteAndNotify } from "@umbraco-cms/backoffice/resources";
-import { AccountsService, ContactsService } from "@umbraco-integrations/activecampaign/generated";
+import { AccountsService, ContactsService, GetFormFieldsData } from "@umbraco-integrations/activecampaign/generated";
 
 export class ActiveCampaignRepository extends UmbControllerBase {
     constructor(host: UmbControllerHost) {
@@ -40,6 +40,16 @@ export class ActiveCampaignRepository extends UmbControllerBase {
 
     async getCustomFields() {
         const { data, error } = await tryExecuteAndNotify(this, ContactsService.getCustomFields());
+
+        if (error || !data) {
+            return { error };
+        }
+
+        return { data };
+    }
+
+    async getFormFields(formId: string) {
+        const { data, error } = await tryExecuteAndNotify(this, AccountsService.getFormFields({formId: formId}));
 
         if (error || !data) {
             return { error };

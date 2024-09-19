@@ -7,5 +7,7 @@ export default {
         ContactMappingsDescription: `Map contact details with form fields`,
         CustomFieldMappingsLabel: `Custom Fields Mappings`,
         CustomFieldMappingsDescription: `Map contact custom fields with form fields`,
+
+        delete: "Delete"
     }
 } as UmbLocalizationDictionary;

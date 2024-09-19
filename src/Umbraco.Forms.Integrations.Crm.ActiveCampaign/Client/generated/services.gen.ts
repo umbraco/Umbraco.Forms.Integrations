@@ -3,7 +3,7 @@
 import type { CancelablePromise } from './core/CancelablePromise';
 import { OpenAPI } from './core/OpenAPI';
 import { request as __request } from './core/request';
-import type { GetAccountsResponse, CheckApiAccessResponse, GetCustomFieldsResponse, GetContactFieldsResponse } from './types.gen';
+import type { GetAccountsResponse, GetFormFieldsData, GetFormFieldsResponse, CheckApiAccessResponse, GetCustomFieldsResponse, GetContactFieldsResponse } from './types.gen';
 
 export class AccountsService {
     /**
@@ -14,6 +14,22 @@ export class AccountsService {
         return __request(OpenAPI, {
             method: 'GET',
             url: '/umbraco/activecampaign/management/api/v1/accounts'
+        });
+    }
+    
+    /**
+     * @param data The data for the request.
+     * @param data.formId
+     * @returns unknown OK
+     * @throws ApiError
+     */
+    public static getFormFields(data: GetFormFieldsData = {}): CancelablePromise<GetFormFieldsResponse> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/umbraco/activecampaign/management/api/v1/forms/fields',
+            query: {
+                formId: data.formId
+            }
         });
     }
     
