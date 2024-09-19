@@ -4,6 +4,7 @@ import { UmbLitElement } from '@umbraco-cms/backoffice/lit-element';
 import { ACTIVECAMPAIGN_CONTEXT_TOKEN } from '@umbraco-integrations/activecampaign/context';
 import { CustomFieldDto, Field } from '@umbraco-integrations/activecampaign/generated';
 import { UUISelectEvent } from '@umbraco-cms/backoffice/external/uui';
+import { CustomMappingValue } from '../../models/activecampaign.model';
 
 const elementName = "custom-mapping-property-editor";
 

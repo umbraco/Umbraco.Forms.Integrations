@@ -12,7 +12,10 @@ const elementName = "contact-mapping-property-editor";
 export class ContactMappingPropertyUiElement extends UmbLitElement implements UmbPropertyEditorUiElement {
   #activeCampaignContext!: typeof ACTIVECAMPAIGN_CONTEXT_TOKEN.TYPE;
 
-  @property({ attribute: false })
+  @property({ type: String })
+  public value = "";
+
+  @state()
   public contactMapping : Array<ContactMappingValue> = [];
 
   @state()
@@ -74,6 +77,7 @@ export class ContactMappingPropertyUiElement extends UmbLitElement implements Um
       }
     });
 
+    this.value = JSON.stringify(this.contactMapping);
     this.requestUpdate();
     this.dispatchEvent(new CustomEvent('property-value-change'));
   }
@@ -89,6 +93,7 @@ export class ContactMappingPropertyUiElement extends UmbLitElement implements Um
   #onDeleteClick(idx: number){
     this.contactMapping.splice(idx, 1);
 
+    this.value = JSON.stringify(this.contactMapping);
     this.requestUpdate();
     this.dispatchEvent(new CustomEvent('property-value-change'));
   }

@@ -16,8 +16,6 @@ export class AccountPropertyUiElement extends UmbLitElement implements UmbProper
 
   @state()
   private accounts: Array<AccountDto> | undefined = [];
-
-  
  
   constructor() {
     super();
