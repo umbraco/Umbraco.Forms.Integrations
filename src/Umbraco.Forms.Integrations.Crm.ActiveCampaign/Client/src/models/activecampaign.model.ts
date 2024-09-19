@@ -9,6 +9,11 @@ export interface FormFieldValue {
 }
 
 export interface CustomMappingValue {
-    customField: string;
+    customField: CustomFieldValue | undefined;
     formField: FormFieldValue | undefined;
+}
+
+export interface CustomFieldValue {
+    id: string;
+    title: string;
 }

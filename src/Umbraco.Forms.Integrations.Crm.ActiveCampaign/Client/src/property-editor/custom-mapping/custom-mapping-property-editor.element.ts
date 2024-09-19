@@ -12,8 +12,11 @@ const elementName = "custom-mapping-property-editor";
 export class CustomMappingPropertyUiElement extends UmbLitElement implements UmbPropertyEditorUiElement {
   #activeCampaignContext!: typeof ACTIVECAMPAIGN_CONTEXT_TOKEN.TYPE;
 
-  @property({ attribute: false })
-  public customMapping : Array<CustomMappingValue> = [];
+  @property({ type: String })
+  public value = "";
+
+  @state()
+  public customMappingArray : Array<CustomMappingValue> = [];
 
   @state()
   private selectedCustomField: string = "";
@@ -38,6 +41,10 @@ export class CustomMappingPropertyUiElement extends UmbLitElement implements Umb
   async connectedCallback() {
     super.connectedCallback();
 
+    if(this.value){
+      this.customMappingArray = JSON.parse(this.value);
+    }
+
     await this.#getCustomFields();
     await this.#getFormFields();
   }
@@ -50,7 +57,8 @@ export class CustomMappingPropertyUiElement extends UmbLitElement implements Umb
   }
 
   async #getFormFields(){
-    var result = await this.#activeCampaignContext.getFormFields("f595361a-37f9-44da-80ca-6a22d699d923");
+    var formId = window.location.pathname.split("/")[7]; //Get the formid based on current url.
+    var result = await this.#activeCampaignContext.getFormFields(formId);
 
     if (!result) return;
 
@@ -66,20 +74,28 @@ export class CustomMappingPropertyUiElement extends UmbLitElement implements Umb
   }
 
   #addButtonClick(){
-    this.customMapping.push({
-      customField: this.selectedCustomField,
+    this.customMappingArray.push({
+      customField: {
+        id: this.selectedCustomField,
+        title: this.getSelectedCustomFieldCaption()!
+      },
       formField: {
         id: this.selectedFormField,
-        value: this.getSelectedFieldCaption()!
+        value: this.getSelectedFormFieldCaption()!
       }
     });
 
+    this.value = JSON.stringify(this.customMappingArray);
     this.requestUpdate();
     this.dispatchEvent(new CustomEvent('property-value-change'));
   }
 
-  getSelectedFieldCaption(){
+  getSelectedFormFieldCaption(){
     return this.formdFields?.find(f => f.id == this.selectedFormField)?.caption;
+  }
+
+  getSelectedCustomFieldCaption(){
+    return this.customFields?.find(f => f.id == this.selectedCustomField)?.title;
   }
 
   isDisabled(){
@@ -87,8 +103,9 @@ export class CustomMappingPropertyUiElement extends UmbLitElement implements Umb
   }
 
   #onDeleteClick(idx: number){
-    this.customMapping.splice(idx, 1);
+    this.customMappingArray.splice(idx, 1);
 
+    this.value = JSON.stringify(this.customMappingArray);
     this.requestUpdate();
     this.dispatchEvent(new CustomEvent('property-value-change'));
   }
@@ -97,7 +114,7 @@ export class CustomMappingPropertyUiElement extends UmbLitElement implements Umb
     return html`
       <div>
         <uui-select
-          placeholder="Select contact field"
+        placeholder=${this.localize.term("formProviderWorkflows_SelectCustomField")}
           @change=${(e : UUISelectEvent) => this.#onCustomSelectChange(e)}
           .options=${
             this.customFields?.map((ft) => ({
@@ -106,7 +123,7 @@ export class CustomMappingPropertyUiElement extends UmbLitElement implements Umb
               selected: ft.id === this.selectedCustomField,
             })) ?? []}></uui-select>
         <uui-select
-          placeholder="Select form field"
+        placeholder=${this.localize.term("formProviderWorkflows_SelectFormField")}
           @change=${(e : UUISelectEvent) => this.#onFormFieldSelectChange(e)}
           .options=${
             this.formdFields?.map((ft) => ({
@@ -117,36 +134,40 @@ export class CustomMappingPropertyUiElement extends UmbLitElement implements Umb
       </div>
 
       <div class="activecampaign-wf-button">
-        <uui-button look="primary" ?disabled=${this.isDisabled()} label="Add mapping" @click=${this.#addButtonClick}></uui-button>
+        <uui-button look="primary" ?disabled=${this.isDisabled()} label=${this.localize.term("formProviderWorkflows_AddMapping")} @click=${this.#addButtonClick}></uui-button>
       </div>
 
       <div class="activecampaign-wf-table">
-        <table>
-          <thead>
-            <tr>
-              <th>Custom Field</th>
-              <th>Form Field</th>
-              <th></th>
-            </tr>
-        </thead>
-        <tbody>
-          ${map(this.customMapping, (mapping, idx) => html`
-            <tr>
-              <td>${mapping.customField}</td>
-              <td>${mapping.formField?.value}</td>
-              <td>
-                <uui-button
-                  label=${this.localize.term("formProviderWorkflows_delete")}
-                  look="secondary"
-                  color="default"
-                  @click=${() => this.#onDeleteClick(idx)}>
-                  <uui-icon name="delete"></uui-icon>
-                </uui-button>
-              </td>
-            </tr>
-          `)}
-        </tbody>
-        </table>
+        ${this.customMappingArray.length > 0 
+          ? html`
+            <table>
+              <thead>
+                <tr>
+                  <th>${this.localize.term("formProviderWorkflows_CustomField")}</th>
+                  <th>${this.localize.term("formProviderWorkflows_FormField")}</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody>
+                ${map(this.customMappingArray, (mapping, idx) => html`
+                  <tr>
+                    <td>${mapping.customField?.title}</td>
+                    <td>${mapping.formField?.value}</td>
+                    <td>
+                      <uui-button
+                        label=${this.localize.term("formProviderWorkflows_delete")}
+                        look="secondary"
+                        color="default"
+                        @click=${() => this.#onDeleteClick(idx)}>
+                        <uui-icon name="delete"></uui-icon>
+                      </uui-button>
+                    </td>
+                  </tr>
+                `)}
+              </tbody>
+            </table>
+          ` 
+          : html``}
       </div>
     `;
   }

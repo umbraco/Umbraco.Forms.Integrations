@@ -16,7 +16,7 @@ export class ContactMappingPropertyUiElement extends UmbLitElement implements Um
   public value = "";
 
   @state()
-  public contactMapping : Array<ContactMappingValue> = [];
+  public contactMappingArray : Array<ContactMappingValue> = [];
 
   @state()
   private selectedContactField: string = "";
@@ -41,6 +41,10 @@ export class ContactMappingPropertyUiElement extends UmbLitElement implements Um
   async connectedCallback() {
     super.connectedCallback();
 
+    if(this.value){
+      this.contactMappingArray = JSON.parse(this.value);
+    }
+
     await this.#getContactFields();
     await this.#getFormFields();
   }
@@ -53,7 +57,8 @@ export class ContactMappingPropertyUiElement extends UmbLitElement implements Um
   }
 
   async #getFormFields(){
-    var result = await this.#activeCampaignContext.getFormFields("f595361a-37f9-44da-80ca-6a22d699d923");
+    var formId = window.location.pathname.split("/")[7]; //Get the formid based on current url.
+    var result = await this.#activeCampaignContext.getFormFields(formId);
 
     if (!result) return;
 
@@ -69,7 +74,7 @@ export class ContactMappingPropertyUiElement extends UmbLitElement implements Um
   }
 
   #addButtonClick(){
-    this.contactMapping.push({
+    this.contactMappingArray.push({
       contactField: this.selectedContactField,
       formField: {
         id: this.selectedFormField,
@@ -77,7 +82,7 @@ export class ContactMappingPropertyUiElement extends UmbLitElement implements Um
       }
     });
 
-    this.value = JSON.stringify(this.contactMapping);
+    this.value = JSON.stringify(this.contactMappingArray);
     this.requestUpdate();
     this.dispatchEvent(new CustomEvent('property-value-change'));
   }
@@ -91,9 +96,9 @@ export class ContactMappingPropertyUiElement extends UmbLitElement implements Um
   }
 
   #onDeleteClick(idx: number){
-    this.contactMapping.splice(idx, 1);
+    this.contactMappingArray.splice(idx, 1);
 
-    this.value = JSON.stringify(this.contactMapping);
+    this.value = JSON.stringify(this.contactMappingArray);
     this.requestUpdate();
     this.dispatchEvent(new CustomEvent('property-value-change'));
   }
@@ -102,7 +107,7 @@ export class ContactMappingPropertyUiElement extends UmbLitElement implements Um
     return html`
       <div>
         <uui-select
-          placeholder="Select contact field"
+          placeholder=${this.localize.term("formProviderWorkflows_SelectContactField")}
           @change=${(e : UUISelectEvent) => this.#onContactSelectChange(e)}
           .options=${
             this.contactFields?.map((ft) => ({
@@ -111,7 +116,7 @@ export class ContactMappingPropertyUiElement extends UmbLitElement implements Um
               selected: ft.name === this.selectedContactField,
             })) ?? []}></uui-select>
         <uui-select
-          placeholder="Select form field"
+          placeholder=${this.localize.term("formProviderWorkflows_SelectFormField")}
           @change=${(e : UUISelectEvent) => this.#onFormFieldSelectChange(e)}
           .options=${
             this.formdFields?.map((ft) => ({
@@ -122,40 +127,44 @@ export class ContactMappingPropertyUiElement extends UmbLitElement implements Um
       </div>
 
       <div class="activecampaign-wf-required">
-        Mandatory fields: ${this.contactFields?.filter(c => c.required).map(c => c.displayName).join(",")}
+        Mandatory fields: ${this.contactFields?.filter(c => c.required).map(c => c.displayName).join(", ")}
       </div>
 
       <div class="activecampaign-wf-button">
-        <uui-button look="primary" ?disabled=${this.isDisabled()} label="Add mapping" @click=${this.#addButtonClick}></uui-button>
+        <uui-button look="primary" ?disabled=${this.isDisabled()} label=${this.localize.term("formProviderWorkflows_AddMapping")} @click=${this.#addButtonClick}></uui-button>
       </div>
 
       <div class="activecampaign-wf-table">
-        <table>
-          <thead>
-            <tr>
-              <th>Contact Field</th>
-              <th>Form Field</th>
-              <th></th>
-            </tr>
-        </thead>
-        <tbody>
-          ${map(this.contactMapping, (mapping, idx) => html`
-            <tr>
-              <td>${mapping.contactField}</td>
-              <td>${mapping.formField?.value}</td>
-              <td>
-                <uui-button
-                  label=${this.localize.term("formProviderWorkflows_delete")}
-                  look="secondary"
-                  color="default"
-                  @click=${() => this.#onDeleteClick(idx)}>
-                  <uui-icon name="delete"></uui-icon>
-                </uui-button>
-              </td>
-            </tr>
-          `)}
-        </tbody>
-        </table>
+        ${this.contactMappingArray.length > 0 
+          ? html`
+          <table>
+            <thead>
+              <tr>
+                <th>${this.localize.term("formProviderWorkflows_ContactField")}</th>
+                <th>${this.localize.term("formProviderWorkflows_FormField")}</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              ${map(this.contactMappingArray, (mapping, idx) => html`
+                <tr>
+                  <td>${mapping.contactField}</td>
+                  <td>${mapping.formField?.value}</td>
+                  <td>
+                    <uui-button
+                      label=${this.localize.term("formProviderWorkflows_delete")}
+                      look="secondary"
+                      color="default"
+                      @click=${() => this.#onDeleteClick(idx)}>
+                      <uui-icon name="delete"></uui-icon>
+                    </uui-button>
+                  </td>
+                </tr>
+              `)}
+            </tbody>
+          </table>
+          ` 
+          : html``}
       </div>
     `;
   }
