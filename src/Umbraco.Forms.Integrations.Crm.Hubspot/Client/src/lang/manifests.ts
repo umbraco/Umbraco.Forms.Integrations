@@ -3,7 +3,7 @@ import type { ManifestLocalization } from "@umbraco-cms/backoffice/extension-reg
 const localizationManifests: Array<ManifestLocalization> = [
     {
       type: "localization",
-      alias: "Forms.Localization.En",
+      alias: "Hubspot.Localization.En",
       weight: -100,
       name: "English (US)",
       meta: {

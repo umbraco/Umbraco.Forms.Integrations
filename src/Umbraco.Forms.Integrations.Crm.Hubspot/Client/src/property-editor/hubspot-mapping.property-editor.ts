@@ -7,7 +7,11 @@ const elementName = "hubspot-mapping-property-editor";
 @customElement(elementName)
 export class HubspotMappingPropertyUiElement extends UmbLitElement implements UmbPropertyEditorUiElement {
     render() {
-      return html`<div><span>ABCD</span></div>`;
+      return html`
+        <div>
+          <uui-select></uui-select>
+        </div>
+      `;
     }
   }
   
