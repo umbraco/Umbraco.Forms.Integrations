@@ -8,7 +8,7 @@ This repository houses open-source extensions, created for Umbraco Forms, that i
 
 [Hubspot](./src/Umbraco.Forms.Integrations.Crm.Hubspot/) - a custom workflow allowing form form entries to be mapped to a HubSpot contact record, and stored within the CRM platform.
 
-[ActiveCampaign](./src/Umbraco.Forms.Integrations.Crm.ActiveCampaign/) - a custom workflow allowing form entries to be mapped to an ActiveCampaign contact, and stored withing the CRM platform.
+[ActiveCampaign](./src/Umbraco.Forms.Integrations.Crm.ActiveCampaign/) - a custom workflow allowing form entries to be mapped to an ActiveCampaign contact, and stored within the CRM platform.
 
 ### Automation
 
