@@ -3,7 +3,7 @@
 import type { CancelablePromise } from './core/CancelablePromise';
 import { OpenAPI } from './core/OpenAPI';
 import { request as __request } from './core/request';
-import type { IsAuthorizationConfiguredResponse, GetAuthenticationUrlResponse, AuthorizeData, AuthorizeResponse, DeauthorizeResponse, GetAllResponse } from './types.gen';
+import type { IsAuthorizationConfiguredResponse, GetAuthenticationUrlResponse, AuthorizeData, AuthorizeResponse, DeauthorizeResponse, GetAllResponse, GetFormFieldsData, GetFormFieldsResponse } from './types.gen';
 
 export class ContactsService {
     /**
@@ -62,6 +62,25 @@ export class ContactsService {
         return __request(OpenAPI, {
             method: 'GET',
             url: '/umbraco/hubspot/management/api/v1/contacts/properties'
+        });
+    }
+    
+}
+
+export class FormsService {
+    /**
+     * @param data The data for the request.
+     * @param data.formId
+     * @returns unknown OK
+     * @throws ApiError
+     */
+    public static getFormFields(data: GetFormFieldsData = {}): CancelablePromise<GetFormFieldsResponse> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/umbraco/hubspot/management/api/v1/forms/fields',
+            query: {
+                formId: data.formId
+            }
         });
     }
     

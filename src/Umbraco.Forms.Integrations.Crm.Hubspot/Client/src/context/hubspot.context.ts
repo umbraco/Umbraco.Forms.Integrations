@@ -3,10 +3,14 @@ import { UmbContextToken } from "@umbraco-cms/backoffice/context-api";
 import type { UmbControllerHost } from "@umbraco-cms/backoffice/controller-api";
 import { HubspotRepository } from "../repository/hubspot.repository";
 import { type AuthorizeData } from "@umbraco-integrations/hubspot/generated";
+import { UmbObjectState } from "@umbraco-cms/backoffice/observable-api";
 
 export class HubspotContext extends UmbControllerBase{
     #repository: HubspotRepository;
 
+    #settingsModel = new UmbObjectState<string | undefined>(undefined);
+    settingsModel = this.#settingsModel.asObservable();
+    
     constructor(host: UmbControllerHost) {
         super(host);
 
@@ -19,15 +23,16 @@ export class HubspotContext extends UmbControllerBase{
     }
 
     async isAuthorizationConfigured() {
-        return await this.#repository.isAuthorizationConfigured();
+        const { data } = await this.#repository.isAuthorizationConfigured();
+        this.#settingsModel.setValue(data);
     }
 
     async getAuthenticationUrl() {
         return await this.#repository.getAuthenticationUrl();
     }
     
-    async authorize(authData: AuthorizeData) {
-        return await this.#repository.authorize(authData);
+    async authorize(code: string) {
+        return await this.#repository.authorize(code);
     }
 
     async deauthorize() {
@@ -36,6 +41,10 @@ export class HubspotContext extends UmbControllerBase{
 
     async getAll() {
         return await this.#repository.getAll();
+    }
+
+    async getFormFields(formId : string) {
+        return await this.#repository.getFormFields(formId);
     }
 }
 

@@ -1,7 +1,7 @@
 import { UmbControllerBase } from "@umbraco-cms/backoffice/class-api";
 import type { UmbControllerHost } from "@umbraco-cms/backoffice/controller-api";
 import { tryExecuteAndNotify } from "@umbraco-cms/backoffice/resources";
-import { ContactsService, type AuthorizeData } from "@umbraco-integrations/hubspot/generated";
+import { ContactsService, FormsService, type AuthorizeData } from "@umbraco-integrations/hubspot/generated";
 
 export class HubspotRepository extends UmbControllerBase{
     constructor(host: UmbControllerHost) {
@@ -28,8 +28,8 @@ export class HubspotRepository extends UmbControllerBase{
         return { data };
     }
 
-    async authorize(authData: AuthorizeData) {
-        const { data, error } = await tryExecuteAndNotify(this, ContactsService.authorize(authData));
+    async authorize(code: string) {
+        const { data, error } = await tryExecuteAndNotify(this, ContactsService.authorize({requestBody: {code: code}}));
 
         if (error || !data) {
             return { error };
@@ -50,6 +50,16 @@ export class HubspotRepository extends UmbControllerBase{
 
     async getAll() {
         const { data, error } = await tryExecuteAndNotify(this, ContactsService.getAll());
+
+        if (error || !data) {
+            return { error };
+        }
+
+        return { data };
+    }
+
+    async getFormFields(formId: string) {
+        const { data, error } = await tryExecuteAndNotify(this, FormsService.getFormFields({formId: formId}));
 
         if (error || !data) {
             return { error };
