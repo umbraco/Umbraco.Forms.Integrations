@@ -44,7 +44,7 @@ namespace Umbraco.Cms.Integrations.OAuthProxy.Pages
                         shopifyRequest.Shop,
                         _appSettings.ShopifyClientId,
                         "read_products",
-                        $"{Request.Host.Value}/oauth/shopify");
+                        $"{Request.Scheme}://{Request.Host.Value}/oauth/shopify");
                 context.Result = new RedirectResult(url, true);
                 return;
             }
