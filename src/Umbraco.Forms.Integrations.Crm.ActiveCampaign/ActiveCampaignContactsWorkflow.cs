@@ -1,11 +1,9 @@
 ﻿using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using System.ComponentModel.DataAnnotations;
 using System.Text.Json;
 using Umbraco.Forms.Core;
 using Umbraco.Forms.Core.Enums;
 using Umbraco.Forms.Core.Persistence.Dtos;
-using Umbraco.Forms.Core.Services;
 using Umbraco.Forms.Integrations.Crm.ActiveCampaign.Configuration;
 using Umbraco.Forms.Integrations.Crm.ActiveCampaign.Models.Dtos;
 using Umbraco.Forms.Integrations.Crm.ActiveCampaign.Services;
