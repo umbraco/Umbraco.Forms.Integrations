@@ -6,7 +6,9 @@ export default {
         ContactMappingsLabel: `Contact Mappings`,
         ContactMappingsDescription: `Map contact details with form fields`,
         CustomFieldMappingsLabel: `Custom Fields Mappings`,
-        CustomFieldMappingsDescription: `Map contact custom fields with form fields`,
+        CustomFieldMappingsDescription: `Map contact custom fields with form fields`
+    },
+    activeCampaignFormWorkflows: {
         DeleteMapping: "Delete",
         AddMapping: "Add mapping",
         SelectContactField: "Select contact field",

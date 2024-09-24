@@ -19,6 +19,7 @@ namespace Umbraco.Forms.Integrations.Crm.ActiveCampaign
 
             public const string ContactGroupName = "Contacts";
             public const string AccountsGroupName = "Accounts";
+            public const string FormsGroupName = "Forms";
         }
     }
 }

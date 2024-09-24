@@ -23,6 +23,6 @@ namespace Umbraco.Forms.Integrations.Crm.ActiveCampaign.Api.Management.Controlle
 
         [HttpGet("api-access")]
         [ProducesResponseType(typeof(ApiAccessDto), StatusCodes.Status200OK)]
-        public IActionResult CheckApiAccess() => Ok(new JsonResult(new ApiAccessDto(_settings.BaseUrl, _settings.ApiKey)));
+        public IActionResult CheckApiAccess() => Ok(new ApiAccessDto(_settings.BaseUrl, _settings.ApiKey));
     }
 }

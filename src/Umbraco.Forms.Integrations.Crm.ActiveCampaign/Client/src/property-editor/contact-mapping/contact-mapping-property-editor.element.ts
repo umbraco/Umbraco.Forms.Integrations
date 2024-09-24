@@ -2,7 +2,7 @@ import { html, customElement, property, state, css, map, when } from '@umbraco-c
 import type { UmbPropertyEditorUiElement } from '@umbraco-cms/backoffice/extension-registry';
 import { UmbLitElement } from '@umbraco-cms/backoffice/lit-element';
 import { ACTIVECAMPAIGN_CONTEXT_TOKEN } from '@umbraco-integrations/activecampaign/context';
-import { ContactFieldSettings, Field } from '@umbraco-integrations/activecampaign/generated';
+import { ContactFieldSettings, ActiveCampaignFormFieldDto } from '@umbraco-integrations/activecampaign/generated';
 import { UUISelectEvent } from '@umbraco-cms/backoffice/external/uui';
 import { ContactMappingValue } from '../../models/activecampaign.model';
 
@@ -28,7 +28,7 @@ export class ContactMappingPropertyUiElement extends UmbLitElement implements Um
   private contactFields: Array<ContactFieldSettings> | undefined = [];
 
   @state()
-  private formdFields: Array<Field> | undefined = [];
+  private formdFields: Array<ActiveCampaignFormFieldDto> | undefined = [];
 
   constructor() {
     super();
@@ -107,7 +107,7 @@ export class ContactMappingPropertyUiElement extends UmbLitElement implements Um
     return html`
       <div>
         <uui-select
-          placeholder=${this.localize.term("formProviderWorkflows_SelectContactField")}
+          placeholder=${this.localize.term("activeCampaignFormWorkflows_SelectContactField")}
           @change=${(e : UUISelectEvent) => this.#onContactSelectChange(e)}
           .options=${
             this.contactFields?.map((ft) => ({
@@ -116,7 +116,7 @@ export class ContactMappingPropertyUiElement extends UmbLitElement implements Um
               selected: ft.name === this.selectedContactField,
             })) ?? []}></uui-select>
         <uui-select
-          placeholder=${this.localize.term("formProviderWorkflows_SelectFormField")}
+          placeholder=${this.localize.term("activeCampaignFormWorkflows_SelectFormField")}
           @change=${(e : UUISelectEvent) => this.#onFormFieldSelectChange(e)}
           .options=${
             this.formdFields?.map((ft) => ({
@@ -131,7 +131,7 @@ export class ContactMappingPropertyUiElement extends UmbLitElement implements Um
       </div>
 
       <div class="activecampaign-wf-button">
-        <uui-button look="primary" ?disabled=${this.isDisabled()} label=${this.localize.term("formProviderWorkflows_AddMapping")} @click=${this.#addButtonClick}></uui-button>
+        <uui-button look="primary" ?disabled=${this.isDisabled()} label=${this.localize.term("activeCampaignFormWorkflows_AddMapping")} @click=${this.#addButtonClick}></uui-button>
       </div>
 
       <div class="activecampaign-wf-table">
@@ -140,8 +140,8 @@ export class ContactMappingPropertyUiElement extends UmbLitElement implements Um
           <table>
             <thead>
               <tr>
-                <th>${this.localize.term("formProviderWorkflows_ContactField")}</th>
-                <th>${this.localize.term("formProviderWorkflows_FormField")}</th>
+                <th>${this.localize.term("activeCampaignFormWorkflows_ContactField")}</th>
+                <th>${this.localize.term("activeCampaignFormWorkflows_FormField")}</th>
                 <th></th>
               </tr>
             </thead>
@@ -152,7 +152,7 @@ export class ContactMappingPropertyUiElement extends UmbLitElement implements Um
                   <td>${mapping.formField?.value}</td>
                   <td>
                     <uui-button
-                      label=${this.localize.term("formProviderWorkflows_delete")}
+                      label=${this.localize.term("activeCampaignFormWorkflows_delete")}
                       look="secondary"
                       color="default"
                       @click=${() => this.#onDeleteClick(idx)}>
@@ -174,7 +174,7 @@ export class ContactMappingPropertyUiElement extends UmbLitElement implements Um
         .activecampaign-wf-required{
           margin-top: 10px;
           padding: 10px 15px;
-          background-color: #3333ff;
+          background-color: #202454;
           color: #ffffff;
         }
 

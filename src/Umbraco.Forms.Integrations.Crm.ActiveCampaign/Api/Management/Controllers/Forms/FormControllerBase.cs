@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using Asp.Versioning;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -11,9 +12,9 @@ using Umbraco.Forms.Core.Services;
 
 namespace Umbraco.Forms.Integrations.Crm.ActiveCampaign.Api.Management.Controllers.Forms
 {
+    [ApiVersion("1.0")]
     [BackOfficeRoute($"{Constants.ManagementApi.RootPath}/v{{version:apiVersion}}/forms")]
-    [ApiExplorerSettings(GroupName = Constants.ManagementApi.AccountsGroupName)]
-    [Authorize(Policy = AuthorizationPolicies.BackOfficeAccess)]
+    [ApiExplorerSettings(GroupName = Constants.ManagementApi.FormsGroupName)]
     public class FormControllerBase : ActiveCampaignControllerBase
     {
         protected readonly IFormService FormService;

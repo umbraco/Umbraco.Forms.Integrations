@@ -21,7 +21,6 @@ namespace Umbraco.Forms.Integrations.Crm.ActiveCampaign
         private readonly IContactService _contactService;
 
         private readonly ILogger<ActiveCampaignContactsWorkflow> _logger;
-        private readonly IFormService _formService;
 
         [Core.Attributes.Setting("Account",
             Description = "Please select an account",
@@ -66,7 +65,7 @@ namespace Umbraco.Forms.Integrations.Crm.ActiveCampaign
                     .ValuesAsString();
 
                 // Check if contact exists.
-                var contacts = _contactService.Get(email).ConfigureAwait(false).GetAwaiter().GetResult();
+                var contacts = await _contactService.Get(email).ConfigureAwait(false);
 
                 if(contacts.Contacts.Count > 0 && !_settings.AllowContactUpdate)
                 {
@@ -91,14 +90,13 @@ namespace Umbraco.Forms.Integrations.Crm.ActiveCampaign
                     }).ToList();
                 }
 
-                var contactId = _contactService.CreateOrUpdate(requestDto, contacts.Contacts.Count > 0)
-                    .ConfigureAwait(false).GetAwaiter().GetResult();
+                var contactId = await _contactService.CreateOrUpdate(requestDto, contacts.Contacts.Count > 0).ConfigureAwait(false);
 
                 if (string.IsNullOrEmpty(contactId))
                 {
                     _logger.LogError($"Failed to create/update contact: {email}");
 
-                    return await Task.FromResult<WorkflowExecutionStatus>(WorkflowExecutionStatus.Failed);
+                    return WorkflowExecutionStatus.Failed;
                 }
 
                 // Associate contact with account if last one is specified.
@@ -108,13 +106,13 @@ namespace Umbraco.Forms.Integrations.Crm.ActiveCampaign
                         .ConfigureAwait(false).GetAwaiter().GetResult();
                 }
 
-                return await Task.FromResult<WorkflowExecutionStatus>(WorkflowExecutionStatus.Completed);
+                return WorkflowExecutionStatus.Failed;
             }
             catch(Exception ex)
             {
                 _logger.LogError(ex, ex.Message);
 
-                return await Task.FromResult<WorkflowExecutionStatus>(WorkflowExecutionStatus.Failed);
+                return WorkflowExecutionStatus.Failed;
             }
         }
 

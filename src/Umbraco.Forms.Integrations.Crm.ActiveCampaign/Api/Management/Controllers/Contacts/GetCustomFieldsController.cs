@@ -23,7 +23,7 @@ namespace Umbraco.Forms.Integrations.Crm.ActiveCampaign.Api.Management.Controlle
 
         [HttpGet("custom")]
         [ProducesResponseType(typeof(CustomFieldCollectionResponseDto), StatusCodes.Status200OK)]
-        public IActionResult GetCustomFields() =>
-            Ok(_contactService.GetCustomFields().ConfigureAwait(false).GetAwaiter().GetResult());
+        public async Task<IActionResult> GetCustomFields() =>
+            Ok(await _contactService.GetCustomFields().ConfigureAwait(false));
     }
 }

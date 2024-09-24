@@ -2,7 +2,7 @@ import { html, customElement, property, state, map, css } from '@umbraco-cms/bac
 import type { UmbPropertyEditorUiElement } from '@umbraco-cms/backoffice/extension-registry';
 import { UmbLitElement } from '@umbraco-cms/backoffice/lit-element';
 import { ACTIVECAMPAIGN_CONTEXT_TOKEN } from '@umbraco-integrations/activecampaign/context';
-import { CustomFieldDto, Field } from '@umbraco-integrations/activecampaign/generated';
+import { CustomFieldDto, ActiveCampaignFormFieldDto } from '@umbraco-integrations/activecampaign/generated';
 import { UUISelectEvent } from '@umbraco-cms/backoffice/external/uui';
 import { CustomMappingValue } from '../../models/activecampaign.model';
 
@@ -28,7 +28,7 @@ export class CustomMappingPropertyUiElement extends UmbLitElement implements Umb
   private customFields: Array<CustomFieldDto> | undefined = [];
 
   @state()
-  private formdFields: Array<Field> | undefined = [];
+  private formdFields: Array<ActiveCampaignFormFieldDto> | undefined = [];
 
   constructor() {
     super();
@@ -114,7 +114,7 @@ export class CustomMappingPropertyUiElement extends UmbLitElement implements Umb
     return html`
       <div>
         <uui-select
-        placeholder=${this.localize.term("formProviderWorkflows_SelectCustomField")}
+        placeholder=${this.localize.term("activeCampaignFormWorkflows_SelectCustomField")}
           @change=${(e : UUISelectEvent) => this.#onCustomSelectChange(e)}
           .options=${
             this.customFields?.map((ft) => ({
@@ -123,7 +123,7 @@ export class CustomMappingPropertyUiElement extends UmbLitElement implements Umb
               selected: ft.id === this.selectedCustomField,
             })) ?? []}></uui-select>
         <uui-select
-        placeholder=${this.localize.term("formProviderWorkflows_SelectFormField")}
+        placeholder=${this.localize.term("activeCampaignFormWorkflows_SelectFormField")}
           @change=${(e : UUISelectEvent) => this.#onFormFieldSelectChange(e)}
           .options=${
             this.formdFields?.map((ft) => ({
@@ -134,7 +134,7 @@ export class CustomMappingPropertyUiElement extends UmbLitElement implements Umb
       </div>
 
       <div class="activecampaign-wf-button">
-        <uui-button look="primary" ?disabled=${this.isDisabled()} label=${this.localize.term("formProviderWorkflows_AddMapping")} @click=${this.#addButtonClick}></uui-button>
+        <uui-button look="primary" ?disabled=${this.isDisabled()} label=${this.localize.term("activeCampaignFormWorkflows_AddMapping")} @click=${this.#addButtonClick}></uui-button>
       </div>
 
       <div class="activecampaign-wf-table">
@@ -143,8 +143,8 @@ export class CustomMappingPropertyUiElement extends UmbLitElement implements Umb
             <table>
               <thead>
                 <tr>
-                  <th>${this.localize.term("formProviderWorkflows_CustomField")}</th>
-                  <th>${this.localize.term("formProviderWorkflows_FormField")}</th>
+                  <th>${this.localize.term("activeCampaignFormWorkflows_CustomField")}</th>
+                  <th>${this.localize.term("activeCampaignFormWorkflows_FormField")}</th>
                   <th></th>
                 </tr>
               </thead>
@@ -155,7 +155,7 @@ export class CustomMappingPropertyUiElement extends UmbLitElement implements Umb
                     <td>${mapping.formField?.value}</td>
                     <td>
                       <uui-button
-                        label=${this.localize.term("formProviderWorkflows_delete")}
+                        label=${this.localize.term("activeCampaignFormWorkflows_delete")}
                         look="secondary"
                         color="default"
                         @click=${() => this.#onDeleteClick(idx)}>

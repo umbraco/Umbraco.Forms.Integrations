@@ -17,7 +17,6 @@ namespace Umbraco.Forms.Integrations.Crm.ActiveCampaign.Api.Management.Controlle
     [ApiVersion("1.0")]
     [BackOfficeRoute($"{Constants.ManagementApi.RootPath}/v{{version:apiVersion}}/contacts")]
     [ApiExplorerSettings(GroupName = Constants.ManagementApi.ContactGroupName)]
-    [Authorize(Policy = AuthorizationPolicies.BackOfficeAccess)]
     public class ContactControllerBase : ActiveCampaignControllerBase
     {
         protected readonly ActiveCampaignSettings _settings;
