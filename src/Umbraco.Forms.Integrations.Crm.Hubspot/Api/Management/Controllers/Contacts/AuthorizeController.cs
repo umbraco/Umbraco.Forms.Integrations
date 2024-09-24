@@ -17,7 +17,7 @@ namespace Umbraco.Forms.Integrations.Crm.Hubspot.Api.Management.Controllers.Cont
         }
 
         [HttpPost("authorize")]
-        [ProducesResponseType(typeof(Task<AuthorizationResult>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(AuthorizationResult), StatusCodes.Status200OK)]
         public async Task<IActionResult> Authorize([FromBody] AuthorizationRequest request) => Ok(await ContactService.AuthorizeAsync(request.Code));
     }
 }

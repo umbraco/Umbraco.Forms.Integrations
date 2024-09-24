@@ -20,6 +20,7 @@ export class HubspotContext extends UmbControllerBase{
 
     async hostConnected() {
         super.hostConnected();
+        this.isAuthorizationConfigured();
     }
 
     async isAuthorizationConfigured() {
