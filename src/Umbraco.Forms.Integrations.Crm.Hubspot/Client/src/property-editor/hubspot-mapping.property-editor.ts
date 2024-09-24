@@ -2,7 +2,7 @@ import { html, customElement, property, css, when, state, map } from '@umbraco-c
 import type { UmbPropertyEditorUiElement } from '@umbraco-cms/backoffice/extension-registry';
 import { UmbLitElement } from '@umbraco-cms/backoffice/lit-element';
 import { HUBSPOT_CONTEXT_TOKEN } from '@umbraco-integrations/hubspot/context';
-import { Field, Property } from '@umbraco-integrations/hubspot/generated';
+import { HubspotWorkflowFormFieldDto, Property } from '@umbraco-integrations/hubspot/generated';
 import { UUIInputEvent, UUISelectEvent } from '@umbraco-cms/backoffice/external/uui';
 import { HubspotMappingValue } from '../models/hubspot.model';
 import { UMB_NOTIFICATION_CONTEXT, UmbNotificationColor } from '@umbraco-cms/backoffice/notification';
@@ -30,7 +30,7 @@ export class HubspotMappingPropertyUiElement extends UmbLitElement implements Um
   private hubspotFields: Array<Property> | undefined = [];
 
   @state()
-  private formdFields: Array<Field> | undefined = [];
+  private formdFields: Array<HubspotWorkflowFormFieldDto> | undefined = [];
 
   @state()
   private authorizationCode: string = "";
@@ -222,8 +222,9 @@ export class HubspotMappingPropertyUiElement extends UmbLitElement implements Um
           </div>
         ` 
         : html`
-          <div class="umb-forms-settings-note ng-scope">
-              Umbraco Forms is configured with a HubSpot CRM account using: <b>${this.authorizationStatus}</b></p>
+          <div class="hubspot-wf-status">
+              <span>Umbraco Forms is configured with a HubSpot CRM account using: </span>
+              <b>${this.authorizationStatus}</b></p>
           </div>
 
           <div class="hubspot-wf-button">
@@ -302,6 +303,13 @@ export class HubspotMappingPropertyUiElement extends UmbLitElement implements Um
 
   static styles = [
     css`
+      .hubspot-wf-status{
+        margin-top: 10px;
+        padding: 10px;
+        background-color: #202454;
+        color: #ffffff;
+      }
+
       .hubspot-wf-auth-link{
         cursor: pointer;
       }
