@@ -63,13 +63,13 @@ namespace Umbraco.Forms.Integrations.Crm.ActiveCampaign
                     .ValuesAsString();
 
                 // Check if contact exists.
-                var contacts = await _contactService.Get(email).ConfigureAwait(false);
+                var contacts = await _contactService.Get(email);
 
                 if(contacts.Contacts.Count > 0 && !_settings.AllowContactUpdate)
                 {
                     _logger.LogInformation("Contact already exists in ActiveCampaign and workflow is configured to not apply updates, so update of information was skipped.");
 
-                    return await Task.FromResult<WorkflowExecutionStatus>(WorkflowExecutionStatus.Completed);
+                    return WorkflowExecutionStatus.Completed;
                 }
 
                 var requestDto = new ContactDetailDto { Contact = Build(context.Record) };
@@ -88,7 +88,7 @@ namespace Umbraco.Forms.Integrations.Crm.ActiveCampaign
                     }).ToList();
                 }
 
-                var contactId = await _contactService.CreateOrUpdate(requestDto, contacts.Contacts.Count > 0).ConfigureAwait(false);
+                var contactId = await _contactService.CreateOrUpdate(requestDto, contacts.Contacts.Count > 0);
 
                 if (string.IsNullOrEmpty(contactId))
                 {
@@ -100,11 +100,10 @@ namespace Umbraco.Forms.Integrations.Crm.ActiveCampaign
                 // Associate contact with account if last one is specified.
                 if (!string.IsNullOrEmpty(Account))
                 {
-                    var associationResponse = _accountService.CreateAssociation(int.Parse(Account), int.Parse(contactId))
-                        .ConfigureAwait(false).GetAwaiter().GetResult();
+                    var associationResponse = _accountService.CreateAssociation(int.Parse(Account), int.Parse(contactId));
                 }
 
-                return WorkflowExecutionStatus.Failed;
+                return WorkflowExecutionStatus.Completed;
             }
             catch(Exception ex)
             {
