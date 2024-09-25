@@ -1,15 +1,14 @@
 ﻿<Project>
 	<!--
         Copied from: https://github.com/aspnet/AspLabs/blob/main/src/ClientAssets/Microsoft.AspNetCore.ClientAssets/build/netstandard2.0/Microsoft.AspNetCore.ClientAssets.targets
-
         More information:
         - https://devblogs.microsoft.com/dotnet/build-client-web-assets-for-your-razor-class-library/
         - https://github.com/dotnet/aspnetcore/issues/38445
     -->
 	<PropertyGroup>
-		<ClientAssetsDirectory Condition="'$(ClientAssetsDirectory)' == ''">src\</ClientAssetsDirectory>
-		<ClientAssetsRestoreInputs Condition="'$(ClientAssetsRestoreInputs)' == ''">package-lock.json;package.json</ClientAssetsRestoreInputs>
-		<ClientAssetsRestoreOutputs Condition="'$(ClientAssetsRestoreOutputs)' == ''">node_modules\.package-lock.json</ClientAssetsRestoreOutputs>
+		<ClientAssetsDirectory Condition="'$(ClientAssetsDirectory)' == ''">Client\</ClientAssetsDirectory>
+		<ClientAssetsRestoreInputs Condition="'$(ClientAssetsRestoreInputs)' == ''">$(ClientAssetsDirectory)\package-lock.json;$(ClientAssetsDirectory)\package.json</ClientAssetsRestoreInputs>
+		<ClientAssetsRestoreOutputs Condition="'$(ClientAssetsRestoreOutputs)' == ''">$(ClientAssetsDirectory)node_modules\.package-lock.json</ClientAssetsRestoreOutputs>
 		<ClientAssetsRestoreCommand Condition="'$(ClientAssetsRestoreCommand)' == ''">npm ci --no-fund --no-audit --prefer-offline</ClientAssetsRestoreCommand>
 		<ClientAssetsBuildCommand Condition="'$(ClientAssetsBuildCommand)' == ''">npm run build</ClientAssetsBuildCommand>
 
@@ -27,8 +26,8 @@
 
 	<Target Name="ClientAssetsRestore" BeforeTargets="$(ClientAssetsRestoreBeforeTargets)" Inputs="$(ClientAssetsRestoreInputs)" Outputs="$(ClientAssetsRestoreOutputs)">
 		<Message Text="Restoring NPM packages" Importance="high" />
-    
-  </Target>
+		<Exec Command="$(ClientAssetsRestoreCommand)" WorkingDirectory="$(ClientAssetsDirectory)"/>
+	</Target>
 
 	<Target Name="ClientAssetsBuild" Condition="'$(ShouldRunClientAssetsBuild)' == 'true'" DependsOnTargets="ClientAssetsRestore" BeforeTargets="AssignTargetPaths" Inputs="@(ClientAssetsInputs)" Outputs="$(IntermediateOutputPath)clientassetsbuild.complete.txt">
 		<PropertyGroup>
@@ -38,7 +37,7 @@
 		<Message Text="Executing NPM build script" Importance="High" />
 
 		<MakeDir Directories="$(_ClientAssetsOutputFullPath)" />
-		<Exec Command="$(ClientAssetsBuildCommand)" />
+		<Exec Command="$(ClientAssetsBuildCommand)" WorkingDirectory="$(ClientAssetsDirectory)" />
 
 		<ItemGroup>
 			<_ClientAssetsBuildOutput Include="$(IntermediateOutputPath)clientassets\**"></_ClientAssetsBuildOutput>
