@@ -6,6 +6,7 @@ import { HubspotWorkflowFormFieldDto, Property } from '@umbraco-integrations/hub
 import { UUIInputEvent, UUISelectEvent } from '@umbraco-cms/backoffice/external/uui';
 import { HubspotMappingValue } from '../models/hubspot.model';
 import { UMB_NOTIFICATION_CONTEXT, UmbNotificationColor } from '@umbraco-cms/backoffice/notification';
+import { umbConfirmModal } from '@umbraco-cms/backoffice/modal';
 
 const elementName = "hubspot-mapping-property-editor";
 
@@ -19,12 +20,6 @@ export class HubspotMappingPropertyUiElement extends UmbLitElement implements Um
 
   @state()
   public hubspotMappingArray : Array<HubspotMappingValue> = [];
-
-  @state()
-  private selectedHubspotField: string = "";
-
-  @state()
-  private selectedFormField: string = "";
 
   @state()
   private hubspotFields: Array<Property> | undefined = [];
@@ -96,9 +91,9 @@ export class HubspotMappingPropertyUiElement extends UmbLitElement implements Um
   async #onConnect(){
     const { data } = await this.#hubspotContext.authorize(this.authorizationCode);
 
-    if(!data) return;
+    if (!data) return;
 
-    if(data.success){
+    if (data.success){
       this.authorizationStatus = "OAuth";
       this.authorizationCode = "";
 
@@ -107,7 +102,7 @@ export class HubspotMappingPropertyUiElement extends UmbLitElement implements Um
       this.requestUpdate();
       this.dispatchEvent(new CustomEvent("authorizationStatus"));
       this._showSuccess("Your Umbraco Forms installation is now connected to your HubSpot account");
-    }else{
+    } else{
       this._showError(data.errorMessage);
     }
   }
@@ -122,7 +117,13 @@ export class HubspotMappingPropertyUiElement extends UmbLitElement implements Um
   }
 
   async #deauthorize(){
-    //TODO: add overlay to confirm deauthorize
+    await umbConfirmModal(this, {
+      color: "danger",
+      headline: "Confirmation",
+      content: "Are you sure you wish to disconnect your Hubspot account?",
+      confirmLabel: 'Disconnect',
+    });
+
     const { data } = await this.#hubspotContext.deauthorize();
 
     if(!data) return;
@@ -137,7 +138,7 @@ export class HubspotMappingPropertyUiElement extends UmbLitElement implements Um
       }
 
       this._showSuccess("Your Umbraco Forms installation is no longer connected to your HubSpot account");
-    }else{
+    } else{
       this._showError(data.errorMessage!);
     }
 
@@ -180,8 +181,7 @@ export class HubspotMappingPropertyUiElement extends UmbLitElement implements Um
   }
 
   #onHubspotSelectChange(e: UUISelectEvent, idx: number){
-    this.selectedHubspotField = e.target.value.toString();
-    this.hubspotMappingArray[idx].hubspotField = this.selectedHubspotField;
+    this.hubspotMappingArray[idx].hubspotField = e.target.value.toString();
 
     this.value = JSON.stringify(this.hubspotMappingArray);
     this.requestUpdate();
@@ -189,8 +189,7 @@ export class HubspotMappingPropertyUiElement extends UmbLitElement implements Um
   }
 
   #onFormFieldSelectChange(e: UUISelectEvent, idx: number){
-    this.selectedFormField = e.target.value.toString();
-    this.hubspotMappingArray[idx].formField = this.selectedFormField;
+    this.hubspotMappingArray[idx].formField = e.target.value.toString();
 
     this.value = JSON.stringify(this.hubspotMappingArray);
     this.requestUpdate();
