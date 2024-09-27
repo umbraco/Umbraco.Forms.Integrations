@@ -1,7 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Threading.Tasks;
-
-using Umbraco.Forms.Integrations.Automation.Zapier.Services;
+﻿using Umbraco.Forms.Integrations.Automation.Zapier.Services;
 
 namespace Umbraco.Forms.Integrations.Automation.Zapier.Helpers
 {

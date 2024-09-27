@@ -1,8 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-
 using System.Text.Json;
-
 using Umbraco.Forms.Core;
 using Umbraco.Forms.Core.Enums;
 using Umbraco.Forms.Core.Persistence.Dtos;
@@ -24,17 +22,17 @@ namespace Umbraco.Forms.Integrations.Crm.ActiveCampaign
 
         [Core.Attributes.Setting("Account",
             Description = "Please select an account",
-            View = "~/App_Plugins/UmbracoForms.Integrations/Crm/ActiveCampaign/accountpicker.html")]
+            View = "ActiveCampaign.Contacts.PropertyEditorUi.Account")]
         public string Account { get; set; }
 
         [Core.Attributes.Setting("Contact Mappings",
             Description = "Map contact details with form fields",
-            View = "~/App_Plugins/UmbracoForms.Integrations/Crm/ActiveCampaign/contact-mapper.html")]
+            View = "ActiveCampaign.Contacts.PropertyEditorUi.ContactMapping")]
         public string ContactMappings { get; set; }
 
         [Core.Attributes.Setting("Custom Field Mappings",
             Description = "Map contact custom fields with form fields",
-            View = "~/App_Plugins/UmbracoForms.Integrations/Crm/ActiveCampaign/customfield-mapper.html")]
+            View = "ActiveCampaign.Contacts.PropertyEditorUi.CustomMapping")]
         public string CustomFieldMappings { get; set; }
 
         public ActiveCampaignContactsWorkflow(IOptions<ActiveCampaignSettings> options, 
@@ -55,7 +53,7 @@ namespace Umbraco.Forms.Integrations.Crm.ActiveCampaign
             _logger = logger;
         }
 
-        public override WorkflowExecutionStatus Execute(WorkflowExecutionContext context)
+        public override async Task<WorkflowExecutionStatus> ExecuteAsync(WorkflowExecutionContext context)
         {
             try
             {
@@ -65,7 +63,7 @@ namespace Umbraco.Forms.Integrations.Crm.ActiveCampaign
                     .ValuesAsString();
 
                 // Check if contact exists.
-                var contacts = _contactService.Get(email).ConfigureAwait(false).GetAwaiter().GetResult();
+                var contacts = await _contactService.Get(email);
 
                 if(contacts.Contacts.Count > 0 && !_settings.AllowContactUpdate)
                 {
@@ -90,8 +88,7 @@ namespace Umbraco.Forms.Integrations.Crm.ActiveCampaign
                     }).ToList();
                 }
 
-                var contactId = _contactService.CreateOrUpdate(requestDto, contacts.Contacts.Count > 0)
-                    .ConfigureAwait(false).GetAwaiter().GetResult();
+                var contactId = await _contactService.CreateOrUpdate(requestDto, contacts.Contacts.Count > 0);
 
                 if (string.IsNullOrEmpty(contactId))
                 {
@@ -103,8 +100,7 @@ namespace Umbraco.Forms.Integrations.Crm.ActiveCampaign
                 // Associate contact with account if last one is specified.
                 if (!string.IsNullOrEmpty(Account))
                 {
-                    var associationResponse = _accountService.CreateAssociation(int.Parse(Account), int.Parse(contactId))
-                        .ConfigureAwait(false).GetAwaiter().GetResult();
+                    var associationResponse = _accountService.CreateAssociation(int.Parse(Account), int.Parse(contactId));
                 }
 
                 return WorkflowExecutionStatus.Completed;

@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Net.Http;
-using System.Threading.Tasks;
-
-namespace Umbraco.Forms.Integrations.Automation.Zapier.Services
+﻿namespace Umbraco.Forms.Integrations.Automation.Zapier.Services
 {
     public class ZapierService
     {

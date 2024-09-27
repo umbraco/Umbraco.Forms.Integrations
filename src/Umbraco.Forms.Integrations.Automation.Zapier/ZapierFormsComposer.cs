@@ -3,7 +3,6 @@ using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.SwaggerGen;
 using Umbraco.Cms.Core.Composing;
 using Umbraco.Cms.Core.DependencyInjection;
-using Umbraco.Cms.Core.Notifications;
 using Umbraco.Forms.Core.Services.Notifications;
 using Umbraco.Forms.Integrations.Automation.Zapier.Components;
 using Umbraco.Forms.Integrations.Automation.Zapier.Configuration;

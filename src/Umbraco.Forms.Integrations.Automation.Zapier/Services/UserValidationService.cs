@@ -1,11 +1,7 @@
-﻿using System.Linq;
-using System.Threading.Tasks;
-
-using Microsoft.Extensions.Options;
-
-using Umbraco.Forms.Integrations.Automation.Zapier.Configuration;
+﻿using Microsoft.Extensions.Options;
 using Umbraco.Cms.Core.Security;
 using Umbraco.Cms.Core.Services;
+using Umbraco.Forms.Integrations.Automation.Zapier.Configuration;
 
 namespace Umbraco.Forms.Integrations.Automation.Zapier.Services
 {

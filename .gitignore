@@ -17,6 +17,7 @@ src/Umbraco.Forms.Integrations.Testsite.V14/Views
 src/Umbraco.Forms.Integrations.Testsite.V14/wwwroot
 src/Umbraco.Forms.Integrations.Automation.Zapier/wwwroot
 src/Umbraco.Forms.Integrations.Crm.Hubspot/wwwroot
+src/Umbraco.Forms.Integrations.Crm.ActiveCampaign/wwwroot
 
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs
