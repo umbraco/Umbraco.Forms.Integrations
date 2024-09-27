@@ -7,8 +7,8 @@ using System.Runtime.Serialization;
 using Umbraco.Cms.Core.Events;
 using Umbraco.Cms.Core.Notifications;
 using Umbraco.Extensions;
+using Umbraco.Forms.Integrations.Crm.Hubspot.Api.Management.Controllers;
 using Umbraco.Forms.Integrations.Crm.Hubspot.Configuration;
-using Umbraco.Forms.Integrations.Crm.Hubspot.Controllers;
 
 namespace Umbraco.Forms.Integrations.Crm.Hubspot
 {
@@ -52,8 +52,8 @@ namespace Umbraco.Forms.Integrations.Crm.Hubspot
                 throw new InvalidOperationException("HttpContext is null");
             }
 
-            umbracoUrls["umbracoFormsIntegrationsCrmHubspotBaseUrl"] =
-                _linkGenerator.GetUmbracoApiServiceBaseUrl<HubspotController>(controller => controller.GetAllProperties());
+            //umbracoUrls["umbracoFormsIntegrationsCrmHubspotBaseUrl"] =
+            //    _linkGenerator.GetUmbracoApiServiceBaseUrl<GetAllPropertiesController>(controller => controller.GetAll());
 
             if (serverVars.ContainsKey("umbracoPlugins"))
             {

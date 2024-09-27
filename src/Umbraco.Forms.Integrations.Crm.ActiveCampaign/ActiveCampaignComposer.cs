@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
-
+using Microsoft.OpenApi.Models;
+using Swashbuckle.AspNetCore.SwaggerGen;
 using Umbraco.Cms.Core.Composing;
 using Umbraco.Cms.Core.DependencyInjection;
 using Umbraco.Forms.Core.Providers;
@@ -30,6 +31,21 @@ namespace Umbraco.Forms.Integrations.Crm.ActiveCampaign
 
             builder.Services.AddSingleton<IAccountService, AccountService>();
             builder.Services.AddSingleton<IContactService, ContactService>();
+
+            // Generate Swagger documentation for Zapier API
+            builder.Services.Configure<SwaggerGenOptions>(options =>
+            {
+                options.SwaggerDoc(
+                    Constants.ManagementApi.ApiName,
+                    new OpenApiInfo
+                    {
+                        Title = Constants.ManagementApi.ApiTitle,
+                        Version = "Latest",
+                        Description = $"Describes the {Constants.ManagementApi.ApiTitle} available for handling ActiveCampaign automation and configuration."
+                    });
+
+                options.CustomOperationIds(e => $"{e.ActionDescriptor.RouteValues["action"]}");
+            });
         }
     }
 }
