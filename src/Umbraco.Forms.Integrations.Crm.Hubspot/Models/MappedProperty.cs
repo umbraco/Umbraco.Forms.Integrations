@@ -1,16 +1,16 @@
-﻿using Newtonsoft.Json;
+﻿using System.Text.Json.Serialization;
 
 namespace Umbraco.Forms.Integrations.Crm.Hubspot.Models
 {
     public class MappedProperty
     {
-        [JsonProperty(PropertyName = "formField")]
+        [JsonPropertyName("formField")]
         public string FormField { get; set; }
 
-        [JsonProperty(PropertyName = "hubspotField")]
+        [JsonPropertyName("hubspotField")]
         public string HubspotField { get; set; }
 
-        [JsonProperty(PropertyName = "appendValue")]
+        [JsonPropertyName("appendValue")]
         public bool AppendValue { get; set; }
     }
 }

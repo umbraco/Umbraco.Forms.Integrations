@@ -1,11 +1,10 @@
-﻿using Newtonsoft.Json;
-using System.Collections.Generic;
+﻿using System.Text.Json.Serialization;
 
 namespace Umbraco.Forms.Integrations.Crm.Hubspot.Models.Responses
 {
     public class PropertiesResponse
     {
-        [JsonProperty(PropertyName = "results")]
+        [JsonPropertyName("results")]
         public List<Property> Results { get; set; }
     }
 }

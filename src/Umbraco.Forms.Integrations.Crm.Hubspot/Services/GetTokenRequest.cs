@@ -1,13 +1,13 @@
-﻿using Newtonsoft.Json;
+﻿using System.Text.Json.Serialization;
 
 namespace Umbraco.Forms.Integrations.Crm.Hubspot.Services
 {
     internal class GetTokenRequest : BaseTokenRequest
     {
-        [JsonProperty("grant_type")]
+        [JsonPropertyName("grant_type")]
         public override string GrantType => "authorization_code";
         
-        [JsonProperty("code")]
+        [JsonPropertyName("code")]
         public string AuthorizationCode { get; set; }
     }
 }

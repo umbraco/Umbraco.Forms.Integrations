@@ -1,4 +1,4 @@
-﻿using Newtonsoft.Json;
+﻿using System.Text.Json.Serialization;
 
 namespace Umbraco.Forms.Integrations.Crm.Hubspot.Services
 {
@@ -6,10 +6,10 @@ namespace Umbraco.Forms.Integrations.Crm.Hubspot.Services
     {
         public abstract string GrantType { get; }
 
-        [JsonProperty("client_id")]
+        [JsonPropertyName("client_id")]
         public string ClientId { get; set; }
 
-        [JsonProperty("redirect_uri")]
+        [JsonPropertyName("redirect_uri")]
         public string RedirectUrl { get; set; }
     }
 }

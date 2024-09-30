@@ -3,7 +3,6 @@ using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.SwaggerGen;
 using Umbraco.Cms.Core.Composing;
 using Umbraco.Cms.Core.DependencyInjection;
-using Umbraco.Cms.Core.Notifications;
 using Umbraco.Forms.Core.Providers;
 using Umbraco.Forms.Integrations.Crm.Hubspot.Configuration;
 using Umbraco.Forms.Integrations.Crm.Hubspot.Services;
@@ -19,8 +18,6 @@ namespace Umbraco.Forms.Integrations.Crm.Hubspot
 
             builder.Services.AddSingleton<IContactService, HubspotContactService>();
 
-            builder.AddNotificationHandler<ServerVariablesParsingNotification, HubspotServerVariablesParsingHandler>();
-
             builder.WithCollectionBuilder<WorkflowCollectionBuilder>()
                 .Add<HubspotWorkflow>();
 
@@ -33,7 +30,7 @@ namespace Umbraco.Forms.Integrations.Crm.Hubspot
                     {
                         Title = Constants.ManagementApi.ApiTitle,
                         Version = "Latest",
-                        Description = $"Describes the {Constants.ManagementApi.ApiTitle} available for handling Hubspot automation and configuration."
+                        Description = $"Describes the {Constants.ManagementApi.ApiTitle} available for handling Hubspot-CRM automation and configuration."
                     });
 
                 options.CustomOperationIds(e => $"{e.ActionDescriptor.RouteValues["action"]}");

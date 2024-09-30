@@ -1,18 +1,12 @@
-﻿using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net;
-using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
-using System.Threading.Tasks;
-
+using System.Text.Json;
 using Umbraco.Cms.Core.Cache;
 using Umbraco.Cms.Core.Services;
+using Umbraco.Extensions;
 using Umbraco.Forms.Core.Persistence.Dtos;
 using Umbraco.Forms.Integrations.Crm.Hubspot.Configuration;
 using Umbraco.Forms.Integrations.Crm.Hubspot.Extensions;
@@ -78,7 +72,7 @@ namespace Umbraco.Forms.Integrations.Crm.Hubspot.Services
             if (response.IsSuccessStatusCode)
             {
                 var responseContent = await response.Content.ReadAsStringAsync();
-                var tokenResponse = JsonConvert.DeserializeObject<TokenResponse>(responseContent);
+                var tokenResponse = JsonSerializer.Deserialize<TokenResponse>(responseContent);
 
                 // Add the access token details to the cache.
                 _appCaches.RuntimeCache.Insert(AccessTokenCacheKey, () => tokenResponse.AccessToken);
@@ -132,7 +126,7 @@ namespace Umbraco.Forms.Integrations.Crm.Hubspot.Services
             // Map the properties to our simpler object, as we don't need all the fields in the response.
             var properties = new List<Property>();
             var responseContent = await response.Content.ReadAsStringAsync();
-            var responseContentAsJson = JsonConvert.DeserializeObject<PropertiesResponse>(responseContent);
+            var responseContentAsJson = JsonSerializer.Deserialize<PropertiesResponse>(responseContent);
             properties.AddRange(responseContentAsJson.Results);
             return properties.OrderBy(x => x.Label);
         }
@@ -333,7 +327,7 @@ namespace Umbraco.Forms.Integrations.Crm.Hubspot.Services
             if (response.IsSuccessStatusCode)
             {
                 var responseContent = await response.Content.ReadAsStringAsync();
-                var tokenResponse = JsonConvert.DeserializeObject<TokenResponse>(responseContent);
+                var tokenResponse = JsonSerializer.Deserialize<TokenResponse>(responseContent);
 
                 // Update the token details in the cache.
                 _appCaches.RuntimeCache.Insert(AccessTokenCacheKey, () => tokenResponse.AccessToken);
@@ -365,7 +359,7 @@ namespace Umbraco.Forms.Integrations.Crm.Hubspot.Services
             string contentType = null)
         {
             var httpClient = _httpClientFactory.CreateClient();
-            
+
             var requestMessage = new HttpRequestMessage
             {
                 Method = httpMethod,
@@ -406,10 +400,12 @@ namespace Umbraco.Forms.Integrations.Crm.Hubspot.Services
             switch (contentType)
             {
                 case JsonContentType:
-                    var serializedData = JsonConvert.SerializeObject(data);
+                    var serializedData = JsonSerializer.Serialize(data);
                     return new StringContent(serializedData, Encoding.UTF8, contentType);
                 case "application/x-www-form-urlencoded":
-                    return new FormUrlEncodedContent(data.AsDictionary());
+                    var json = JsonSerializer.Serialize(data);
+                    var dictionary = JsonSerializer.Deserialize<Dictionary<string, string>>(json);
+                    return new FormUrlEncodedContent(dictionary);
                 default:
                     throw new InvalidOperationException($"Unexpected content type: {contentType}");
             }

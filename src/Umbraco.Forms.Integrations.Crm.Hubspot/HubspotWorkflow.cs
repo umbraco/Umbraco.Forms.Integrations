@@ -1,15 +1,9 @@
 ﻿using Microsoft.Extensions.Logging;
 
 using Newtonsoft.Json;
-
-using System;
-using System.Collections.Generic;
-using System.Reflection;
 using Umbraco.Forms.Core;
 using Umbraco.Forms.Core.Attributes;
 using Umbraco.Forms.Core.Enums;
-using Umbraco.Forms.Core.Interfaces;
-using Umbraco.Forms.Core.Models;
 using Umbraco.Forms.Integrations.Crm.Hubspot.Models;
 using Umbraco.Forms.Integrations.Crm.Hubspot.Services;
 
@@ -41,26 +35,27 @@ namespace Umbraco.Forms.Integrations.Crm.Hubspot
 
         public WorkflowExecutionStatus Execute(WorkflowExecutionContext context)
         {
-            var workflowName = GetWorkflowName();
+            throw new NotImplementedException();
+        }
 
+        public override async Task<WorkflowExecutionStatus> ExecuteAsync(WorkflowExecutionContext context)
+        {
             var fieldMappingsRawJson = FieldMappings;
             var fieldMappings = JsonConvert.DeserializeObject<List<MappedProperty>>(fieldMappingsRawJson);
             if (fieldMappings.Count == 0)
             {
-                _logger.LogWarning("Workflow {WorkflowName}: Missing HubSpot field mappings for workflow for the form {FormName} ({FormId})",
-                    workflowName, context.Form.Name, context.Form.Id);
+                _logger.LogWarning("Save Contact to HubSpot: Missing HubSpot field mappings for workflow for the form {FormName} ({FormId})", context.Form.Name, context.Form.Id);
                 return WorkflowExecutionStatus.NotConfigured;
             }
 
-            var commandResult = _contactService.PostContactAsync(context.Record, fieldMappings, null).GetAwaiter().GetResult();
+            var commandResult = await _contactService.PostContactAsync(context.Record, fieldMappings, null);
             switch (commandResult)
             {
                 case CommandResult.NotConfigured:
-                    _logger.LogWarning("Workflow {WorkflowName}: Could not complete contact request for {FormName} ({FormId}) as the workflow is not correctly configured.",
-                        workflowName, context.Form.Name, context.Form.Id);
+                    _logger.LogWarning("Save Contact to HubSpot: Could not complete contact request for {FormName} ({FormId}) as the workflow is not correctly configured.", context.Form.Name, context.Form.Id);
                     return WorkflowExecutionStatus.NotConfigured;
                 case CommandResult.Failed:
-                    _logger.LogWarning("Workflow {WorkflowName}: Failed for {FormName} ({FormId}).", workflowName, context.Form.Name, context.Form.Id);
+                    _logger.LogWarning("Save Contact to HubSpot: Failed for {FormName} ({FormId}).", context.Form.Name, context.Form.Id);
                     return WorkflowExecutionStatus.Failed;
                 case CommandResult.Success:
                     return WorkflowExecutionStatus.Completed;
@@ -69,23 +64,6 @@ namespace Umbraco.Forms.Integrations.Crm.Hubspot
             }
         }
 
-        public override Task<WorkflowExecutionStatus> ExecuteAsync(WorkflowExecutionContext context)
-        {
-            throw new NotImplementedException();
-        }
-
         public override List<Exception> ValidateSettings() => new List<Exception>();
-
-        /// <summary>
-        /// Get workflow's name using reflection in regards to breaking changes between Forms 11 and 12.
-        /// </summary>
-        /// <returns></returns>
-        private string GetWorkflowName()
-        {
-            var workflow = typeof(WorkflowType).GetProperty(nameof(Workflow)).GetValue(this);
-            var name = workflow.GetType().GetProperty(nameof(Workflow.Name)).GetValue(workflow).ToString();
-
-            return name;
-        }
     }
 }
