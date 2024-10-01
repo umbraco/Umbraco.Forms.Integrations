@@ -1,4 +1,4 @@
-﻿using Newtonsoft.Json.Linq;
+﻿using System.Text.Json.Nodes;
 using System.Text.Json.Serialization;
 
 namespace Umbraco.Forms.Integrations.Crm.Hubspot
@@ -6,6 +6,6 @@ namespace Umbraco.Forms.Integrations.Crm.Hubspot
     internal class PropertiesRequestV3
     {
         [JsonPropertyName("properties")]
-        public JObject Properties { get; set; } = new JObject();
+        public JsonObject Properties { get; set; } = new JsonObject();
     }
 }
