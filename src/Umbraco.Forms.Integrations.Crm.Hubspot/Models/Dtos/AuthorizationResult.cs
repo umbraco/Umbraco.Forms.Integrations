@@ -1,4 +1,4 @@
-﻿using Newtonsoft.Json;
+﻿using System.Text.Json.Serialization;
 
 namespace Umbraco.Forms.Integrations.Crm.Hubspot.Models.Dtos
 {
@@ -8,10 +8,10 @@ namespace Umbraco.Forms.Integrations.Crm.Hubspot.Models.Dtos
         {
         }
 
-        [JsonProperty("success")]
+        [JsonPropertyName("success")]
         public bool Success { get; private set; }
 
-        [JsonProperty("errorMessage")]
+        [JsonPropertyName("errorMessage")]
         public string ErrorMessage { get; private set; }
 
         public static AuthorizationResult AsSuccess() =>

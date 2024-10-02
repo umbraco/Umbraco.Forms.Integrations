@@ -6,8 +6,6 @@ import { manifests as localizationManifests } from "./lang/manifests.js";
 
 import { OpenAPI } from "@umbraco-integrations/hubspot/generated";
 
-// export * from "./property-editor/index.js";
-
 export const onInit: UmbEntryPointOnInit = (host, extensionRegistry) => {
   extensionRegistry.registerMany([
     hubspotContext,

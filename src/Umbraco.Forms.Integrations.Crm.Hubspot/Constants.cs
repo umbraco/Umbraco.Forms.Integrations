@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Umbraco.Forms.Integrations.Crm.Hubspot
+﻿namespace Umbraco.Forms.Integrations.Crm.Hubspot
 {
     public class Constants
     {
@@ -14,9 +8,11 @@ namespace Umbraco.Forms.Integrations.Crm.Hubspot
 
             public const string ApiName = "hubspot-management";
 
-            public const string ApiTitle = "Hubspot Management API";
+            public const string ApiTitle = "HubSpot Management API";
 
             public const string ContactGroupName = "Contacts";
+
+            public const string FormGroupName = "Forms";
         }
     }
 }

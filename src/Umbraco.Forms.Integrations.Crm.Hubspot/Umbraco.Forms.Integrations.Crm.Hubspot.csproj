@@ -6,6 +6,7 @@
 		<ImplicitUsings>enable</ImplicitUsings>
 		<AddRazorSupportForMvc>true</AddRazorSupportForMvc>
 		<EnableDefaultContentItems>false</EnableDefaultContentItems>
+		<StaticWebAssetBasePath>/App_Plugins/HubSpot</StaticWebAssetBasePath>
 	</PropertyGroup>
 
 	<PropertyGroup>
@@ -37,13 +38,6 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<None Include="build\**\*.*">
-			<Pack>True</Pack>
-			<PackagePath>buildTransitive</PackagePath>
-		</None>
-	</ItemGroup>
-
-	<ItemGroup>
 		<Content Include="hubspot.png">
 			<Pack>true</Pack>
 			<PackagePath>\</PackagePath>
@@ -59,7 +53,7 @@
 	</ItemGroup>
 
 	<!-- Build client assets using NPM -->
-	<Import Project="build\Umbraco.Forms.Integrations.Crm.Hubspot.targets" />
+	<Import Project="build\Microsoft.AspNetCore.ClientAssets.targets" />
 	<PropertyGroup>
 		<!-- Use this to (temporarily) disable building client assets, e.g. to start the project and generate updated API models -->
 		<ShouldRunClientAssetsBuild>true</ShouldRunClientAssetsBuild>
