@@ -8,7 +8,7 @@
 
             public const string ApiName = "hubspot-management";
 
-            public const string ApiTitle = "Hubspot Management API";
+            public const string ApiTitle = "HubSpot Management API";
 
             public const string ContactGroupName = "Contacts";
 

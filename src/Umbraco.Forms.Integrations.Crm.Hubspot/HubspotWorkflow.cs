@@ -1,6 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
-
-using Newtonsoft.Json;
+using System.Text.Json;
 using Umbraco.Forms.Core;
 using Umbraco.Forms.Core.Attributes;
 using Umbraco.Forms.Core.Enums;
@@ -33,15 +32,10 @@ namespace Umbraco.Forms.Integrations.Crm.Hubspot
         [Setting("Field Mappings", Description = "Map Umbraco Form fields to HubSpot contact fields", View = "Hubspot.PropertyEditorUi.Mapping")]
         public string FieldMappings { get; set; }
 
-        public WorkflowExecutionStatus Execute(WorkflowExecutionContext context)
-        {
-            throw new NotImplementedException();
-        }
-
         public override async Task<WorkflowExecutionStatus> ExecuteAsync(WorkflowExecutionContext context)
         {
             var fieldMappingsRawJson = FieldMappings;
-            var fieldMappings = JsonConvert.DeserializeObject<List<MappedProperty>>(fieldMappingsRawJson);
+            var fieldMappings = JsonSerializer.Deserialize<List<MappedProperty>>(fieldMappingsRawJson);
             if (fieldMappings.Count == 0)
             {
                 _logger.LogWarning("Save Contact to HubSpot: Missing HubSpot field mappings for workflow for the form {FormName} ({FormId})", context.Form.Name, context.Form.Id);

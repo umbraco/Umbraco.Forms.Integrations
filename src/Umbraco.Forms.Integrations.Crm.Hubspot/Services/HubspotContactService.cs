@@ -68,7 +68,7 @@ namespace Umbraco.Forms.Integrations.Crm.Hubspot.Services
                 AuthorizationCode = code,
             };
             var response = await GetResponse(OAuthTokenProxyUrl, 
-                HttpMethod.Post, content: tokenRequest, contentType: "application/x-www-form-urlencoded").ConfigureAwait(false);
+                HttpMethod.Post, content: tokenRequest, contentType: "application/x-www-form-urlencoded");
             if (response.IsSuccessStatusCode)
             {
                 var responseContent = await response.Content.ReadAsStringAsync();
@@ -108,7 +108,7 @@ namespace Umbraco.Forms.Integrations.Crm.Hubspot.Services
 
             var requestUrl = $"{CrmV3ApiBaseUrl}properties/contacts";
             var httpMethod = HttpMethod.Get;
-            var response = await GetResponse(requestUrl, httpMethod, authenticationDetails).ConfigureAwait(false);
+            var response = await GetResponse(requestUrl, httpMethod, authenticationDetails);
             if (response.IsSuccessStatusCode == false)
             {
                 var retryResult = await HandleFailedRequest(response.StatusCode, requestUrl, httpMethod, authenticationDetails);
@@ -190,7 +190,7 @@ namespace Umbraco.Forms.Integrations.Crm.Hubspot.Services
             // https://api.hubapi.com/crm/v3/objects/contacts?hapikey=YOUR_HUBSPOT_API_KEY
             var requestUrl = $"{CrmV3ApiBaseUrl}objects/contacts";
             var httpMethod = HttpMethod.Post;
-            var response = await GetResponse(requestUrl, httpMethod, authenticationDetails, propertiesRequestV3, JsonContentType).ConfigureAwait(false);
+            var response = await GetResponse(requestUrl, httpMethod, authenticationDetails, propertiesRequestV3, JsonContentType);
 
             // Depending on POST status fail or mark workflow as completed
             if (response.IsSuccessStatusCode == false)
@@ -235,7 +235,7 @@ namespace Umbraco.Forms.Integrations.Crm.Hubspot.Services
                 // It uses the V1 API but support suggests it will be added to V3 before being depreciated so we can use safely:
                 // https://community.hubspot.com/t5/APIs-Integrations/Get-Contacts-from-contact-list-using-email/m-p/419493/highlight/true#M41567
                 var requestUrl = $"{CrmApiHost}/contacts/v1/contact/email/{email}/profile";
-                var response = await GetResponse(requestUrl, HttpMethod.Post, authenticationDetails, postData, JsonContentType).ConfigureAwait(false);
+                var response = await GetResponse(requestUrl, HttpMethod.Post, authenticationDetails, postData, JsonContentType);
                 if (response.IsSuccessStatusCode == false)
                 {
                     var retryResult = await HandleFailedRequest(response.StatusCode, requestUrl, HttpMethod.Post, authenticationDetails, postData, JsonContentType);
@@ -308,7 +308,7 @@ namespace Umbraco.Forms.Integrations.Crm.Hubspot.Services
             if (accessToken != null)
             {
                 // No access token in the cache, so get a new one from the refresh token.
-                await RefreshOAuthAccessToken(refreshToken).ConfigureAwait(false);
+                await RefreshOAuthAccessToken(refreshToken);
                 accessToken = _appCaches.RuntimeCache.Get(AccessTokenCacheKey).ToString();
             }
 
@@ -323,7 +323,7 @@ namespace Umbraco.Forms.Integrations.Crm.Hubspot.Services
                 RedirectUrl = OAuthRedirectUrl,
                 RefreshToken = refreshToken,
             };
-            var response = await GetResponse(OAuthTokenProxyUrl, HttpMethod.Post, content: tokenRequest, contentType: "application/x-www-form-urlencoded").ConfigureAwait(false);
+            var response = await GetResponse(OAuthTokenProxyUrl, HttpMethod.Post, content: tokenRequest, contentType: "application/x-www-form-urlencoded");
             if (response.IsSuccessStatusCode)
             {
                 var responseContent = await response.Content.ReadAsStringAsync();
@@ -382,12 +382,12 @@ namespace Umbraco.Forms.Integrations.Crm.Hubspot.Services
                     case AuthenticationMode.OAuth:
                         requestMessage.Headers.Authorization =
                             new AuthenticationHeaderValue("Bearer", 
-                                await GetOAuthAccessTokenFromCacheOrRefreshToken(authenticationDetails.RefreshToken).ConfigureAwait(false));
+                                await GetOAuthAccessTokenFromCacheOrRefreshToken(authenticationDetails.RefreshToken));
                         break;
                 }
             }
 
-            return await httpClient.SendAsync(requestMessage).ConfigureAwait(false);
+            return await httpClient.SendAsync(requestMessage);
         }
 
         private static HttpContent CreateRequestContent(object data, string contentType)
@@ -430,7 +430,7 @@ namespace Umbraco.Forms.Integrations.Crm.Hubspot.Services
                     await RefreshOAuthAccessToken(authenticationDetails.RefreshToken);
 
                     // Repeat the operation using the refreshed token.
-                    var response = await GetResponse(requestUrl, httpMethod, authenticationDetails, content, contentType).ConfigureAwait(false);
+                    var response = await GetResponse(requestUrl, httpMethod, authenticationDetails, content, contentType);
                     if (response.IsSuccessStatusCode)
                     {
                         result.Success = true;

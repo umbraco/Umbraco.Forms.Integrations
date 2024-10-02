@@ -5,7 +5,7 @@ export default {
         FieldMappingsDescription: `Map Umbraco Form fields to Hubspot contact fields`,
     },
     hubspotFormWorkflow:{
-        SelectHubspotField : `Select Hubspot field`,
+        SelectHubspotField : `Select HubSpot field`,
         SelectFormField: `Select Form field`,
     },
 } as UmbLocalizationDictionary;

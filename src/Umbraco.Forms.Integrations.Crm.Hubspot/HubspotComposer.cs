@@ -30,7 +30,7 @@ namespace Umbraco.Forms.Integrations.Crm.Hubspot
                     {
                         Title = Constants.ManagementApi.ApiTitle,
                         Version = "Latest",
-                        Description = $"Describes the {Constants.ManagementApi.ApiTitle} available for handling Hubspot-CRM automation and configuration."
+                        Description = $"Describes the {Constants.ManagementApi.ApiTitle} available for handling HubSpot CRM automation and configuration."
                     });
 
                 options.CustomOperationIds(e => $"{e.ActionDescriptor.RouteValues["action"]}");
