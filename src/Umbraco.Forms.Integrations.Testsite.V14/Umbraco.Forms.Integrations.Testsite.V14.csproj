@@ -11,10 +11,6 @@
     <PackageReference Include="Umbraco.Forms" Version="14.1.1" />
   </ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\Umbraco.Forms.Integrations.Crm.Hubspot\Umbraco.Forms.Integrations.Crm.Hubspot.csproj" />
-  </ItemGroup>
-
 	<PropertyGroup>
 		<!-- Razor files are needed for the backoffice to work correctly -->
 		<CopyRazorGenerateFilesToPublishDirectory>true</CopyRazorGenerateFilesToPublishDirectory>
