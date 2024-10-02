@@ -16,7 +16,7 @@
 		<PackageIconUrl></PackageIconUrl>
 		<PackageProjectUrl>https://github.com/umbraco/Umbraco.Forms.Integrations/tree/main-v10/src/Umbraco.Forms.Integrations.Crm.ActiveCampaign</PackageProjectUrl>
 		<RepositoryUrl>https://github.com/umbraco/Umbraco.Forms.Integrations</RepositoryUrl>
-		<Version>2.0.0</Version>
+		<Version>3.0.0</Version>
 		<Authors>Umbraco HQ</Authors>
 		<Company>Umbraco</Company>
 		<PackageTags>Umbraco;Umbraco-Marketplace</PackageTags>
