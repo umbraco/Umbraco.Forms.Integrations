@@ -59,8 +59,14 @@ namespace Umbraco.Forms.Integrations.Crm.ActiveCampaign
             {
                 var mappings = JsonSerializer.Deserialize<List<ContactMappingDto>>(ContactMappings);
 
-                var email = context.Record.RecordFields[Guid.Parse(mappings.First(p => p.ContactField == "email").FormField.Id)]
-                    .ValuesAsString();
+                string email = ReadMappingValue(context.Record, mappings, "email");
+
+                if (string.IsNullOrEmpty(email))
+                {
+                    _logger.LogWarning("Email not set for the record!");
+                    return WorkflowExecutionStatus.Failed;
+                }
+
 
                 // Check if contact exists.
                 var contacts = await _contactService.Get(email);
@@ -153,11 +159,28 @@ namespace Umbraco.Forms.Integrations.Crm.ActiveCampaign
 
         private string ReadMappingValue(Record record, List<ContactMappingDto> mappings, string name)
         {
+            string value = string.Empty;
+
             var mappingItem = mappings.FirstOrDefault(p => p.ContactField == name);
 
-            return mappingItem != null
-                ? record.RecordFields[Guid.Parse(mappingItem.FormField.Id)].ValuesAsString()
-                : string.Empty;
+            if (mappingItem != null)
+            {
+                var key = Guid.Parse(mappingItem.FormField.Id);
+                if (!record.RecordFields.ContainsKey(key))
+                {
+                    var matchedField = record.RecordFields.FirstOrDefault(x => x.Value.FieldId == key);
+                    if (matchedField.Value != null)
+                    {
+                        value = matchedField.Value.ValuesAsString();
+                    }
+                }
+                else
+                {
+                    value = record.RecordFields[key].ValuesAsString();
+                }
+            }
+
+            return value;
         }
     }
 }
