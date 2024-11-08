@@ -60,24 +60,7 @@ public class ActiveCampaignContactsWorkflow : WorkflowType
 		{
 			var mappings = JsonSerializer.Deserialize<List<ContactMappingDto>>(ContactMappings);
 
-			string email = string.Empty;
-			var mappedEmailGuid = Guid.Parse(mappings.First(p => p.ContactField == "email").FormField.Id);
-
-			if (context.Record.RecordFields.ContainsKey(mappedEmailGuid) == false)
-			{
-				// Get email when retrying workflow
-				var matchedField = context.Record.RecordFields.FirstOrDefault(x => x.Value.FieldId == mappedEmailGuid);
-				if (matchedField.Value != null)
-				{
-					email = matchedField.Value.ValuesAsString();
-				}
-			}
-			else
-			{
-				// Get email when executing workflow for the first time
-				email = context.Record.RecordFields[mappedEmailGuid]
-					.ValuesAsString();
-			}
+			string email = ReadMappingValue(context.Record, mappings, "email");
 
 			if (string.IsNullOrEmpty(email))
 			{
@@ -175,10 +158,27 @@ public class ActiveCampaignContactsWorkflow : WorkflowType
 
 	private string ReadMappingValue(Record record, List<ContactMappingDto> mappings, string name)
 	{
+		string value = string.Empty;
+
 		var mappingItem = mappings.FirstOrDefault(p => p.ContactField == name);
 
-		return mappingItem != null
-			? record.RecordFields[Guid.Parse(mappingItem.FormField.Id)].ValuesAsString()
-			: string.Empty;
+		if (mappingItem != null)
+		{
+			var key = Guid.Parse(mappingItem.FormField.Id);
+            if (!record.RecordFields.ContainsKey(key))
+			{
+                var matchedField = record.RecordFields.FirstOrDefault(x => x.Value.FieldId == key);
+				if (matchedField.Value != null)
+				{
+					value = matchedField.Value.ValuesAsString();
+				}
+			}
+            else
+			{
+				value = record.RecordFields[key].ValuesAsString();
+			}
+		}
+
+        return value;
 	}
 }
