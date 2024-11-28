@@ -11,10 +11,10 @@
 *.sln.docstates
 
 # test site
-src/Umbraco.Forms.Integrations.Testsite.V14/App_Plugins/Our.Umbraco.DashIt
-src/Umbraco.Forms.Integrations.Testsite.V14/umbraco
-src/Umbraco.Forms.Integrations.Testsite.V14/Views
-src/Umbraco.Forms.Integrations.Testsite.V14/wwwroot
+src/Umbraco.Forms.Integrations.Testsite.V15/App_Plugins/Our.Umbraco.DashIt
+src/Umbraco.Forms.Integrations.Testsite.V15/umbraco
+src/Umbraco.Forms.Integrations.Testsite.V15/Views
+src/Umbraco.Forms.Integrations.Testsite.V15/wwwroot
 src/Umbraco.Forms.Integrations.Automation.Zapier/wwwroot
 src/Umbraco.Forms.Integrations.Crm.Hubspot/wwwroot
 src/Umbraco.Forms.Integrations.Crm.ActiveCampaign/wwwroot
