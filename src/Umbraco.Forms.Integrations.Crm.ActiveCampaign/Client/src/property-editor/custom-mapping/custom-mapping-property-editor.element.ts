@@ -1,5 +1,5 @@
 import { html, customElement, property, state, map, css } from '@umbraco-cms/backoffice/external/lit';
-import type { UmbPropertyEditorUiElement } from '@umbraco-cms/backoffice/extension-registry';
+import type { UmbPropertyEditorUiElement } from '@umbraco-cms/backoffice/property-editor';
 import { UmbLitElement } from '@umbraco-cms/backoffice/lit-element';
 import { ACTIVECAMPAIGN_CONTEXT_TOKEN } from '@umbraco-integrations/activecampaign/context';
 import { CustomFieldDto, ActiveCampaignFormFieldDto } from '@umbraco-integrations/activecampaign/generated';
