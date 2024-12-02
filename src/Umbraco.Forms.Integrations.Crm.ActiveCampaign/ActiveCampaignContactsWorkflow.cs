@@ -1,5 +1,7 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using Lucene.Net.Index;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using System;
 using System.Text.Json;
 using Umbraco.Forms.Core;
 using Umbraco.Forms.Core.Enums;
@@ -124,15 +126,19 @@ namespace Umbraco.Forms.Integrations.Crm.ActiveCampaign
             var list = new List<Exception>();
 
             if (string.IsNullOrEmpty(ContactMappings))
-                list.Add(new Exception("Contact mappings are required."));
-
-            var mappings = JsonSerializer.Deserialize<List<ContactMappingDto>>(ContactMappings);
-            foreach(var contactField in _settings.ContactFields.Where(p => p.Required))
             {
-                if(!mappings.Any(p => p.ContactField == contactField.Name))
+                list.Add(new Exception("Contact mappings are required."));
+            }
+            else
+            {
+                var mappings = JsonSerializer.Deserialize<List<ContactMappingDto>>(ContactMappings);
+                foreach (var contactField in _settings.ContactFields.Where(p => p.Required))
                 {
-                    list.Add(new Exception("Invalid contact mappings. Please make sure the mandatory fields are mapped."));
-                    break;
+                    if (!mappings.Any(p => p.ContactField == contactField.Name))
+                    {
+                        list.Add(new Exception("Invalid contact mappings. Please make sure the mandatory fields are mapped."));
+                        break;
+                    }
                 }
             }
 
