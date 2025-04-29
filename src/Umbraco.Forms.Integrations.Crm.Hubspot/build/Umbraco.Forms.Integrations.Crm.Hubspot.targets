@@ -1,29 +1,29 @@
 ﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 	<PropertyGroup>
-		<HubspotPropertyEditorFilesPath>
+		<HubspotFormsPropertyEditorFilesPath>
 			$(MSBuildThisFileDirectory)..\App_Plugins\UmbracoForms.Integrations\Crm\Hubspot\**\*.*
-		</HubspotPropertyEditorFilesPath>
+		</HubspotFormsPropertyEditorFilesPath>
 	</PropertyGroup>
-	<Target Name="CopyHubspotPropertyEditorAssets" BeforeTargets="Build">
+	<Target Name="CopyHubspotFormsPropertyEditorAssets" BeforeTargets="Build">
 		<ItemGroup>
-			<HubspotPropertyEditorFiles Include="$(HubspotPropertyEditorFilesPath)" />
+			<HubspotFormsPropertyEditorFiles Include="$(HubspotFormsPropertyEditorFilesPath)" />
 		</ItemGroup>
 		<Message
-			Text="Copying Hubspot Property Editor files: $(HubspotPropertyEditorFilesPath) - #@(HubspotPropertyEditorFiles->Count()) files"
+			Text="Copying Hubspot Forms Property Editor files: $(HubspotFormsPropertyEditorFilesPath) - #@(HubspotFormsPropertyEditorFiles->Count()) files"
 			Importance="high" />
-		<Copy SourceFiles="@(HubspotPropertyEditorFiles)"
-		      DestinationFiles="@(HubspotPropertyEditorFiles->'$(MSBuildProjectDirectory)\App_Plugins\UmbracoForms.Integrations\Crm\Hubspot\%(RecursiveDir)%(Filename)%(Extension)')"
+		<Copy SourceFiles="@(HubspotFormsPropertyEditorFiles)"
+		      DestinationFiles="@(HubspotFormsPropertyEditorFiles->'$(MSBuildProjectDirectory)\App_Plugins\UmbracoForms.Integrations\Crm\Hubspot\%(RecursiveDir)%(Filename)%(Extension)')"
 		      SkipUnchangedFiles="true" />
 
 	</Target>
 
-	<Target Name="ClearHubspotPropertyEditorAssets" BeforeTargets="Clean">
+	<Target Name="ClearHubspotFormsPropertyEditorAssets" BeforeTargets="Clean">
 		<ItemGroup>
-			<HubspotPropertyEditorDir
+			<HubspotFormsPropertyEditorDir
 				Include="$(MSBuildProjectDirectory)\App_Plugins\UmbracoForms\Crm\Hubspot\" />
 		</ItemGroup>
-		<Message Text="Clear old Hubspot Property Editor data"  Importance="high" />
-		<RemoveDir Directories="@(HubspotPropertyEditorDir)"  />
+		<Message Text="Clear old Hubspot Forms Property Editor data"  Importance="high" />
+		<RemoveDir Directories="@(HubspotFormsPropertyEditorDir)"  />
 	</Target>
 
 </Project>
