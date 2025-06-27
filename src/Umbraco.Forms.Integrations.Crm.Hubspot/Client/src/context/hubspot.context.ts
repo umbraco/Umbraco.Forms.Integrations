@@ -2,7 +2,6 @@ import { UmbControllerBase } from "@umbraco-cms/backoffice/class-api";
 import { UmbContextToken } from "@umbraco-cms/backoffice/context-api";
 import type { UmbControllerHost } from "@umbraco-cms/backoffice/controller-api";
 import { HubspotRepository } from "../repository/hubspot.repository";
-import { type AuthorizeData } from "@umbraco-integrations/hubspot/generated";
 import { UmbObjectState } from "@umbraco-cms/backoffice/observable-api";
 
 export class HubspotContext extends UmbControllerBase{
