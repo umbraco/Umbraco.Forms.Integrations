@@ -5,7 +5,6 @@ using Umbraco.Forms.Integrations.Crm.ActiveCampaign.Services;
 
 namespace Umbraco.Forms.Integrations.Crm.ActiveCampaign.Api.Management.Controllers.Accounts
 {
-    [ApiVersion("1.0")]
     [BackOfficeRoute($"{Constants.ManagementApi.RootPath}/v{{version:apiVersion}}/accounts")]
     [ApiExplorerSettings(GroupName = Constants.ManagementApi.AccountsGroupName)]
     public class AccountControllerBase : ActiveCampaignControllerBase
