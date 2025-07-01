@@ -5,6 +5,7 @@ import { manifest as hubspotPropertyEditor } from "./property-editor/manifest.js
 import { manifests as localizationManifests } from "./lang/manifests.js";
 
 import { client } from "@umbraco-integrations/hubspot/generated";
+import { umbHttpClient } from "@umbraco-cms/backoffice/http-client";
 
 export const onInit: UmbEntryPointOnInit = (host, extensionRegistry) => {
   extensionRegistry.registerMany([
@@ -14,12 +15,8 @@ export const onInit: UmbEntryPointOnInit = (host, extensionRegistry) => {
   ]);
 
   host.consumeContext(UMB_AUTH_CONTEXT, async (auth) => {
-    const config = auth?.getOpenApiConfiguration();
+      if (!auth) return;
 
-    client.setConfig({
-          auth: config?.token ?? undefined,
-          baseUrl: config?.base ?? "",
-          credentials: config?.credentials ?? "same-origin",
-    });
+      client.setConfig(umbHttpClient.getConfig());
   });
 };
