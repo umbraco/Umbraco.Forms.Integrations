@@ -46,13 +46,5 @@
 		<None Include="docs\readme.md" Pack="true" PackagePath="\" />
 	</ItemGroup>
 
-	<!-- Build client assets using NPM -->
-	<Import Project="build\Microsoft.AspNetCore.ClientAssets.targets" />
-	<PropertyGroup>
-		<!-- Use this to (temporarily) disable building client assets, e.g. to start the project and generate updated API models -->
-		<ShouldRunClientAssetsBuild>true</ShouldRunClientAssetsBuild>
-	</PropertyGroup>
-	<Target Name="ClientAssetsBuildOutputPath" BeforeTargets="ClientAssetsBuild">
-		<WriteLinesToFile File="Client\config.outputPath.js" Lines="export const outputPath = '../$(IntermediateOutputPath.Replace('\', '/'))clientassets';" Overwrite="true" />
-	</Target>
+	
 </Project>
