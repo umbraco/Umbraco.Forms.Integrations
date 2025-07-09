@@ -15,7 +15,7 @@
 		<PackageIconUrl></PackageIconUrl>
 		<PackageProjectUrl>https://github.com/umbraco/Umbraco.Forms.Integrations/tree/main-v10/src/Umbraco.Forms.Integrations.Automation.Zapier</PackageProjectUrl>
 		<RepositoryUrl>https://github.com/umbraco/Umbraco.Forms.Integrations</RepositoryUrl>
-		<Version>5.0.1</Version>
+		<Version>6.0.0</Version>
 		<Authors>Umbraco HQ</Authors>
 		<Company>Umbraco</Company>
 		<PackageTags>Umbraco;Umbraco-Marketplace</PackageTags>
@@ -23,16 +23,19 @@
 		<PackageReadmeFile>readme.md</PackageReadmeFile>
 	</PropertyGroup>
 
+	<PropertyGroup>
+		<UmbracoCmsPackageVersion>[16.0.0, 17)</UmbracoCmsPackageVersion>
+	</PropertyGroup>
 	<ItemGroup>
-		<PackageReference Include="Umbraco.Cms.Api.Common" Version="[15.0.0, 16)" />
-		<PackageReference Include="Umbraco.Cms.Api.Management" Version="[15.0.0, 16)" />
-		<PackageReference Include="Umbraco.Cms.Core" Version="[15.0.0, 16)" />
-		<PackageReference Include="Umbraco.Cms.Web.Website" Version="[15.0.0, 16)" />
-		<PackageReference Include="Umbraco.Forms.Core" Version="[15.0.0, 16)" />
+		<PackageReference Include="Umbraco.Cms.Api.Common" Version="$(UmbracoCmsPackageVersion)" />
+		<PackageReference Include="Umbraco.Cms.Api.Management" Version="$(UmbracoCmsPackageVersion)" />
+		<PackageReference Include="Umbraco.Cms.Core" Version="$(UmbracoCmsPackageVersion)" />
+		<PackageReference Include="Umbraco.Cms.Web.Website" Version="$(UmbracoCmsPackageVersion)" />
+		<PackageReference Include="Umbraco.Forms.Core" Version="$(UmbracoCmsPackageVersion)" />
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Umbraco.Cms.Integrations.Automation.Zapier" Version="3.0.0" />
+		<PackageReference Include="Umbraco.Cms.Integrations.Automation.Zapier" Version="4.0.0" />
 	</ItemGroup>
 
 	<ItemGroup>
