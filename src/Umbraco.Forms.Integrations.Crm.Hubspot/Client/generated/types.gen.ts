@@ -34,87 +34,146 @@ export type Property = {
     description: string;
 };
 
-export type IsAuthorizationConfiguredResponse = string;
-
-export type GetAuthenticationUrlResponse = string;
-
-export type AuthorizeData = {
-    requestBody?: AuthorizationRequest;
+export type GetContactsAuthConfiguredData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/umbraco/hubspot/management/api/v1/contacts/auth/configured';
 };
 
-export type AuthorizeResponse = AuthorizationResult;
-
-export type DeauthorizeResponse = AuthorizationResult;
-
-export type GetAllResponse = Array<(Property)>;
-
-export type GetFormFieldsData = {
-    formId?: string;
+export type GetContactsAuthConfiguredErrors = {
+    /**
+     * The resource is protected and requires an authentication token
+     */
+    401: unknown;
 };
 
-export type GetFormFieldsResponse = Array<(HubspotWorkflowFormFieldDto)>;
+export type GetContactsAuthConfiguredResponses = {
+    /**
+     * OK
+     */
+    200: string;
+};
 
-export type $OpenApiTs = {
-    '/umbraco/hubspot/management/api/v1/contacts/auth/configured': {
-        get: {
-            res: {
-                /**
-                 * OK
-                 */
-                200: string;
-            };
-        };
+export type GetContactsAuthConfiguredResponse = GetContactsAuthConfiguredResponses[keyof GetContactsAuthConfiguredResponses];
+
+export type GetContactsAuthUrlData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/umbraco/hubspot/management/api/v1/contacts/auth/url';
+};
+
+export type GetContactsAuthUrlErrors = {
+    /**
+     * The resource is protected and requires an authentication token
+     */
+    401: unknown;
+};
+
+export type GetContactsAuthUrlResponses = {
+    /**
+     * OK
+     */
+    200: string;
+};
+
+export type GetContactsAuthUrlResponse = GetContactsAuthUrlResponses[keyof GetContactsAuthUrlResponses];
+
+export type PostContactsAuthorizeData = {
+    body?: AuthorizationRequest;
+    path?: never;
+    query?: never;
+    url: '/umbraco/hubspot/management/api/v1/contacts/authorize';
+};
+
+export type PostContactsAuthorizeErrors = {
+    /**
+     * The resource is protected and requires an authentication token
+     */
+    401: unknown;
+};
+
+export type PostContactsAuthorizeResponses = {
+    /**
+     * OK
+     */
+    200: AuthorizationResult;
+};
+
+export type PostContactsAuthorizeResponse = PostContactsAuthorizeResponses[keyof PostContactsAuthorizeResponses];
+
+export type PostContactsDeauthorizeData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/umbraco/hubspot/management/api/v1/contacts/deauthorize';
+};
+
+export type PostContactsDeauthorizeErrors = {
+    /**
+     * The resource is protected and requires an authentication token
+     */
+    401: unknown;
+};
+
+export type PostContactsDeauthorizeResponses = {
+    /**
+     * OK
+     */
+    200: AuthorizationResult;
+};
+
+export type PostContactsDeauthorizeResponse = PostContactsDeauthorizeResponses[keyof PostContactsDeauthorizeResponses];
+
+export type GetContactsPropertiesData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/umbraco/hubspot/management/api/v1/contacts/properties';
+};
+
+export type GetContactsPropertiesErrors = {
+    /**
+     * The resource is protected and requires an authentication token
+     */
+    401: unknown;
+};
+
+export type GetContactsPropertiesResponses = {
+    /**
+     * OK
+     */
+    200: Array<Property>;
+};
+
+export type GetContactsPropertiesResponse = GetContactsPropertiesResponses[keyof GetContactsPropertiesResponses];
+
+export type GetFormsFieldsData = {
+    body?: never;
+    path?: never;
+    query?: {
+        formId?: string;
     };
-    '/umbraco/hubspot/management/api/v1/contacts/auth/url': {
-        get: {
-            res: {
-                /**
-                 * OK
-                 */
-                200: string;
-            };
-        };
-    };
-    '/umbraco/hubspot/management/api/v1/contacts/authorize': {
-        post: {
-            req: AuthorizeData;
-            res: {
-                /**
-                 * OK
-                 */
-                200: AuthorizationResult;
-            };
-        };
-    };
-    '/umbraco/hubspot/management/api/v1/contacts/deauthorize': {
-        post: {
-            res: {
-                /**
-                 * OK
-                 */
-                200: AuthorizationResult;
-            };
-        };
-    };
-    '/umbraco/hubspot/management/api/v1/contacts/properties': {
-        get: {
-            res: {
-                /**
-                 * OK
-                 */
-                200: Array<(Property)>;
-            };
-        };
-    };
-    '/umbraco/hubspot/management/api/v1/forms/fields': {
-        get: {
-            req: GetFormFieldsData;
-            res: {
-                /**
-                 * OK
-                 */
-                200: Array<(HubspotWorkflowFormFieldDto)>;
-            };
-        };
-    };
+    url: '/umbraco/hubspot/management/api/v1/forms/fields';
+};
+
+export type GetFormsFieldsErrors = {
+    /**
+     * The resource is protected and requires an authentication token
+     */
+    401: unknown;
+};
+
+export type GetFormsFieldsResponses = {
+    /**
+     * OK
+     */
+    200: Array<HubspotWorkflowFormFieldDto>;
+};
+
+export type GetFormsFieldsResponse = GetFormsFieldsResponses[keyof GetFormsFieldsResponses];
+
+export type ClientOptions = {
+    baseUrl: 'http://localhost:62622' | (string & {});
 };

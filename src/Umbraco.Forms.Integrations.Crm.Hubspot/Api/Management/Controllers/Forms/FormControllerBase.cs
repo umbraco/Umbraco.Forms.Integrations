@@ -5,7 +5,6 @@ using Umbraco.Forms.Core.Services;
 
 namespace Umbraco.Forms.Integrations.Crm.Hubspot.Api.Management.Controllers.Forms
 {
-    [ApiVersion("1.0")]
     [BackOfficeRoute($"{Constants.ManagementApi.RootPath}/v{{version:apiVersion}}/forms")]
     [ApiExplorerSettings(GroupName = Constants.ManagementApi.FormGroupName)]
     public class FormControllerBase : HubspotControllerBase

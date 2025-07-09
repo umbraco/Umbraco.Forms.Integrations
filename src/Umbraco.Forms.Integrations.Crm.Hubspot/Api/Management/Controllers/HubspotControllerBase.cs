@@ -8,7 +8,7 @@ namespace Umbraco.Forms.Integrations.Crm.Hubspot.Api.Management.Controllers
     [ApiController]
     [Authorize(Policy = AuthorizationPolicies.BackOfficeAccess)]
     [MapToApi(Constants.ManagementApi.ApiName)]
-    public class HubspotControllerBase : Controller
+    public class HubspotControllerBase : ControllerBase
     {
         
     }

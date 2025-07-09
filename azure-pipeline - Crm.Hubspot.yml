@@ -1,15 +1,19 @@
 trigger:
-- main
-- main-v10
+  branches:
+    include:
+    - main-v16
+    - v16/dev
+  paths:
+    include:
+    - src/Umbraco.Forms.Integrations.Crm.Hubspot/**
+    - azure-pipeline - Crm.Hubspot.yml
 
 pool:
   vmImage: 'windows-latest'
 
 variables:
   projectName: 'Umbraco.Forms.Integrations.Crm.Hubspot'
-  solution: '**/*.sln'
   project: 'src/$(projectName)/$(projectName).csproj'
-  testProject: 'src/$(projectName).Tests/$(projectName).Tests.csproj'
   buildPlatform: 'Any CPU'
   buildConfiguration: 'Release'
 
@@ -17,10 +21,19 @@ steps:
 - task: NuGetToolInstaller@1
   displayName: 'Install NuGet'
 
-- task: NuGetCommand@2
+- task: DotNetCoreCLI@2
   displayName: 'NuGet Restore'
   inputs:
-    restoreSolution: '$(solution)'
+    command: 'restore'
+    feedsToUse: 'select'
+    projects: '$(project)'
+    includeNuGetOrg: true
+
+- task: UseDotNet@2
+  displayName: 'Use SDK version 9.0.203'
+  inputs:
+    packageType: 'sdk'
+    version: '9.0.203'
 
 - task: VSBuild@1
   displayName: 'Build Project'
@@ -30,20 +43,6 @@ steps:
     platform: '$(buildPlatform)'
     configuration: '$(buildConfiguration)'
 
-- task: VSBuild@1
-  displayName: 'Build Tests'
-  inputs:
-    solution: '$(testProject)'
-    msbuildArgs: '/p:DeployOnBuild=true /p:WebPublishMethod=Package /p:PackageAsSingleFile=true /p:SkipInvalidConfigurations=true /p:PackageLocation="$(build.artifactStagingDirectory)"'
-    platform: '$(buildPlatform)'
-    configuration: '$(buildConfiguration)'
-
-- task: DotNetCoreCLI@2
-  displayName: dotnet test
-  inputs:
-    command: test
-    projects: '**/*.Tests.csproj'
-
 - task: DotNetCoreCLI@2
   displayName: 'Create NuGet Package'
   inputs:
@@ -51,16 +50,6 @@ steps:
     arguments: '--configuration $(buildConfiguration)'
     packagesToPack: '$(project)'
     versioningScheme: 'off'
-
-- task: CmdLine@2
-  displayName: 'Create Umbraco Package'
-  inputs:
-    script: |
-      dotnet tool install --global Umbraco.Tools.Packages
-      cd src/$(projectName)/
-      umbpack pack .\package.xml -o $(Build.ArtifactStagingDirectory)
-      cd ../../
-  condition: eq(variables['Build.SourceBranch'], 'refs/heads/main')
 
 - task: PublishBuildArtifacts@1
   displayName: 'Publish Build Artifacts'

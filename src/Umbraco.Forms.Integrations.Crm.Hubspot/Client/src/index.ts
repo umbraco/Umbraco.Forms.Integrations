@@ -4,7 +4,8 @@ import { manifest as hubspotContext } from "./context/manifest.js";
 import { manifest as hubspotPropertyEditor } from "./property-editor/manifest.js";
 import { manifests as localizationManifests } from "./lang/manifests.js";
 
-import { OpenAPI } from "@umbraco-integrations/hubspot/generated";
+import { client } from "@umbraco-integrations/hubspot/generated";
+import { umbHttpClient } from "@umbraco-cms/backoffice/http-client";
 
 export const onInit: UmbEntryPointOnInit = (host, extensionRegistry) => {
   extensionRegistry.registerMany([
@@ -13,10 +14,9 @@ export const onInit: UmbEntryPointOnInit = (host, extensionRegistry) => {
     ...localizationManifests
   ]);
 
-  host.consumeContext(UMB_AUTH_CONTEXT, async (instance) => {
-    const umbOpenApi = instance.getOpenApiConfiguration();
-    OpenAPI.TOKEN = umbOpenApi.token;
-    OpenAPI.BASE = umbOpenApi.base;
-    OpenAPI.WITH_CREDENTIALS = true;
+  host.consumeContext(UMB_AUTH_CONTEXT, async (auth) => {
+      if (!auth) return;
+
+      client.setConfig(umbHttpClient.getConfig());
   });
 };
