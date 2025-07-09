@@ -1,7 +1,7 @@
 import { UmbControllerBase } from "@umbraco-cms/backoffice/class-api";
 import type { UmbControllerHost } from "@umbraco-cms/backoffice/controller-api";
-import { tryExecuteAndNotify } from "@umbraco-cms/backoffice/resources";
-import { ContactsService, FormsService, type AuthorizeData } from "@umbraco-integrations/hubspot/generated";
+import { tryExecute } from "@umbraco-cms/backoffice/resources";
+import { ContactsService, FormsService, type PostContactsAuthorizeData } from "@umbraco-integrations/hubspot/generated";
 
 export class HubspotRepository extends UmbControllerBase{
     constructor(host: UmbControllerHost) {
@@ -9,7 +9,7 @@ export class HubspotRepository extends UmbControllerBase{
     }
 
     async isAuthorizationConfigured() {
-        const { data, error } = await tryExecuteAndNotify(this, ContactsService.isAuthorizationConfigured());
+        const { data, error } = await tryExecute(this, ContactsService.getContactsAuthConfigured());
 
         if (error || !data) {
             return { error };
@@ -19,7 +19,7 @@ export class HubspotRepository extends UmbControllerBase{
     }
 
     async getAuthenticationUrl() {
-        const { data, error } = await tryExecuteAndNotify(this, ContactsService.getAuthenticationUrl());
+        const { data, error } = await tryExecute(this, ContactsService.getContactsAuthUrl());
 
         if (error || !data) {
             return { error };
@@ -29,7 +29,7 @@ export class HubspotRepository extends UmbControllerBase{
     }
 
     async authorize(code: string) {
-        const { data, error } = await tryExecuteAndNotify(this, ContactsService.authorize({requestBody: {code: code}}));
+        const { data, error } = await tryExecute(this, ContactsService.postContactsAuthorize({ body: { code: code } }));
 
         if (error || !data) {
             return { error };
@@ -39,7 +39,7 @@ export class HubspotRepository extends UmbControllerBase{
     }
 
     async deauthorize() {
-        const { data, error } = await tryExecuteAndNotify(this, ContactsService.deauthorize());
+        const { data, error } = await tryExecute(this, ContactsService.postContactsDeauthorize());
 
         if (error || !data) {
             return { error };
@@ -49,7 +49,7 @@ export class HubspotRepository extends UmbControllerBase{
     }
 
     async getAll() {
-        const { data, error } = await tryExecuteAndNotify(this, ContactsService.getAll());
+        const { data, error } = await tryExecute(this, ContactsService.getContactsProperties());
 
         if (error || !data) {
             return { error };
@@ -59,7 +59,7 @@ export class HubspotRepository extends UmbControllerBase{
     }
 
     async getFormFields(formId: string) {
-        const { data, error } = await tryExecuteAndNotify(this, FormsService.getFormFields({formId: formId}));
+        const { data, error } = await tryExecute(this, FormsService.getFormsFields({ query: { formId } }));
 
         if (error || !data) {
             return { error };

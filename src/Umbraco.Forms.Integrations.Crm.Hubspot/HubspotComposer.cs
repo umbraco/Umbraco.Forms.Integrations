@@ -1,9 +1,11 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.SwaggerGen;
+using Umbraco.Cms.Api.Common.OpenApi;
 using Umbraco.Cms.Core.Composing;
 using Umbraco.Cms.Core.DependencyInjection;
 using Umbraco.Forms.Core.Providers;
+using Umbraco.Forms.Integrations.Crm.Hubspot.Api.Configuration;
 using Umbraco.Forms.Integrations.Crm.Hubspot.Configuration;
 using Umbraco.Forms.Integrations.Crm.Hubspot.Services;
 
@@ -33,8 +35,9 @@ namespace Umbraco.Forms.Integrations.Crm.Hubspot
                         Description = $"Describes the {Constants.ManagementApi.ApiTitle} available for handling HubSpot CRM automation and configuration."
                     });
 
-                options.CustomOperationIds(e => $"{e.ActionDescriptor.RouteValues["action"]}");
-            });
+                options.OperationFilter<BackOfficeSecurityRequirementsOperationFilter>();
+            })
+            .AddSingleton<IOperationIdHandler, HubspotFormsOperationIdHandler>();
         }
     }
 }

@@ -216,9 +216,10 @@ export class HubspotMappingPropertyUiElement extends UmbLitElement implements Um
             <p>To do this you can either create and save an API key or a Private Access Token into the <i>appsettings.json</i> file.</p>
             <p>Or you can click <a class="hubspot-wf-auth-link" @click=${this.#openAuth} style="text-decoration: underline">here</a> to complete an OAuth connection.</p>
             <p><em>If your browser is unable to process the automated connection, paste the provided authorization code below and click to complete the authentication.</em></p>
-            <uui-input placeholder="Enter authorization code" @change=${(e : UUIInputEvent) => this.#onInputChange(e)}></uui-input>
+
+            <uui-input style="vertical-align: middle" placeholder="Enter authorization code" @change=${(e: UUIInputEvent) => this.#onInputChange(e)}></uui-input>
             <uui-button look="primary" type="button" ?disabled=${!this.authorizationCode} @click=${this.#onConnect} label="Authorize"></uui-button>
-          </div>
+          </div> 
         ` 
         : html`
           <div class="hubspot-wf-status">
