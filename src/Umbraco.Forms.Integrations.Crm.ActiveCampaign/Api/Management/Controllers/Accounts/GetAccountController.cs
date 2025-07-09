@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using Asp.Versioning;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Umbraco.Cms.Web.Common.Authorization;
@@ -7,7 +8,7 @@ using Umbraco.Forms.Integrations.Crm.ActiveCampaign.Services;
 
 namespace Umbraco.Forms.Integrations.Crm.ActiveCampaign.Api.Management.Controllers.Accounts
 {
-    [Authorize(Policy = AuthorizationPolicies.BackOfficeAccess)]
+    [ApiVersion("1.0")]
     public class GetAccountController : AccountControllerBase
     {
         public GetAccountController(IAccountService accountService) : base(accountService)

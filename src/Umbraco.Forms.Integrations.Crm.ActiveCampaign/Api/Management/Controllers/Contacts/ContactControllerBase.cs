@@ -7,7 +7,6 @@ using Umbraco.Forms.Integrations.Crm.ActiveCampaign.Services;
 
 namespace Umbraco.Forms.Integrations.Crm.ActiveCampaign.Api.Management.Controllers.Contacts
 {
-    [ApiVersion("1.0")]
     [BackOfficeRoute($"{Constants.ManagementApi.RootPath}/v{{version:apiVersion}}/contacts")]
     [ApiExplorerSettings(GroupName = Constants.ManagementApi.ContactGroupName)]
     public class ContactControllerBase : ActiveCampaignControllerBase
