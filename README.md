@@ -14,3 +14,7 @@ This repository houses open-source extensions, created for Umbraco Forms, that i
 
 ### Commerce
 [emerchantpay](./src/Umbraco.Forms.Integrations.Commerce.EMerchantPay) -  a custom workflow for handling online payments using a hosted payment page provided by emerchantpay.
+
+## Issues
+
+Please raise all issues / feature requests on the central issue tracker at [https://github.com/umbraco/Umbraco.Integrations.Issues](https://github.com/umbraco/Umbraco.Integrations.Issues)
