@@ -1,22 +1,20 @@
 trigger:
-  branches:
-    include:
-    - main-v17
-    - v17/dev
-  paths:
-    include:
-    - src/Umbraco.Forms.Integrations.Automation.Zapier/**
-    - azure-pipeline - Automation.Zapier.yml
+- main-v17
 
 pool:
   vmImage: 'windows-latest'
 
 variables:
-  nodeVersion: '>=22'
   projectName: 'Umbraco.Forms.Integrations.Automation.Zapier'
+  solution: '**/*.sln'
   project: 'src/$(projectName)/$(projectName).csproj'
+  testPoject: 'src/$(projectName).Tests/$(projectName).Tests.csproj'
   buildPlatform: 'Any CPU'
   buildConfiguration: 'Release'
+  productGroup: 'DXP'
+  productVersion: 'v17'
+  DT_API_KEY: $(dtApiKey)
+  DT_BASE_URL: $(dtBaseUrl)
 
 steps:
 - task: NuGetToolInstaller@1
@@ -25,16 +23,7 @@ steps:
 - task: NuGetCommand@2
   displayName: 'NuGet Restore'
   inputs:
-    command: 'restore'
-    feedsToUse: 'select'
-    projects: '$(project)'
-    includeNuGetOrg: true
-
-- task: UseDotNet@2
-  displayName: 'Use SDK version 10.0.100'
-  inputs:
-    packageType: 'sdk'
-    version: '10.0.100'
+    restoreSolution: '$(solution)'
 
 - task: VSBuild@1
   displayName: 'Build Project'
@@ -77,21 +66,16 @@ steps:
 - script: |
     mkdir -p $(Build.ArtifactStagingDirectory)/bom
     cd $(Build.SourcesDirectory)
-    cdxgen --recurse \
-      --output $(Build.ArtifactStagingDirectory)/bom/bom.json \
-      --json-pretty \
-      --project-group "DXP" \
-      --project-name "Umbraco.Forms.Integrations.Automation.Zapier" \
-      --project-version "v17" \
-      --server-url "$(DT_BASE_URL)" \
-      --api-key "$(DT_API_KEY)"
-    displayName: 'Generate & upload SBOM with cdxgen'
-    env:
-      DT_API_KEY: $(dtApiKey)
-      DT_BASE_URL: "https://ca-live-global-dtrack-api.purplemoss-6e7d841c.westeurope.azurecontainerapps.io"
 
+    cdxgen --recurse --output $(Build.ArtifactStagingDirectory)\bom\bom.json --json-pretty --project-group "$(productGroup)" --project-name "$(projectName)" --project-version "$(productVersion)" --server-url "$(DT_BASE_URL)" --api-key "$(DT_API_KEY)" --deep
+  displayName: 'Generate & Upload SBOM with cdxgen'
+  env:
+    DT_API_KEY: $(DT_API_KEY)
+    DT_BASE_URL: $(DT_BASE_URL)
+
+# Publish SBOM artifact
 - task: PublishPipelineArtifact@1
-displayName: 'Publish SBOM Artifact'
-inputs:
-  targetPath: $(Build.ArtifactStagingDirectory)/bom
-  artifactName: SBOM
+  displayName: 'Publish SBOM Artifact'
+  inputs:
+    targetPath: $(Build.ArtifactStagingDirectory)/bom
+    artifactName: SBOM    

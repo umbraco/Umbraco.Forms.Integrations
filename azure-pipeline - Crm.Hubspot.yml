@@ -12,11 +12,14 @@ pool:
   vmImage: 'windows-latest'
 
 variables:
-  nodeVersion: '>=22'
   projectName: 'Umbraco.Forms.Integrations.Crm.Hubspot'
   project: 'src/$(projectName)/$(projectName).csproj'
   buildPlatform: 'Any CPU'
   buildConfiguration: 'Release'
+  productGroup: 'DXP'
+  productVersion: 'v17'
+  DT_API_KEY: $(dtApiKey)
+  DT_BASE_URL: $(dtBaseUrl)
 
 steps:
 - task: NuGetToolInstaller@1
@@ -35,24 +38,6 @@ steps:
   inputs:
     packageType: 'sdk'
     version: '10.0.100'
-
-- task: NodeTool@0
-  displayName: Use Node.js $(nodeVersion)
-  inputs:
-    versionSpec: $(nodeVersion)
-
-- task: Npm@1
-  displayName: 'NPM Install'
-  inputs:
-    command: 'custom'
-    customCommand: 'ci'
-    workingDir: 'src/$(projectName)/Client'
-
-- task: Npm@1
-  displayName: Build client app
-  inputs:
-    command: 'custom'
-    customCommand: 'run build'
 
 - task: VSBuild@1
   displayName: 'Build Project'
@@ -86,21 +71,16 @@ steps:
 - script: |
     mkdir -p $(Build.ArtifactStagingDirectory)/bom
     cd $(Build.SourcesDirectory)
-    cdxgen --recurse \
-      --output $(Build.ArtifactStagingDirectory)/bom/bom.json \
-      --json-pretty \
-      --project-group "DXP" \
-      --project-name "Umbraco.Forms.Integrations.Crm.Hubspot" \
-      --project-version "v17" \
-      --server-url "$(DT_BASE_URL)" \
-      --api-key "$(DT_API_KEY)"
-    displayName: 'Generate & upload SBOM with cdxgen'
-    env:
-      DT_API_KEY: $(dtApiKey)
-      DT_BASE_URL: "https://ca-live-global-dtrack-api.purplemoss-6e7d841c.westeurope.azurecontainerapps.io"
 
+    cdxgen --recurse --output $(Build.ArtifactStagingDirectory)\bom\bom.json --json-pretty --project-group "$(productGroup)" --project-name "$(projectName)" --project-version "$(productVersion)" --server-url "$(DT_BASE_URL)" --api-key "$(DT_API_KEY)" --deep
+  displayName: 'Generate & Upload SBOM with cdxgen'
+  env:
+    DT_API_KEY: $(DT_API_KEY)
+    DT_BASE_URL: $(DT_BASE_URL)
+
+# Publish SBOM artifact
 - task: PublishPipelineArtifact@1
-displayName: 'Publish SBOM Artifact'
-inputs:
-  targetPath: $(Build.ArtifactStagingDirectory)/bom
-  artifactName: SBOM
+  displayName: 'Publish SBOM Artifact'
+  inputs:
+    targetPath: $(Build.ArtifactStagingDirectory)/bom
+    artifactName: SBOM    
