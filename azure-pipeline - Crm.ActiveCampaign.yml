@@ -96,7 +96,7 @@ steps:
       --api-key "$(DT_API_KEY)"
     displayName: 'Generate & upload SBOM with cdxgen'
     env:
-      DT_API_KEY: $(DT_API_KEY)
+      DT_API_KEY: $(dtApiKey)
       DT_BASE_URL: "https://ca-live-global-dtrack-api.purplemoss-6e7d841c.westeurope.azurecontainerapps.io"
 
 - task: PublishPipelineArtifact@1
