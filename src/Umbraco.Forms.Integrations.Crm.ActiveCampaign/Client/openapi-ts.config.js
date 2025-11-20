@@ -1,9 +1,7 @@
 ﻿import { defineConfig } from '@hey-api/openapi-ts';
 
 export default defineConfig({
-    logs: {
-        level: 'debug',
-    },
+    debug: true,
     input: 'http://localhost:62622/umbraco/swagger/activecampaign-management/swagger.json',
     output: {
         path: 'generated',
@@ -22,6 +20,8 @@ export default defineConfig({
         {
             name: '@hey-api/sdk',
             asClass: true,
+            classNameBuilder: (name) => `${name}Service`,
+            responseStyle: 'fields',
         },
     ],
 });

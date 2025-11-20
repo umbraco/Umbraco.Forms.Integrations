@@ -11,11 +11,11 @@ export const onInit: UmbEntryPointOnInit = (host, extensionRegistry) => {
         ...propertyEditorManifests,
         ...localizationManifests,
         activecampaignContext
-  ]);
+    ]);
 
-  host.consumeContext(UMB_AUTH_CONTEXT, async (auth) => {
-      if (!auth) return;
+    host.consumeContext(UMB_AUTH_CONTEXT, async (auth) => {
+        if (!auth) return;
 
-      client.setConfig(umbHttpClient.getConfig());
-  });
+        client.setConfig(umbHttpClient.getConfig());
+    });
 };

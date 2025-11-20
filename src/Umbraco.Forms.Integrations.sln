@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 17
-VisualStudioVersion = 17.2.32616.157
+# Visual Studio Version 18
+VisualStudioVersion = 18.0.11205.157
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Umbraco.Forms.Integrations.Crm.Hubspot", "Umbraco.Forms.Integrations.Crm.Hubspot\Umbraco.Forms.Integrations.Crm.Hubspot.csproj", "{E7F3F2CC-DCB6-4158-AABA-D2EA9E1B9FA8}"
 EndProject
@@ -14,7 +14,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{D8563F12-E8CF-4900-BEF4-531B8C1FE8A3}"
 	ProjectSection(SolutionItems) = preProject
 		..\azure-pipeline - Automation.Zapier.yml = ..\azure-pipeline - Automation.Zapier.yml
-		..\azure-pipeline - Cms.OAuthProxy.yml = ..\azure-pipeline - Cms.OAuthProxy.yml
+		..\azure-pipeline - Crm.ActiveCampaign.yml = ..\azure-pipeline - Crm.ActiveCampaign.yml
 		..\azure-pipeline - Crm.Hubspot.yml = ..\azure-pipeline - Crm.Hubspot.yml
 		..\README.md = ..\README.md
 	EndProjectSection
@@ -23,21 +23,13 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Automation", "Automation", 
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Zapier", "Zapier", "{B05E7FB6-2403-4971-AB34-4BE43A69FBE2}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Commerce", "Commerce", "{F436249E-0796-4FCC-85A5-180A0DCDB05F}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Emerchantpay", "Emerchantpay", "{854D0DF1-AAEE-406A-82A8-B05992A0A74B}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Umbraco.Forms.Integrations.Commerce.Emerchantpay", "Umbraco.Forms.Integrations.Commerce.Emerchantpay\Umbraco.Forms.Integrations.Commerce.Emerchantpay.csproj", "{FD1A8505-A19E-4281-8701-6BA708C03CBE}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ActiveCampaign", "ActiveCampaign", "{104D2677-6B53-4FF9-BB62-A68BD1D2884E}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Umbraco.Forms.Integrations.Crm.ActiveCampaign", "Umbraco.Forms.Integrations.Crm.ActiveCampaign\Umbraco.Forms.Integrations.Crm.ActiveCampaign.csproj", "{084CA526-1E5D-4AD7-8715-C5D6342CB3A0}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Umbraco.Forms.Integrations.Automation.Zapier", "Umbraco.Forms.Integrations.Automation.Zapier\Umbraco.Forms.Integrations.Automation.Zapier.csproj", "{B437434B-2A95-4C8E-AF6E-4B55D4781C70}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Umbraco.Cms.Integrations.OAuthProxy", "Umbraco.Cms.Integrations.OAuthProxy\Umbraco.Cms.Integrations.OAuthProxy.csproj", "{221D3F2B-0373-478B-9266-7ADE09E77F5B}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Umbraco.Forms.Integrations.Testsite.V16", "Umbraco.Forms.Integrations.Testsite.V16\Umbraco.Forms.Integrations.Testsite.V16.csproj", "{EDF18689-17BE-4388-9293-327611424557}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Umbraco.Forms.Integrations.TestSite.V17", "Umbraco.Forms.Integrations.Testsite.V17\Umbraco.Forms.Integrations.TestSite.V17.csproj", "{EDF18689-17BE-4388-9293-327611424557}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -53,10 +45,6 @@ Global
 		{53742941-B77B-4A95-B247-F3ADD944C2FD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{53742941-B77B-4A95-B247-F3ADD944C2FD}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{53742941-B77B-4A95-B247-F3ADD944C2FD}.Release|Any CPU.Build.0 = Release|Any CPU
-		{FD1A8505-A19E-4281-8701-6BA708C03CBE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{FD1A8505-A19E-4281-8701-6BA708C03CBE}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{FD1A8505-A19E-4281-8701-6BA708C03CBE}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{FD1A8505-A19E-4281-8701-6BA708C03CBE}.Release|Any CPU.Build.0 = Release|Any CPU
 		{084CA526-1E5D-4AD7-8715-C5D6342CB3A0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{084CA526-1E5D-4AD7-8715-C5D6342CB3A0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{084CA526-1E5D-4AD7-8715-C5D6342CB3A0}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -65,10 +53,6 @@ Global
 		{B437434B-2A95-4C8E-AF6E-4B55D4781C70}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B437434B-2A95-4C8E-AF6E-4B55D4781C70}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B437434B-2A95-4C8E-AF6E-4B55D4781C70}.Release|Any CPU.Build.0 = Release|Any CPU
-		{221D3F2B-0373-478B-9266-7ADE09E77F5B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{221D3F2B-0373-478B-9266-7ADE09E77F5B}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{221D3F2B-0373-478B-9266-7ADE09E77F5B}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{221D3F2B-0373-478B-9266-7ADE09E77F5B}.Release|Any CPU.Build.0 = Release|Any CPU
 		{EDF18689-17BE-4388-9293-327611424557}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{EDF18689-17BE-4388-9293-327611424557}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EDF18689-17BE-4388-9293-327611424557}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -82,12 +66,9 @@ Global
 		{621A30D4-2251-43FF-BB4A-A4808C6A67D6} = {B068CD05-EA88-4457-B8D9-6DB899E7EBE1}
 		{53742941-B77B-4A95-B247-F3ADD944C2FD} = {621A30D4-2251-43FF-BB4A-A4808C6A67D6}
 		{B05E7FB6-2403-4971-AB34-4BE43A69FBE2} = {8C56413E-07EF-4C1B-8D72-5493B6D35847}
-		{854D0DF1-AAEE-406A-82A8-B05992A0A74B} = {F436249E-0796-4FCC-85A5-180A0DCDB05F}
-		{FD1A8505-A19E-4281-8701-6BA708C03CBE} = {854D0DF1-AAEE-406A-82A8-B05992A0A74B}
 		{104D2677-6B53-4FF9-BB62-A68BD1D2884E} = {B068CD05-EA88-4457-B8D9-6DB899E7EBE1}
 		{084CA526-1E5D-4AD7-8715-C5D6342CB3A0} = {104D2677-6B53-4FF9-BB62-A68BD1D2884E}
 		{B437434B-2A95-4C8E-AF6E-4B55D4781C70} = {B05E7FB6-2403-4971-AB34-4BE43A69FBE2}
-		{221D3F2B-0373-478B-9266-7ADE09E77F5B} = {621A30D4-2251-43FF-BB4A-A4808C6A67D6}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {24944114-049F-4C44-95C5-E50600988018}
