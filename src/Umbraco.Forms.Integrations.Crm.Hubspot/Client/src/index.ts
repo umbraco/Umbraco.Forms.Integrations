@@ -5,18 +5,22 @@ import { manifest as hubspotPropertyEditor } from "./property-editor/manifest.js
 import { manifests as localizationManifests } from "./lang/manifests.js";
 
 import { client } from "@umbraco-integrations/hubspot/generated";
-import { umbHttpClient } from "@umbraco-cms/backoffice/http-client";
 
 export const onInit: UmbEntryPointOnInit = (host, extensionRegistry) => {
-  extensionRegistry.registerMany([
-    hubspotContext,
-    hubspotPropertyEditor,
-    ...localizationManifests
-  ]);
+    extensionRegistry.registerMany([
+        hubspotContext,
+        hubspotPropertyEditor,
+        ...localizationManifests
+    ]);
 
-  host.consumeContext(UMB_AUTH_CONTEXT, async (auth) => {
-      if (!auth) return;
+    host.consumeContext(UMB_AUTH_CONTEXT, async (authContext) => {
+        if (!authContext) return;
+        const config = authContext.getOpenApiConfiguration();
 
-      client.setConfig(umbHttpClient.getConfig());
-  });
+        client.setConfig({
+            baseUrl: config.base,
+            auth: async () => await authContext.getLatestToken(),
+            credentials: config.credentials,
+        });
+    });
 };

@@ -24,7 +24,7 @@
 	</PropertyGroup>
 
 	<PropertyGroup>
-		<UmbracoCmsPackageVersion>[17.0.0-rc3, 18)</UmbracoCmsPackageVersion>
+		<UmbracoCmsPackageVersion>[17.0.0-rc4, 18)</UmbracoCmsPackageVersion>
 	</PropertyGroup>
 	<ItemGroup>
 		<PackageReference Include="Umbraco.Cms.Api.Common" Version="$(UmbracoCmsPackageVersion)" />
@@ -34,10 +34,10 @@
 		<PackageReference Include="Umbraco.Forms.Core" Version="$(UmbracoCmsPackageVersion)" />
 	</ItemGroup>
 
-	<ItemGroup>
-		<PackageReference Include="Umbraco.Cms.Integrations.Automation.Zapier" Version="4.0.0" />
-	</ItemGroup>
-
+    <ItemGroup>
+		<PackageReference Include="Umbraco.Cms.Integrations.Automation.Zapier" Version="5.0.0" />
+    </ItemGroup>
+    
 	<ItemGroup>
 		<Content Include="zapier.png">
 			<PackagePath>\</PackagePath>
