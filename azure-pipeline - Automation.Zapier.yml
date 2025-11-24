@@ -30,6 +30,8 @@ steps:
   displayName: 'NuGet Restore'
   inputs:
     restoreSolution: '$(solution)'
+    feedsToUse: 'config'
+    nugetConfigPath: 'NuGet.config'
 
 - task: VSBuild@1
   displayName: 'Build Project'
