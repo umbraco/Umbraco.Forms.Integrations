@@ -30,7 +30,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Umbraco.Forms.Integrations.
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Umbraco.Forms.Integrations.Automation.Zapier", "Umbraco.Forms.Integrations.Automation.Zapier\Umbraco.Forms.Integrations.Automation.Zapier.csproj", "{B437434B-2A95-4C8E-AF6E-4B55D4781C70}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Umbraco.Forms.Integrations.TestSite.V17", "Umbraco.Forms.Integrations.Testsite.V17\Umbraco.Forms.Integrations.TestSite.V17.csproj", "{EDF18689-17BE-4388-9293-327611424557}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Umbraco.Forms.Integrations.Testsite.V18", "Umbraco.Forms.Integrations.Testsite.V18\Umbraco.Forms.Integrations.Testsite.V18.csproj", "{8079E488-99F7-40DD-A3BA-195836CDFE81}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -54,10 +54,10 @@ Global
 		{B437434B-2A95-4C8E-AF6E-4B55D4781C70}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B437434B-2A95-4C8E-AF6E-4B55D4781C70}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B437434B-2A95-4C8E-AF6E-4B55D4781C70}.Release|Any CPU.Build.0 = Release|Any CPU
-		{EDF18689-17BE-4388-9293-327611424557}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{EDF18689-17BE-4388-9293-327611424557}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{EDF18689-17BE-4388-9293-327611424557}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{EDF18689-17BE-4388-9293-327611424557}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8079E488-99F7-40DD-A3BA-195836CDFE81}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8079E488-99F7-40DD-A3BA-195836CDFE81}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8079E488-99F7-40DD-A3BA-195836CDFE81}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8079E488-99F7-40DD-A3BA-195836CDFE81}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
