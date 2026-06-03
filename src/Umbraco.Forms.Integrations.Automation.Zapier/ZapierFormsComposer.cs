@@ -1,6 +1,7 @@
-﻿using Microsoft.Extensions.DependencyInjection;
-using Microsoft.OpenApi;
-using Swashbuckle.AspNetCore.SwaggerGen;
+using Microsoft.AspNetCore.OpenApi;
+using Microsoft.Extensions.DependencyInjection;
+using Umbraco.Cms.Api.Common.OpenApi;
+using Umbraco.Cms.Api.Management.OpenApi;
 using Umbraco.Cms.Core.Composing;
 using Umbraco.Cms.Core.DependencyInjection;
 using Umbraco.Forms.Core.Services.Notifications;
@@ -23,7 +24,7 @@ namespace Umbraco.Forms.Integrations.Automation.Zapier
                 .Bind(builder.Config.GetSection(Constants.Configuration.Settings));
 
             builder
-                .AddNotificationHandler<RecordCreatingNotification, NewFormSubmittedNotification>();
+                .AddNotificationAsyncHandler<RecordCreatingNotification, NewFormSubmittedNotification>();
 
             builder.Services.AddSingleton<ZapierFormService>();
 
@@ -35,20 +36,17 @@ namespace Umbraco.Forms.Integrations.Automation.Zapier
 
             builder.Services.AddSingleton<UmbUrlHelper>();
 
-            // Generate Swagger documentation for Zapier Forms API
-            builder.Services.Configure<SwaggerGenOptions>(options =>
-            {
-                options.SwaggerDoc(
-                    Constants.ManagementApi.ApiName,
-                    new OpenApiInfo
+            builder.AddBackOfficeOpenApiDocument(
+                Constants.ManagementApi.ApiName,
+                document => document
+                    .WithTitle(Constants.ManagementApi.ApiTitle)
+                    .WithBackOfficeAuthentication()
+                    .ConfigureOpenApiOptions(options => options.AddDocumentTransformer((doc, _, _) =>
                     {
-                        Title = Constants.ManagementApi.ApiTitle,
-                        Version = "Latest",
-                        Description = $"Describes the {Constants.ManagementApi.ApiTitle} available for handling Zapier Forms automation and configuration."
-                    });
-
-                options.CustomOperationIds(e => $"{e.ActionDescriptor.RouteValues["action"]}");
-            });
+                        doc.Info.Version = "Latest";
+                        doc.Info.Description = $"Describes the {Constants.ManagementApi.ApiTitle} available for handling Zapier Forms automation and configuration.";
+                        return Task.CompletedTask;
+                    })));
         }
     }
 }
