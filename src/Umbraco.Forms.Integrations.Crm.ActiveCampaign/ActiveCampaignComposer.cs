@@ -26,10 +26,13 @@ namespace Umbraco.Forms.Integrations.Crm.ActiveCampaign
             builder.Services
                 .AddHttpClient(Constants.HttpClient, client =>
                 {
-                    client.BaseAddress = new Uri(
-                    $"{builder.Config.GetSection(Constants.SettingsPath)[nameof(ActiveCampaignSettings.BaseUrl)]}/api/3/");
-                    client.DefaultRequestHeaders
-                    .Add("Api-Token", builder.Config.GetSection(Constants.SettingsPath)[nameof(ActiveCampaignSettings.ApiKey)]);
+                    var baseUrl = builder.Config.GetSection(Constants.SettingsPath)[nameof(ActiveCampaignSettings.BaseUrl)];
+                    if (!string.IsNullOrWhiteSpace(baseUrl))
+                    {
+                        client.BaseAddress = new Uri($"{baseUrl}/api/3/");
+                        client.DefaultRequestHeaders
+                            .Add("Api-Token", builder.Config.GetSection(Constants.SettingsPath)[nameof(ActiveCampaignSettings.ApiKey)]);
+                    }
                 });
 
             builder.Services.AddSingleton<IAccountService, AccountService>();
