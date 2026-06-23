@@ -26,7 +26,7 @@
 	</PropertyGroup>
 
 	<PropertyGroup>
-		<UmbracoCmsPackageVersion>[18.0.0-rc1, 19.0.0)</UmbracoCmsPackageVersion>
+		<UmbracoCmsPackageVersion>[18.0.0, 19.0.0)</UmbracoCmsPackageVersion>
 	</PropertyGroup>
 
 	<ItemGroup>
