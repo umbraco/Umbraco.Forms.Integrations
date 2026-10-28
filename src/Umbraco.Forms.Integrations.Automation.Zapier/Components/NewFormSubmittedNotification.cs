@@ -1,4 +1,4 @@
-﻿using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging;
 
 using Umbraco.Cms.Core.Events;
 using Umbraco.Forms.Core.Services;
@@ -9,7 +9,7 @@ using Umbraco.Forms.Integrations.Automation.Zapier.Services;
 
 namespace Umbraco.Forms.Integrations.Automation.Zapier.Components
 {
-    public class NewFormSubmittedNotification : INotificationHandler<RecordCreatingNotification>
+    public class NewFormSubmittedNotification : INotificationAsyncHandler<RecordCreatingNotification>
     {
         private readonly UmbUrlHelper _umbUrlHelper;
 
@@ -23,7 +23,7 @@ namespace Umbraco.Forms.Integrations.Automation.Zapier.Components
 
         public NewFormSubmittedNotification(
             UmbUrlHelper umbUrlHelper,
-            IFormService formService, 
+            IFormService formService,
             ZapierService zapierService, ZapierFormSubscriptionHookService zapierFormSubscriptionHookService,
             ILogger<NewFormSubmittedNotification> logger)
         {
@@ -38,7 +38,7 @@ namespace Umbraco.Forms.Integrations.Automation.Zapier.Components
             _logger = logger;
         }
 
-        public void Handle(RecordCreatingNotification notification)
+        public Task HandleAsync(RecordCreatingNotification notification, CancellationToken cancellationToken)
         {
             var triggerHelper = new TriggerHelper(_zapierService);
 
@@ -60,6 +60,8 @@ namespace Umbraco.Forms.Integrations.Automation.Zapier.Components
                     }
                 }
             }
+
+            return Task.CompletedTask;
         }
     }
 }

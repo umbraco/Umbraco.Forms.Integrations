@@ -1,11 +1,10 @@
-﻿using Microsoft.Extensions.DependencyInjection;
-using Microsoft.OpenApi;
-using Swashbuckle.AspNetCore.SwaggerGen;
+using Microsoft.AspNetCore.OpenApi;
+using Microsoft.Extensions.DependencyInjection;
 using Umbraco.Cms.Api.Common.OpenApi;
+using Umbraco.Cms.Api.Management.OpenApi;
 using Umbraco.Cms.Core.Composing;
 using Umbraco.Cms.Core.DependencyInjection;
 using Umbraco.Forms.Core.Providers;
-using Umbraco.Forms.Integrations.Crm.Hubspot.Api.Configuration;
 using Umbraco.Forms.Integrations.Crm.Hubspot.Configuration;
 using Umbraco.Forms.Integrations.Crm.Hubspot.Services;
 
@@ -23,21 +22,17 @@ namespace Umbraco.Forms.Integrations.Crm.Hubspot
             builder.WithCollectionBuilder<WorkflowCollectionBuilder>()
                 .Add<HubspotWorkflow>();
 
-            // Generate Swagger documentation for Zapier API
-            builder.Services.Configure<SwaggerGenOptions>(options =>
-            {
-                options.SwaggerDoc(
-                    Constants.ManagementApi.ApiName,
-                    new OpenApiInfo
+            builder.AddBackOfficeOpenApiDocument(
+                Constants.ManagementApi.ApiName,
+                document => document
+                    .WithTitle(Constants.ManagementApi.ApiTitle)
+                    .WithBackOfficeAuthentication()
+                    .ConfigureOpenApiOptions(openApiOptions => openApiOptions.AddDocumentTransformer((doc, _, _) =>
                     {
-                        Title = Constants.ManagementApi.ApiTitle,
-                        Version = "Latest",
-                        Description = $"Describes the {Constants.ManagementApi.ApiTitle} available for handling HubSpot CRM automation and configuration."
-                    });
-
-                options.OperationFilter<BackOfficeSecurityRequirementsOperationFilter>();
-            })
-            .AddSingleton<IOperationIdHandler, HubspotFormsOperationIdHandler>();
+                        doc.Info.Version = "Latest";
+                        doc.Info.Description = $"Describes the {Constants.ManagementApi.ApiTitle} available for handling HubSpot CRM automation and configuration.";
+                        return Task.CompletedTask;
+                    })));
         }
     }
 }

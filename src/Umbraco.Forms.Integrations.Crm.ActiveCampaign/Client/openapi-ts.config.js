@@ -2,14 +2,13 @@
 
 export default defineConfig({
     debug: true,
-    input: 'http://localhost:62622/umbraco/swagger/activecampaign-management/swagger.json',
+    input: 'http://localhost:45490/umbraco/openapi/activecampaign-management.json',
     output: {
         path: 'generated',
     },
     plugins: [
         {
             name: '@hey-api/client-fetch',
-            bundle: false,
             exportFromIndex: true,
             throwOnError: true,
         },
