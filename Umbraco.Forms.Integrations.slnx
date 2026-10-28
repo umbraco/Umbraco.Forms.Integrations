@@ -1,0 +1,35 @@
+<Solution>
+  <Configurations>
+    <Platform Name="Any CPU" />
+    <Platform Name="x64" />
+    <Platform Name="x86" />
+  </Configurations>
+  <Folder Name="/Automation/" />
+  <Folder Name="/Automation/Zapier/">
+    <Project Path="src/Umbraco.Forms.Integrations.Automation.Zapier/Umbraco.Forms.Integrations.Automation.Zapier.csproj" />
+  </Folder>
+  <Folder Name="/Crm/" />
+  <Folder Name="/Crm/ActiveCampaign/">
+    <Project Path="src/Umbraco.Forms.Integrations.Crm.ActiveCampaign/Umbraco.Forms.Integrations.Crm.ActiveCampaign.csproj" />
+  </Folder>
+  <Folder Name="/Crm/HubSpot/">
+    <Project Path="src/Umbraco.Forms.Integrations.Crm.Hubspot/Umbraco.Forms.Integrations.Crm.Hubspot.csproj" />
+  </Folder>
+  <Folder Name="/Solution Items/">
+    <File Path=".azure-pipelines/scripts/detect-changes.ps1" />
+    <File Path=".azure-pipelines/scripts/validate-changelogs.ps1" />
+    <File Path=".azure-pipelines/templates/pack-product.yml" />
+    <File Path=".gitignore" />
+    <File Path="azure-pipelines.yml" />
+    <File Path="CONTRIBUTING.md" />
+    <File Path="Directory.Build.targets" />
+    <File Path="Directory.Packages.props" />
+    <File Path="NuGet.config" />
+    <File Path="package.json" />
+    <File Path="README.md" />
+  </Folder>
+  <Folder Name="/Tests/">
+    <Project Path="tests/Umbraco.Forms.Integrations.Crm.Hubspot.Tests/Umbraco.Forms.Integrations.Crm.Hubspot.Tests.csproj" />
+  </Folder>
+  <Project Path="examples/Umbraco.Forms.Integrations.Testsite.V18/Umbraco.Forms.Integrations.Testsite.V18.csproj" />
+</Solution>

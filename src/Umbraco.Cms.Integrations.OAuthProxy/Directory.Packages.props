@@ -1,0 +1,11 @@
+<Project>
+  <!--
+    The OAuth proxy is an Azure web app with its own deploy pipeline, not a package.
+    This file stops the repo-root Directory.Packages.props (central package management
+    and the global versioning and analyzer references) from applying to it, so its
+    csproj keeps its own package versions.
+  -->
+  <PropertyGroup>
+    <ManagePackageVersionsCentrally>false</ManagePackageVersionsCentrally>
+  </PropertyGroup>
+</Project>
