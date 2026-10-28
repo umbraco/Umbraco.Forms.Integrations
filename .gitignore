@@ -413,3 +413,26 @@ src/Umbraco.Forms.Integrations.TestSite.V10/Views
 appsettings.Local.json
 src/Umbraco.Forms.Integrations.Automation.Zapier/app.config
 src/Umbraco.Forms.Integrations.Automation.Zapier/packages.config
+
+#
+# Monorepo build (ported from Umbraco.Cms.Integrations)
+#
+
+# Belt and braces: the MSBuild target that generated this is gone, but a stale
+# IDE project cache can still write it. Never commit it.
+**/config.outputPath.js
+
+# There is ONE lockfile for all clients, at the repo root - the Client folders are
+# npm workspaces of it. Per-client lockfiles were deleted in the build redesign and
+# must not come back; stale ones on disk get re-added by `git add -A` otherwise.
+src/*/Client/package-lock.json
+
+# Compiled backoffice client assets. Built from src/<package>/Client by the root
+# npm workspace (`npm ci && npm run build`) and by CI before pack - never committed.
+# The OAuth proxy is a web app, not a package: its wwwroot is source.
+src/**/wwwroot/
+!src/Umbraco.Cms.Integrations.OAuthProxy/wwwroot/
+
+# Git worktrees (isolated workspaces). Created inside the repo, so they must be
+# ignored or every `git status` reports the whole checkout as untracked.
+.claude/worktrees/

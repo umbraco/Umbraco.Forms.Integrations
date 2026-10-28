@@ -1,0 +1,44 @@
+<Project>
+  <PropertyGroup>
+    <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
+
+    <!--
+      One place to move the Umbraco floor for every package. Umbraco Forms shares
+      the CMS major, so the Umbraco.Forms.Core entry below uses it too, as each
+      csproj did before this file existed.
+    -->
+    <UmbracoCmsPackageVersion>[18.0.0, 19.0.0)</UmbracoCmsPackageVersion>
+  </PropertyGroup>
+
+  <!-- Global tooling: SourceLink, versioning, Umbraco analyzers. Matches Umbraco.Cms.Integrations. -->
+  <ItemGroup>
+    <GlobalPackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1" />
+    <GlobalPackageReference Include="Nerdbank.GitVersioning" Version="3.8.118" />
+    <GlobalPackageReference Include="Umbraco.Code" Version="3.0.0-beta" />
+    <GlobalPackageReference Include="Umbraco.GitVersioning.Extensions" Version="0.2.0" />
+    <GlobalPackageReference Include="Umbraco.JsonSchema.Extensions" Version="0.4.3" PrivateAssets="all" />
+  </ItemGroup>
+
+  <!-- Umbraco CMS and Forms v18 - version comes from UmbracoCmsPackageVersion above -->
+  <ItemGroup>
+    <PackageVersion Include="Umbraco.Cms.Api.Common" Version="$(UmbracoCmsPackageVersion)" />
+    <PackageVersion Include="Umbraco.Cms.Api.Management" Version="$(UmbracoCmsPackageVersion)" />
+    <PackageVersion Include="Umbraco.Cms.Core" Version="$(UmbracoCmsPackageVersion)" />
+    <PackageVersion Include="Umbraco.Cms.Web.Website" Version="$(UmbracoCmsPackageVersion)" />
+    <PackageVersion Include="Umbraco.Forms.Core" Version="$(UmbracoCmsPackageVersion)" />
+  </ItemGroup>
+
+  <!-- Package-specific dependencies -->
+  <ItemGroup>
+    <!-- Umbraco.Forms.Integrations.Automation.Zapier -->
+    <PackageVersion Include="Umbraco.Cms.Integrations.Automation.Zapier" Version="6.0.0" />
+  </ItemGroup>
+
+  <!-- Test dependencies. Versions are the ones the test project already used. -->
+  <ItemGroup>
+    <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="16.5.0" />
+    <PackageVersion Include="Moq" Version="4.16.1" />
+    <PackageVersion Include="NUnit" Version="3.12.0" />
+    <PackageVersion Include="NUnit3TestAdapter" Version="3.16.1" />
+  </ItemGroup>
+</Project>

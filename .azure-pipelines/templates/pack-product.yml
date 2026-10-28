@@ -1,0 +1,124 @@
+# Builds and packs a single package.
+#
+# Runs once per changed package via the matrix in azure-pipelines.yml. SBOMs are
+# not made here - see the GenerateSBOM stage and sbom.yml.
+# The version comes from the package's own version.json via NBGV - `nbgv cloud`
+# is run with workingDirectory set to the package folder so it picks up that
+# file and not another package's.
+
+parameters:
+    - name: productName
+      type: string
+    - name: productPath
+      type: string
+    - name: projectPath
+      type: string
+    - name: clientName
+      type: string
+      default: ""
+
+steps:
+    - checkout: self
+      # NBGV needs history to compute the version height.
+      fetchDepth: 0
+
+    - template: setup-dotnet.yml
+
+    # Only the client build needs it, so packages with no Client/ (Zapier) skip
+    # it. Version matches the `engines` field in the root package.json.
+    - task: NodeTool@0
+      displayName: "Use Node 24.x"
+      condition: and(succeeded(), eq(variables['hasNpm'], 'true'))
+      inputs:
+          versionSpec: "24.x"
+
+    # wwwroot is NOT committed - it is build output. Every job that packs a
+    # package with a client has to produce it first, or the package ships with no
+    # backoffice assets. `npm ci` runs at the repo root because the clients are
+    # workspaces of one root package-lock.json; only this package's workspace is
+    # then built.
+    # pwsh throughout rather than `script` - see the note in setup-dotnet.yml about
+    # bash and cmd.exe not being reliably present on this pool's agents.
+    #
+    # The condition reads the matrix variable directly. It must NOT be written as
+    # eq('${{ parameters.hasNpm }}', 'true'): a template parameter is substituted at
+    # compile time, so that becomes the literal eq('$(hasNpm)', 'true'), and macro
+    # syntax is not expanded inside a condition. It silently compares the string
+    # "$(hasNpm)" to "true", is always false, and both steps skip - which is exactly
+    # what happened in build 279734.
+    # Cached per client, not once for the repo. Azure cache entries are immutable:
+    # the first job to finish writes the key and everyone else's save is a no-op. A
+    # single shared key would therefore freeze whichever product happened to run
+    # first and leave the other client downloading its own packages on every build.
+    # Keyed on the lockfile, so any dependency change invalidates it.
+    - task: Cache@2
+      displayName: "Restore npm cache (${{ parameters.clientName }})"
+      condition: and(succeeded(), eq(variables['hasNpm'], 'true'))
+      inputs:
+          key: 'npm | "$(Agent.OS)" | ${{ parameters.clientName }} | package-lock.json'
+          restoreKeys: |
+              npm | "$(Agent.OS)" | ${{ parameters.clientName }}
+              npm | "$(Agent.OS)"
+          path: $(npm_config_cache)
+
+    # Scoped to the workspace this job actually builds. Be aware the saving is
+    # small - about 440 packages against 519 for both - because the clients share
+    # almost all of their dev dependencies. It is kept because it is the honest
+    # description of what the job needs, and it keeps each cached tree to just
+    # that client's packages.
+    - pwsh: npm ci --workspace ${{ parameters.clientName }} --include-workspace-root --include=optional
+      displayName: "Install client dependencies"
+      condition: and(succeeded(), eq(variables['hasNpm'], 'true'))
+
+    - pwsh: npm run build --workspace ${{ parameters.clientName }}
+      displayName: "Build client assets (${{ parameters.clientName }})"
+      condition: and(succeeded(), eq(variables['hasNpm'], 'true'))
+
+    # On Linux ~/.dotnet/tools is not on PATH by default, so the next step would
+    # not find nbgv without the prependpath.
+    - pwsh: |
+          dotnet tool install --global nbgv
+          Write-Host "##vso[task.prependpath]$HOME/.dotnet/tools"
+      displayName: "Install NBGV"
+
+    # --skip-cloud-build-number: every job in the matrix runs this, and without
+    # the flag each one would overwrite the build number with its own package's
+    # version. The `name:` in azure-pipelines.yml names the build instead.
+    # The NBGV_* variables this still publishes are only for reading in the log;
+    # the package version itself comes from the Nerdbank.GitVersioning MSBuild
+    # targets (a GlobalPackageReference), not from here.
+    - pwsh: nbgv cloud --all-vars --skip-cloud-build-number
+      displayName: "Set version from version.json"
+      workingDirectory: ${{ parameters.productPath }}
+
+    - task: DotNetCoreCLI@2
+      displayName: "Restore"
+      inputs:
+          command: "restore"
+          feedsToUse: "config"
+          projects: ${{ parameters.projectPath }}
+          nugetConfigPath: "NuGet.config"
+
+    - task: DotNetCoreCLI@2
+      displayName: "Build ${{ parameters.productName }}"
+      inputs:
+          command: "build"
+          projects: ${{ parameters.projectPath }}
+          arguments: "--configuration $(buildConfiguration) --no-restore -p:ContinuousIntegrationBuild=true"
+
+    - task: DotNetCoreCLI@2
+      displayName: "Pack ${{ parameters.productName }}"
+      inputs:
+          command: "pack"
+          packagesToPack: ${{ parameters.projectPath }}
+          # Version comes from version.json via NBGV, never from the pipeline.
+          versioningScheme: "off"
+          arguments: "--configuration $(buildConfiguration) --no-build --output $(Build.ArtifactStagingDirectory)"
+
+    - task: PublishBuildArtifacts@1
+      displayName: "Publish Build Artifacts"
+      inputs:
+          PathtoPublish: "$(Build.ArtifactStagingDirectory)"
+          ArtifactName: "drop-${{ parameters.productName }}"
+          publishLocation: "Container"
+
