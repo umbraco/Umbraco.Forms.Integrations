@@ -1,0 +1,69 @@
+# Generates SBOMs with umbraco-sbom (Umbraco.Internal.Sbom), enforces license policy, and
+# uploads them to Dependency-Track. Mirrors Umbraco.AI (umbraco/Umbraco.AI#486), Umbraco.Forms
+# (umbraco/Forms#1597) and Umbraco.Cms.Integrations (umbraco/Umbraco.Cms.Integrations#348).
+#
+# Releases here are tags (release/<area>-<name>-<version>, e.g. release/crm-hubspot-9.0.0)
+# rather than release branches, so this runs on release tag pushes only, for the one package
+# the tag names, and uploads it. It reports rather than blocks: the package build that ships
+# has already run by the time the tag is pushed.
+#
+# Queued by hand on a branch, it generates and checks licenses for the packages picked at
+# queue time and never uploads, so in-progress versions don't land in Dependency-Track.
+#
+# See devops/sbom/generate-sbom.ps1 for how versions and isLatest are worked out.
+
+parameters:
+- name: packages
+  displayName: Packages to check on a manual run (no upload off a release tag)
+  type: string
+  default: 'Umbraco.Forms.Integrations.Automation.Zapier,Umbraco.Forms.Integrations.Commerce.EMerchantPay,Umbraco.Forms.Integrations.Crm.ActiveCampaign,Umbraco.Forms.Integrations.Crm.Hubspot'
+
+trigger:
+  branches:
+    exclude:
+    - '*'
+  tags:
+    include:
+    - release/*
+
+pr: none
+
+pool:
+  vmImage: 'windows-latest'
+
+variables:
+  DT_API_KEY: $(dtApiKey)
+  DT_BASE_URL: $(dtBaseUrl)
+
+steps:
+- task: UseDotNet@2
+  displayName: 'Use SDK version 10.0.100'
+  inputs:
+    packageType: 'sdk'
+    version: '10.0.100'
+
+# Installed fresh every build so the centrally maintained license overrides are current.
+- pwsh: |
+    dotnet tool install --global Umbraco.Internal.Sbom
+    Write-Host "##vso[task.prependpath]$HOME/.dotnet/tools"
+  displayName: 'Install umbraco-sbom'
+
+- task: PowerShell@2
+  displayName: 'Generate SBOMs and check licenses'
+  inputs:
+    filePath: 'devops/sbom/generate-sbom.ps1'
+    pwsh: true
+    ${{ if startsWith(variables['Build.SourceBranch'], 'refs/tags/release/') }}:
+      arguments: -ReleaseTag "$(Build.SourceBranch)" -OutputDir "$(Build.ArtifactStagingDirectory)/sbom" -Upload
+    ${{ else }}:
+      arguments: -Products "${{ parameters.packages }}" -OutputDir "$(Build.ArtifactStagingDirectory)/sbom"
+  env:
+    DT_BASE_URL: $(DT_BASE_URL)
+    DT_API_KEY: $(DT_API_KEY)
+
+- task: PublishPipelineArtifact@1
+  displayName: 'Publish SBOM Artifact'
+  condition: succeededOrFailed()
+  inputs:
+    targetPath: '$(Build.ArtifactStagingDirectory)/sbom'
+    artifactName: SBOM
