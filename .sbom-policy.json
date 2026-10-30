@@ -1,0 +1,12 @@
+{
+  "schemaVersion": 1,
+  "rules": {
+    "nuget": [
+      {
+        "pattern": "EPPlus",
+        "reason": "LGPL-3.0-only. Comes in through Umbraco.Forms 13 (Umbraco.Forms.Core.Providers), unmodified; mirrors the exception in umbraco/Forms v13/main. Pinned there to 4.5.3.3, the last LGPL release; EPPlus 5 and later are not LGPL.",
+        "versions": "[4.5.3.3]"
+      }
+    ]
+  }
+}
