@@ -117,12 +117,16 @@ export class HubspotMappingPropertyUiElement extends UmbLitElement implements Um
   }
 
   async #deauthorize(){
-    await umbConfirmModal(this, {
-      color: "danger",
-      headline: "Confirmation",
-      content: "Are you sure you wish to disconnect your Hubspot account?",
-      confirmLabel: 'Disconnect',
-    });
+    try {
+      await umbConfirmModal(this, {
+        color: "danger",
+        headline: "Confirmation",
+        content: "Are you sure you wish to disconnect your Hubspot account?",
+        confirmLabel: 'Disconnect',
+      });
+    } catch {
+      return;
+    }
 
     const { data } = await this.#hubspotContext.deauthorize();
 
