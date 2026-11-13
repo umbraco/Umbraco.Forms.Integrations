@@ -15,12 +15,6 @@ export const onInit: UmbEntryPointOnInit = (host, extensionRegistry) => {
 
     host.consumeContext(UMB_AUTH_CONTEXT, async (authContext) => {
         if (!authContext) return;
-        const config = authContext.getOpenApiConfiguration();
-
-        client.setConfig({
-            baseUrl: config.base,
-            auth: async () => await authContext.getLatestToken(),
-            credentials: config.credentials,
-        });
+        authContext.configureClient(client);
     });
 };
