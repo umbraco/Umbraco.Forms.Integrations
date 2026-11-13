@@ -155,7 +155,7 @@ export class CustomMappingPropertyUiElement extends UmbLitElement implements Umb
                     <td>${mapping.formField?.value}</td>
                     <td>
                       <uui-button
-                        label=${this.localize.term("activeCampaignFormWorkflows_delete")}
+                        label=${this.localize.term("activeCampaignFormWorkflows_DeleteMapping")}
                         look="secondary"
                         color="default"
                         @click=${() => this.#onDeleteClick(idx)}>
