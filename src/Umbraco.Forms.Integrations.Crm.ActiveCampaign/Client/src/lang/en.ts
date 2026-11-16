@@ -16,6 +16,9 @@ export default {
         SelectCustomField: "Select custom field",
         ContactField: "Contact Field",
         FormField: "Form Field",
-        CustomField: "Custom Field"
+        CustomField: "Custom Field",
+        NotConfigured: "Umbraco Forms is not configured with an ActiveCampaign account.",
+        NotConfiguredHint: "Add BaseUrl and ApiKey under Umbraco:Forms:Integrations:Crm:ActiveCampaign:Settings in appsettings.json.",
+        NotConfiguredShort: "Available once ActiveCampaign is configured."
     }
 } as UmbLocalizationDictionary;

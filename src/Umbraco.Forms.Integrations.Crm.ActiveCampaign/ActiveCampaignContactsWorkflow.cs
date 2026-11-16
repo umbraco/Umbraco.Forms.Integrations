@@ -57,6 +57,12 @@ namespace Umbraco.Forms.Integrations.Crm.ActiveCampaign
 
         public override async Task<WorkflowExecutionStatus> ExecuteAsync(WorkflowExecutionContext context)
         {
+            if (!ApiConfiguration.IsValid(_settings.BaseUrl, _settings.ApiKey))
+            {
+                _logger.LogWarning("ActiveCampaign is not configured, so the workflow for the form {FormName} ({FormId}) was not run. Add a valid BaseUrl and ApiKey under {SettingsPath}.", context.Form.Name, context.Form.Id, Constants.SettingsPath);
+                return WorkflowExecutionStatus.NotConfigured;
+            }
+
             try
             {
                 var mappings = JsonSerializer.Deserialize<List<ContactMappingDto>>(ContactMappings);
@@ -73,6 +79,12 @@ namespace Umbraco.Forms.Integrations.Crm.ActiveCampaign
                 // Check if contact exists.
                 var contacts = await _contactService.Get(email);
 
+                if (contacts is null)
+                {
+                    _logger.LogError("Could not check whether the contact exists in ActiveCampaign for the form {FormName} ({FormId}).", context.Form.Name, context.Form.Id);
+
+                    return WorkflowExecutionStatus.Failed;
+                }
                 if(contacts.Contacts.Count > 0 && !_settings.AllowContactUpdate)
                 {
                     _logger.LogInformation("Contact already exists in ActiveCampaign and workflow is configured to not apply updates, so update of information was skipped.");
@@ -100,7 +112,7 @@ namespace Umbraco.Forms.Integrations.Crm.ActiveCampaign
 
                 if (string.IsNullOrEmpty(contactId))
                 {
-                    _logger.LogError($"Failed to create/update contact: {email}");
+                    _logger.LogError("Failed to create/update contact in ActiveCampaign for the form {FormName} ({FormId}).", context.Form.Name, context.Form.Id);
 
                     return WorkflowExecutionStatus.Failed;
                 }

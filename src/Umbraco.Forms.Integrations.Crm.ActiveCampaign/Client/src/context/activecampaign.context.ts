@@ -7,7 +7,7 @@ import { ApiAccessDto } from "@umbraco-integrations/activecampaign/generated"
 
 export class ActiveCampaignContext extends UmbControllerBase {
     #repository: ActiveCampaignRepository;
-    #configurationModel = new UmbObjectState<ApiAccessDto | undefined>(undefined);
+    #configurationModel = new UmbObjectState<ApiAccessDto | null | undefined>(undefined);
     configurationModel = this.#configurationModel.asObservable();
 
     constructor(host: UmbControllerHost) {
@@ -23,9 +23,10 @@ export class ActiveCampaignContext extends UmbControllerBase {
     }
 
     async checkApiAccess() {
-        const { data } = await this.#repository.checkApiAccess();
+        const { data, error } = await this.#repository.checkApiAccess();
 
-        this.#configurationModel.setValue(data);
+        // null means the check failed (unknown); undefined means it hasn't completed yet.
+        this.#configurationModel.setValue(error ? null : (data ?? null));
     }
 
     async getAccount() {
