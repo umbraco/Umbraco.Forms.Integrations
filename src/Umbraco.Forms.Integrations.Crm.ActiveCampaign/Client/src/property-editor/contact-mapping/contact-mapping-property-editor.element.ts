@@ -2,7 +2,7 @@ import { html, customElement, property, state, css, map } from '@umbraco-cms/bac
 import type { UmbPropertyEditorUiElement } from '@umbraco-cms/backoffice/property-editor';
 import { UmbLitElement } from '@umbraco-cms/backoffice/lit-element';
 import { ACTIVECAMPAIGN_CONTEXT_TOKEN } from '@umbraco-integrations/activecampaign/context';
-import { ContactFieldSettings, ActiveCampaignFormFieldDto } from '@umbraco-integrations/activecampaign/generated';
+import { ContactFieldSettings, ActiveCampaignFormFieldDto, ApiAccessDto } from '@umbraco-integrations/activecampaign/generated';
 import { UUISelectEvent } from '@umbraco-cms/backoffice/external/uui';
 import { ContactMappingValue } from '../../models/activecampaign.model';
 
@@ -30,11 +30,17 @@ export class ContactMappingPropertyUiElement extends UmbLitElement implements Um
   @state()
   private formdFields: Array<ActiveCampaignFormFieldDto> | undefined = [];
 
+  @state()
+  private isConfigured: boolean | undefined;
+
+  #fieldsRequested = false;
+
   constructor() {
     super();
     this.consumeContext(ACTIVECAMPAIGN_CONTEXT_TOKEN, (context) => {
         if (!context) return;
         this.#activeCampaignContext = context;
+        this.observe(context.configurationModel, (configuration) => this.#onConfigurationChange(configuration), '_observeConfiguration');
     });
   }
 
@@ -44,7 +50,17 @@ export class ContactMappingPropertyUiElement extends UmbLitElement implements Um
     if(this.value){
       this.contactMappingArray = JSON.parse(this.value);
     }
+  }
 
+  // The configuration arrives asynchronously, so only call the API once it says ActiveCampaign is configured.
+  async #onConfigurationChange(configuration: ApiAccessDto | null | undefined) {
+    // undefined: still loading. null: the check failed, so carry on as if configured.
+    if (configuration === undefined) return;
+
+    this.isConfigured = configuration?.isApiConfigurationValid;
+    if (this.isConfigured === false || this.#fieldsRequested) return;
+
+    this.#fieldsRequested = true;
     await this.#getContactFields();
     await this.#getFormFields();
   }
@@ -104,6 +120,10 @@ export class ContactMappingPropertyUiElement extends UmbLitElement implements Um
   }
 
   render() {
+    if (this.isConfigured === false) {
+      return html`<div>${this.localize.term("activeCampaignFormWorkflows_NotConfiguredShort")}</div>`;
+    }
+
     return html`
       <div>
         <uui-select

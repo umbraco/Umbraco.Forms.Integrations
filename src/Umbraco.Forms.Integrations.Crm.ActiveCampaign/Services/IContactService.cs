@@ -6,9 +6,9 @@ namespace Umbraco.Forms.Integrations.Crm.ActiveCampaign.Services
     {
         Task<string> CreateOrUpdate(ContactDetailDto contactRequestDto, bool update = false);
 
-        Task<ContactCollectionResponseDto> Get(string email);
+        Task<ContactCollectionResponseDto?> Get(string email);
 
-        Task<CustomFieldCollectionResponseDto> GetCustomFields();
+        Task<CustomFieldCollectionResponseDto?> GetCustomFields();
     }
 }
  

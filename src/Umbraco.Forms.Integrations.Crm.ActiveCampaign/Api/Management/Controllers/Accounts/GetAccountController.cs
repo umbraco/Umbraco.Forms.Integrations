@@ -21,6 +21,14 @@ namespace Umbraco.Forms.Integrations.Crm.ActiveCampaign.Api.Management.Controlle
         {
             var accounts = await _accountService.Get();
 
+            if (accounts is null)
+            {
+                return Problem(
+                    title: "Could not load accounts from ActiveCampaign",
+                    detail: $"Check the BaseUrl and ApiKey under {Constants.SettingsPath} in appsettings.json, and see the site log for the response from ActiveCampaign.",
+                    statusCode: StatusCodes.Status502BadGateway);
+            }
+
             return Ok(accounts);
         }
     }
