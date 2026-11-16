@@ -1,5 +1,8 @@
 ﻿using System.Text.Json;
 using System.Text.Json.Nodes;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
 
 using Umbraco.Forms.Integrations.Crm.ActiveCampaign.Models.Dtos;
 
@@ -9,9 +12,19 @@ namespace Umbraco.Forms.Integrations.Crm.ActiveCampaign.Services
     {
         private readonly IHttpClientFactory _httpClientFactory;
 
+        private readonly ILogger<ContactService> _logger;
+
+        [Obsolete("Use the constructor that takes an ILogger. Scheduled for removal in Umbraco 21.")]
         public ContactService(IHttpClientFactory httpClientFactory)
+            : this(httpClientFactory, NullLogger<ContactService>.Instance)
+        {
+        }
+
+        [ActivatorUtilitiesConstructor]
+        public ContactService(IHttpClientFactory httpClientFactory, ILogger<ContactService> logger)
         {
             _httpClientFactory = httpClientFactory;
+            _logger = logger;
         }
 
         public async Task<string> CreateOrUpdate(ContactDetailDto contactRequestDto, bool update = false)
@@ -34,26 +47,21 @@ namespace Umbraco.Forms.Integrations.Crm.ActiveCampaign.Services
             return string.Empty;
         }
 
-        public async Task<ContactCollectionResponseDto> Get(string email)
+        public async Task<ContactCollectionResponseDto?> Get(string email)
         {
             var client = _httpClientFactory.CreateClient(Constants.HttpClient);
 
-            var response = await client.GetAsync($"contacts?email={email}");
-
-            var content = await response.Content.ReadAsStringAsync();
-
-            return JsonSerializer.Deserialize<ContactCollectionResponseDto>(content);
+            // The email is a query value, so it isn't part of the logged endpoint name.
+            return await ApiResponseReader.SendAsync<ContactCollectionResponseDto>(
+                client, "contacts", () => client.GetAsync($"contacts?email={email}"), _logger);
         }
 
-        public async Task<CustomFieldCollectionResponseDto> GetCustomFields()
+        public async Task<CustomFieldCollectionResponseDto?> GetCustomFields()
         {
             var client = _httpClientFactory.CreateClient(Constants.HttpClient);
 
-            var response = await client.GetAsync("fields");
-
-            var content = await response.Content.ReadAsStringAsync();
-
-            return JsonSerializer.Deserialize<CustomFieldCollectionResponseDto>(content);
+            return await ApiResponseReader.SendAsync<CustomFieldCollectionResponseDto>(
+                client, "fields", () => client.GetAsync("fields"), _logger);
         }
     }
 }
