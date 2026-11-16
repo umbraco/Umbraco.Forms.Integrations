@@ -37,10 +37,10 @@ variables:
 
 steps:
 - task: UseDotNet@2
-  displayName: 'Use SDK version 10.0.100'
+  displayName: 'Use SDK version 11.0.100'
   inputs:
     packageType: 'sdk'
-    version: '10.0.100'
+    version: '11.0.100'
 
 # Installed fresh every build so the centrally maintained license overrides are current.
 - pwsh: |
