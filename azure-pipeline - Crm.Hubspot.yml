@@ -2,6 +2,17 @@ trigger:
 - main
 - main-v10
 
+pr:
+  branches:
+    include:
+    - main-v13
+  paths:
+    include:
+    - src/Umbraco.Forms.Integrations.Crm.Hubspot/**
+    - src/Umbraco.Forms.Integrations.Crm.Hubspot.Tests/**
+    - azure-pipeline - Crm.Hubspot.yml
+    - NuGet.config
+
 pool:
   vmImage: 'windows-latest'
 
