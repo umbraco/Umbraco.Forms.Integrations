@@ -17,7 +17,19 @@ namespace Umbraco.Forms.Integrations.Crm.ActiveCampaign.Api.Management.Controlle
 
         [HttpGet("custom")]
         [ProducesResponseType(typeof(CustomFieldCollectionResponseDto), StatusCodes.Status200OK)]
-        public async Task<IActionResult> GetCustomFields() =>
-            Ok(await _contactService.GetCustomFields());
+        public async Task<IActionResult> GetCustomFields()
+        {
+            var fields = await _contactService.GetCustomFields();
+
+            if (fields is null)
+            {
+                return Problem(
+                    title: "Could not load custom fields from ActiveCampaign",
+                    detail: $"Check the BaseUrl and ApiKey under {Constants.SettingsPath} in appsettings.json, and see the site log for the response from ActiveCampaign.",
+                    statusCode: StatusCodes.Status502BadGateway);
+            }
+
+            return Ok(fields);
+        }
     }
 }
