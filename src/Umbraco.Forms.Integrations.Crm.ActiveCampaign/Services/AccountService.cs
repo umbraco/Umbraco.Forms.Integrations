@@ -1,4 +1,7 @@
 ﻿using System.Text.Json;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
 
 using Umbraco.Forms.Integrations.Crm.ActiveCampaign.Models.Dtos;
 
@@ -8,23 +11,30 @@ namespace Umbraco.Forms.Integrations.Crm.ActiveCampaign.Services
     {
         private readonly IHttpClientFactory _httpClientFactory;
 
+        private readonly ILogger<AccountService> _logger;
+
+        [Obsolete("Use the constructor that takes an ILogger. Scheduled for removal in Umbraco 21.")]
         public AccountService(IHttpClientFactory httpClientFactory)
+            : this(httpClientFactory, NullLogger<AccountService>.Instance)
         {
-            _httpClientFactory = httpClientFactory;
         }
 
-        public async Task<AccountCollectionResponseDto> Get()
+        [ActivatorUtilitiesConstructor]
+        public AccountService(IHttpClientFactory httpClientFactory, ILogger<AccountService> logger)
+        {
+            _httpClientFactory = httpClientFactory;
+            _logger = logger;
+        }
+
+        public async Task<AccountCollectionResponseDto?> Get()
         {
             var client = _httpClientFactory.CreateClient(Constants.HttpClient);
 
-            var response = await client.GetAsync("accounts");
-
-            var content = await response.Content.ReadAsStringAsync();
-
-            return JsonSerializer.Deserialize<AccountCollectionResponseDto>(content);
+            return await ApiResponseReader.SendAsync<AccountCollectionResponseDto>(
+                client, "accounts", () => client.GetAsync("accounts"), _logger);
         }
 
-        public async Task<AccountContactRequestDto> CreateAssociation(int accountId, int contactId)
+        public async Task<AccountContactRequestDto?> CreateAssociation(int accountId, int contactId)
         {
             var client = _httpClientFactory.CreateClient(Constants.HttpClient);
 
@@ -37,11 +47,11 @@ namespace Umbraco.Forms.Integrations.Crm.ActiveCampaign.Services
                 }
             };
 
-            var response = await client.PostAsync("accountContacts", new StringContent(JsonSerializer.Serialize(accountContact)));
-
-            var content = await response.Content.ReadAsStringAsync();
-
-            return JsonSerializer.Deserialize<AccountContactRequestDto>(content);
+            return await ApiResponseReader.SendAsync<AccountContactRequestDto>(
+                client,
+                "accountContacts",
+                () => client.PostAsync("accountContacts", new StringContent(JsonSerializer.Serialize(accountContact))),
+                _logger);
         }
     }
 }

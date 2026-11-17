@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Umbraco.Forms.Integrations.Crm.ActiveCampaign.Configuration;
 
 namespace Umbraco.Forms.Integrations.Crm.ActiveCampaign.Models.Dtos
 {
@@ -19,9 +20,10 @@ namespace Umbraco.Forms.Integrations.Crm.ActiveCampaign.Models.Dtos
         }
 
         public string Account => IsApiConfigurationValid
-            ? _baseUrl.Substring(0, _baseUrl.IndexOf(".")).Replace("https://", string.Empty)
+            && ApiConfiguration.TryGetApiBaseAddress(_baseUrl, out var apiBaseAddress)
+            ? apiBaseAddress!.Host.Split('.')[0]
             : string.Empty;
 
-        public bool IsApiConfigurationValid => !string.IsNullOrEmpty(_baseUrl) && !string.IsNullOrEmpty(_apiKey);
+        public bool IsApiConfigurationValid => ApiConfiguration.IsValid(_baseUrl, _apiKey);
     }
 }
