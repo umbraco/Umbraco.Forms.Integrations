@@ -6,7 +6,21 @@ trigger:
   paths:
     include:
     - src/Umbraco.Forms.Integrations.Crm.Hubspot/**
+    - src/Umbraco.Forms.Integrations.Crm.Hubspot.Tests/**
     - azure-pipeline - Crm.Hubspot.yml
+    - NuGet.config
+
+pr:
+  branches:
+    include:
+    - main-v19
+    - v19/dev
+  paths:
+    include:
+    - src/Umbraco.Forms.Integrations.Crm.Hubspot/**
+    - src/Umbraco.Forms.Integrations.Crm.Hubspot.Tests/**
+    - azure-pipeline - Crm.Hubspot.yml
+    - NuGet.config
 
 pool:
   vmImage: 'windows-latest'
