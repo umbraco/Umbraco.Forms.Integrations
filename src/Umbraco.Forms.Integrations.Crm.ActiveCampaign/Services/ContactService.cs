@@ -49,7 +49,7 @@ public class ContactService : IContactService
     {
         var client = _httpClientFactory.CreateClient(Constants.HttpClient);
 
-        var response = await client.GetAsync("fields");
+        var response = await client.GetAsync("fields?limit=0");
 
         var content = await response.Content.ReadAsStringAsync();
 
