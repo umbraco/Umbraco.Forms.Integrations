@@ -7,6 +7,18 @@ trigger:
     include:
     - src/Umbraco.Forms.Integrations.Crm.ActiveCampaign/**
     - azure-pipeline - Crm.ActiveCampaign.yml
+    - NuGet.config
+
+pr:
+  branches:
+    include:
+    - main-v17
+    - v17/dev
+  paths:
+    include:
+    - src/Umbraco.Forms.Integrations.Crm.ActiveCampaign/**
+    - azure-pipeline - Crm.ActiveCampaign.yml
+    - NuGet.config
 
 pool:
   vmImage: 'windows-latest'

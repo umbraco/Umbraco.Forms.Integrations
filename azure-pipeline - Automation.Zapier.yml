@@ -1,5 +1,24 @@
 trigger:
-- main-v17
+  branches:
+    include:
+    - main-v17
+    - v17/dev
+  paths:
+    include:
+    - src/Umbraco.Forms.Integrations.Automation.Zapier/**
+    - azure-pipeline - Automation.Zapier.yml
+    - NuGet.config
+
+pr:
+  branches:
+    include:
+    - main-v17
+    - v17/dev
+  paths:
+    include:
+    - src/Umbraco.Forms.Integrations.Automation.Zapier/**
+    - azure-pipeline - Automation.Zapier.yml
+    - NuGet.config
 
 pool:
   vmImage: 'windows-latest'
