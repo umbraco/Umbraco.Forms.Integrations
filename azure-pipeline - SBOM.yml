@@ -10,7 +10,7 @@
 # Queued by hand on a branch, it generates and checks licenses for the packages picked at
 # queue time and never uploads, so in-progress versions don't land in Dependency-Track.
 #
-# See devops/sbom/generate-sbom.ps1 for how versions and isLatest are worked out.
+# See devops/sbom/generate-sbom.ps1 for how versions are worked out (every upload is flagged isLatest).
 
 parameters:
 - name: packages
