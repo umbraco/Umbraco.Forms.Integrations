@@ -1,5 +1,22 @@
 trigger:
-- main-v13
+  branches:
+    include:
+    - main-v13
+  paths:
+    include:
+    - src/Umbraco.Forms.Integrations.Commerce.EMerchantPay/**
+    - azure-pipeline - Commerce.Emerchantpay.yml
+    - NuGet.config
+
+pr:
+  branches:
+    include:
+    - main-v13
+  paths:
+    include:
+    - src/Umbraco.Forms.Integrations.Commerce.EMerchantPay/**
+    - azure-pipeline - Commerce.Emerchantpay.yml
+    - NuGet.config
 
 pool:
   vmImage: 'windows-latest'
