@@ -1,5 +1,6 @@
 ﻿using System.Text.Json;
 using System.Text.Json.Nodes;
+using System.Text.Json.Serialization;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
@@ -10,6 +11,10 @@ namespace Umbraco.Forms.Integrations.Crm.ActiveCampaign.Services
 {
     public class ContactService : IContactService
     {
+        private const int CustomFieldPageSize = 100;
+
+        private const int MaxCustomFieldPages = 50;
+
         private readonly IHttpClientFactory _httpClientFactory;
 
         private readonly ILogger<ContactService> _logger;
@@ -60,8 +65,73 @@ namespace Umbraco.Forms.Integrations.Crm.ActiveCampaign.Services
         {
             var client = _httpClientFactory.CreateClient(Constants.HttpClient);
 
-            return await ApiResponseReader.SendAsync<CustomFieldCollectionResponseDto>(
-                client, "fields", () => client.GetAsync("fields"), _logger);
+            var fields = new List<CustomFieldDto>();
+            var seenIds = new HashSet<string>();
+
+            for (var page = 0; page < MaxCustomFieldPages; page++)
+            {
+                var offset = page * CustomFieldPageSize;
+
+                var result = await ApiResponseReader.SendAsync<CustomFieldPage>(
+                    client, $"fields (offset {offset})", () => client.GetAsync($"fields?limit={CustomFieldPageSize}&offset={offset}"), _logger);
+
+                if (result is null)
+                {
+                    return null;
+                }
+
+                if (result.Fields is null || result.Fields.Count == 0)
+                {
+                    break;
+                }
+
+                // Skip repeats, in case the order shifts between pages or offset is ignored.
+                var added = 0;
+                foreach (var field in result.Fields)
+                {
+                    if (field.Id is null || seenIds.Add(field.Id))
+                    {
+                        fields.Add(field);
+                        added++;
+                    }
+                }
+
+                if (added == 0)
+                {
+                    break;
+                }
+
+                if (fields.Count >= (result.Meta?.Total ?? 0))
+                {
+                    break;
+                }
+
+                if (page == MaxCustomFieldPages - 1)
+                {
+                    _logger.LogWarning(
+                        "ActiveCampaign custom fields stopped after {Pages} pages ({Count} fields collected); some fields may be missing.",
+                        MaxCustomFieldPages, fields.Count);
+                }
+            }
+
+            return new CustomFieldCollectionResponseDto { Fields = fields };
+        }
+
+        // ActiveCampaign pages list endpoints (max 100 per request) and sends meta.total as a string.
+        private sealed class CustomFieldPage
+        {
+            [JsonPropertyName("fields")]
+            public List<CustomFieldDto>? Fields { get; set; }
+
+            [JsonPropertyName("meta")]
+            public PageMeta? Meta { get; set; }
+        }
+
+        private sealed class PageMeta
+        {
+            [JsonPropertyName("total")]
+            [JsonNumberHandling(JsonNumberHandling.AllowReadingFromString)]
+            public int Total { get; set; }
         }
     }
 }
