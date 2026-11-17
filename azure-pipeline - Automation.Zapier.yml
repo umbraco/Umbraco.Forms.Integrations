@@ -7,6 +7,18 @@ trigger:
     include:
     - src/Umbraco.Forms.Integrations.Automation.Zapier/**
     - azure-pipeline - Automation.Zapier.yml
+    - NuGet.config
+
+pr:
+  branches:
+    include:
+    - main-v19
+    - v19/dev
+  paths:
+    include:
+    - src/Umbraco.Forms.Integrations.Automation.Zapier/**
+    - azure-pipeline - Automation.Zapier.yml
+    - NuGet.config
 
 pool:
   vmImage: 'windows-latest'
