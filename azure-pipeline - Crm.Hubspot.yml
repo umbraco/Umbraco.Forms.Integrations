@@ -1,8 +1,8 @@
 trigger:
   branches:
     include:
-    - main-v18
-    - v18/dev
+    - main-v19
+    - v19/dev
   paths:
     include:
     - src/Umbraco.Forms.Integrations.Crm.Hubspot/**
@@ -19,10 +19,10 @@ variables:
 
 steps:
 - task: UseDotNet@2
-  displayName: 'Use SDK version 10.0.100'
+  displayName: 'Use SDK version 11.0.100'
   inputs:
     packageType: 'sdk'
-    version: '10.0.100'
+    version: '11.0.100'
 
 - task: NuGetToolInstaller@1
   displayName: 'Install NuGet'

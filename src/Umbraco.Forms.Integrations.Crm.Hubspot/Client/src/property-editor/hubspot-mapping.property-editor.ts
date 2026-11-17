@@ -117,12 +117,16 @@ export class HubspotMappingPropertyUiElement extends UmbLitElement implements Um
   }
 
   async #deauthorize(){
-    await umbConfirmModal(this, {
-      color: "danger",
-      headline: "Confirmation",
-      content: "Are you sure you wish to disconnect your Hubspot account?",
-      confirmLabel: 'Disconnect',
-    });
+    try {
+      await umbConfirmModal(this, {
+        color: "danger",
+        headline: "Confirmation",
+        content: "Are you sure you wish to disconnect your Hubspot account?",
+        confirmLabel: 'Disconnect',
+      });
+    } catch {
+      return;
+    }
 
     const { data } = await this.#hubspotContext.deauthorize();
 
@@ -224,17 +228,17 @@ export class HubspotMappingPropertyUiElement extends UmbLitElement implements Um
         : html`
           <div class="hubspot-wf-status">
               <span>Umbraco Forms is configured with a HubSpot CRM account using: </span>
-              <b>${this.authorizationStatus}</b></p>
+              <b>${this.authorizationStatus}</b>
           </div>
 
           <div class="hubspot-wf-button">
             <table>
               <tr>
                 <td>
-                  <uui-button look="primary"} label="Add mapping" @click=${this.#addButtonClick}></uui-button>
+                  <uui-button look="primary" label="Add mapping" @click=${this.#addButtonClick}></uui-button>
                 </td>
                 <td>
-                  <uui-button look="secondary"} label="De-authorize from Hubspot" @click=${this.#deauthorize}></uui-button>
+                  <uui-button look="secondary" label="De-authorize from Hubspot" @click=${this.#deauthorize}></uui-button>
                 </td>
               </tr>
             </table>

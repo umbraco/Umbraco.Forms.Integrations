@@ -10,7 +10,7 @@
 # Queued by hand on a branch, it generates and checks licenses for the packages picked at
 # queue time and never uploads, so in-progress versions don't land in Dependency-Track.
 #
-# See devops/sbom/generate-sbom.ps1 for how versions and isLatest are worked out.
+# See devops/sbom/generate-sbom.ps1 for how versions are worked out (every upload is flagged isLatest).
 
 parameters:
 - name: packages
@@ -37,10 +37,10 @@ variables:
 
 steps:
 - task: UseDotNet@2
-  displayName: 'Use SDK version 10.0.100'
+  displayName: 'Use SDK version 11.0.100'
   inputs:
     packageType: 'sdk'
-    version: '10.0.100'
+    version: '11.0.100'
 
 # Installed fresh every build so the centrally maintained license overrides are current.
 - pwsh: |
